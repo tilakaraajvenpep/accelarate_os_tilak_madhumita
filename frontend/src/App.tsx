@@ -1,8 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/context/auth-context'
+import { ThemeProvider } from '@/context/theme-context'
 import { Toaster } from 'sonner'
 import { AppShell } from '@/components/layout/app-shell'
+import LandingPage from '@/pages/landing'
 import LoginPage from '@/pages/login'
+import GetStartedPage from '@/pages/get-started'
 import DashboardPage from '@/pages/dashboard'
 
 function ProtectedLayout() {
@@ -21,12 +24,19 @@ function ProtectedLayout() {
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route element={<ProtectedLayout />}>
-        <Route path="/" element={<DashboardPage />} />
-        {/* Stub routes — replace with real pages as you build them */}
-        <Route path="/*" element={<ComingSoon />} />
+      <Route path="/get-started" element={<GetStartedPage />} />
+
+      {/* Protected — all under /app */}
+      <Route path="/app" element={<ProtectedLayout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="*" element={<ComingSoon />} />
       </Route>
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
@@ -41,9 +51,11 @@ function ComingSoon() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-      <Toaster position="top-right" richColors />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppRoutes />
+        <Toaster position="top-right" richColors />
+      </AuthProvider>
+    </ThemeProvider>
   )
 }

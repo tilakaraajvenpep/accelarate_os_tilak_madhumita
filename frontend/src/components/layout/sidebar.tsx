@@ -44,52 +44,52 @@ type NavSection = {
 const FOUNDER_SECTIONS: NavSection[] = [
   {
     items: [
-      { href: '/', icon: Home, title: 'Overview' },
-      { href: '/pillars', icon: LayoutDashboard, title: 'My Pillars' },
-      { href: '/documents', icon: FileText, title: 'Documents' },
-      { href: '/calendar', icon: Calendar, title: 'Calendar' },
-      { href: '/messages', icon: MessageSquare, title: 'Messages' },
+      { href: '/app', icon: Home, title: 'Overview' },
+      { href: '/app/pillars', icon: LayoutDashboard, title: 'My Pillars' },
+      { href: '/app/documents', icon: FileText, title: 'Documents' },
+      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
+      { href: '/app/messages', icon: MessageSquare, title: 'Messages' },
     ],
   },
 ]
 
 const ADMIN_SECTIONS: NavSection[] = [
   {
-    items: [{ href: '/', icon: Home, title: 'Overview' }],
+    items: [{ href: '/app', icon: Home, title: 'Overview' }],
   },
   {
     title: 'Management',
     items: [
-      { href: '/cohorts', icon: Users, title: 'Cohorts' },
-      { href: '/companies', icon: Building2, title: 'Companies' },
-      { href: '/programs', icon: BookOpen, title: 'Programs' },
+      { href: '/app/cohorts', icon: Users, title: 'Cohorts' },
+      { href: '/app/companies', icon: Building2, title: 'Companies' },
+      { href: '/app/programs', icon: BookOpen, title: 'Programs' },
     ],
   },
   {
     title: 'Tools',
     items: [
-      { href: '/scoring', icon: BarChart2, title: 'Scoring' },
-      { href: '/documents', icon: FileText, title: 'Documents' },
-      { href: '/calendar', icon: Calendar, title: 'Calendar' },
+      { href: '/app/scoring', icon: BarChart2, title: 'Scoring' },
+      { href: '/app/documents', icon: FileText, title: 'Documents' },
+      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
     ],
   },
   {
     title: 'Settings',
-    items: [{ href: '/admin/email-templates', icon: Mail, title: 'Email Templates' }],
+    items: [{ href: '/app/admin/email-templates', icon: Mail, title: 'Email Templates' }],
   },
 ]
 
 const SUPER_ADMIN_SECTIONS: NavSection[] = [
   {
-    items: [{ href: '/', icon: Globe, title: 'Platform Overview' }],
+    items: [{ href: '/app', icon: Globe, title: 'Platform Overview' }],
   },
   {
     title: 'Platform',
     items: [
-      { href: '/admin/tenants', icon: Building2, title: 'Tenants' },
-      { href: '/superadmin/plans', icon: CreditCard, title: 'Plans & Billing' },
-      { href: '/superadmin/reports', icon: BarChart2, title: 'Reports' },
-      { href: '/superadmin/settings', icon: Settings, title: 'Settings' },
+      { href: '/app/admin/tenants', icon: Building2, title: 'Tenants' },
+      { href: '/app/superadmin/plans', icon: CreditCard, title: 'Plans & Billing' },
+      { href: '/app/superadmin/reports', icon: BarChart2, title: 'Reports' },
+      { href: '/app/superadmin/settings', icon: Settings, title: 'Settings' },
     ],
   },
 ]
@@ -97,10 +97,10 @@ const SUPER_ADMIN_SECTIONS: NavSection[] = [
 const MENTOR_SECTIONS: NavSection[] = [
   {
     items: [
-      { href: '/', icon: Home, title: 'Overview' },
-      { href: '/companies', icon: Building2, title: 'My Companies' },
-      { href: '/calendar', icon: Calendar, title: 'Calendar' },
-      { href: '/documents', icon: FileText, title: 'Documents' },
+      { href: '/app', icon: Home, title: 'Overview' },
+      { href: '/app/companies', icon: Building2, title: 'My Companies' },
+      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
+      { href: '/app/documents', icon: FileText, title: 'Documents' },
     ],
   },
 ]
@@ -144,16 +144,16 @@ export function Sidebar({ collapsed }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'flex flex-col h-screen bg-card border-r flex-shrink-0 transition-all duration-200',
+        'relative z-10 flex flex-col h-screen border-r border-glass-border bg-glass backdrop-blur-xl flex-shrink-0 transition-all duration-200',
         collapsed ? 'w-16' : 'w-60',
       )}
     >
       {/* Brand */}
-      <div className={cn('flex items-center h-14 border-b flex-shrink-0', collapsed ? 'justify-center px-2' : 'px-4 gap-3')}>
-        <div className="h-8 w-8 flex-shrink-0 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+      <div className={cn('flex items-center h-14 border-b border-glass-border flex-shrink-0', collapsed ? 'justify-center px-2' : 'px-4 gap-3')}>
+        <div className="h-8 w-8 flex-shrink-0 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center text-ink font-bold text-sm">
           A
         </div>
-        {!collapsed && <span className="font-semibold text-sm">AccelerateOS</span>}
+        {!collapsed && <span className="font-semibold text-sm text-ink">AccelerateOS</span>}
       </div>
 
       {/* Navigation */}
@@ -161,7 +161,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
         {sections.map((section, si) => (
           <div key={si}>
             {section.title && !collapsed && (
-              <p className="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              <p className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ink/25">
                 {section.title}
               </p>
             )}
@@ -169,15 +169,15 @@ export function Sidebar({ collapsed }: SidebarProps) {
               <NavLink
                 key={item.href}
                 to={item.href}
-                end={item.href === '/'}
+                end={item.href === '/app'}
                 title={collapsed ? item.title : undefined}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
                     collapsed && 'justify-center',
                     isActive
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      ? 'bg-glass-2 text-ink border border-glass-border'
+                      : 'text-ink/40 hover:bg-glass-2 hover:text-ink/70',
                   )
                 }
               >
@@ -190,47 +190,47 @@ export function Sidebar({ collapsed }: SidebarProps) {
       </nav>
 
       {/* User footer */}
-      <div className="border-t p-2 flex-shrink-0">
+      <div className="border-t border-glass-border p-2 flex-shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-left',
+                'w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-glass-2 transition-colors text-left',
                 collapsed && 'justify-center px-2',
               )}
             >
               <Avatar className="h-7 w-7 flex-shrink-0">
-                <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+                <AvatarFallback className="text-xs bg-glass-2 text-ink/70 font-semibold">
                   {initials(user?.name, user?.email)}
                 </AvatarFallback>
               </Avatar>
               {!collapsed && (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate leading-tight">
+                    <p className="text-sm font-medium truncate leading-tight text-ink/80">
                       {user?.name || user?.email?.split('@')[0] || 'User'}
                     </p>
-                    <p className="text-xs text-muted-foreground leading-tight">
+                    <p className="text-xs text-ink/35 leading-tight">
                       {user?.role ? ROLE_LABELS[user.role] : ''}
                     </p>
                   </div>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                  <ChevronRight className="h-3.5 w-3.5 text-ink/25 flex-shrink-0" />
                 </>
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" align={collapsed ? 'center' : 'start'} className="w-56">
+          <DropdownMenuContent side="top" align={collapsed ? 'center' : 'start'} className="w-56 bg-popover border-glass-border text-ink/80">
             <DropdownMenuLabel className="font-normal">
-              <p className="text-sm font-medium">{user?.name || 'User'}</p>
-              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              <p className="text-sm font-medium text-ink">{user?.name || 'User'}</p>
+              <p className="text-xs text-ink/40 truncate">{user?.email}</p>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/settings')}>
+            <DropdownMenuSeparator className="bg-glass-2" />
+            <DropdownMenuItem onClick={() => navigate('/app/settings')} className="focus:bg-glass-2 focus:text-ink">
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+            <DropdownMenuSeparator className="bg-glass-2" />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-400 focus:text-red-400 focus:bg-red-400/10">
               <LogOut className="h-4 w-4 mr-2" />
               Sign out
             </DropdownMenuItem>
