@@ -2,12 +2,18 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { api } from '@/lib/api'
 import type { AuthUser, AuthTokens, LoginResponse } from '@/types/auth'
 
+interface RegisterOrgFields {
+  organizationName?: string
+  organizationType?: string
+  organizationWebsite?: string
+}
+
 interface AuthContextValue {
   user: AuthUser | null
   loading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
-  register: (email: string, password: string, name: string) => Promise<void>
+  register: (email: string, password: string, name: string, org?: RegisterOrgFields) => Promise<void>
   verifyEmail: (email: string, code: string) => Promise<void>
 }
 
@@ -71,8 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
-  async function register(email: string, password: string, name: string) {
-    await api.post('/auth/register', { email, password, name })
+  async function register(email: string, password: string, name: string, org?: RegisterOrgFields) {
+    await api.post('/auth/register', { email, password, name, ...org })
   }
 
   async function verifyEmail(email: string, code: string) {

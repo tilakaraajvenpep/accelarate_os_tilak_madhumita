@@ -1,8 +1,17 @@
 import 'dotenv/config'
-import app from './app'
+import { loadSecrets } from './config/load-secrets'
 
-const PORT = Number(process.env.PORT) || 3000
+async function main() {
+  await loadSecrets()
+  const { default: app } = await import('./app')
 
-app.listen(PORT, () => {
-  console.log(`[server] listening on http://localhost:${PORT}`)
+  const PORT = Number(process.env.PORT) || 3000
+  app.listen(PORT, () => {
+    console.log(`[server] listening on http://localhost:${PORT}`)
+  })
+}
+
+main().catch((err) => {
+  console.error('[server] failed to start:', err)
+  process.exit(1)
 })

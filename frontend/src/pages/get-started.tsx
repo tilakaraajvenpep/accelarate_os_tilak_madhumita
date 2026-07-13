@@ -15,13 +15,13 @@ const STEPS: { id: Step; label: string }[] = [
   { id: 'done', label: 'All set' },
 ]
 
-const ORG_TYPES = [
-  'University accelerator',
-  'Corporate accelerator',
-  'VC-backed accelerator',
-  'Government / nonprofit',
-  'Independent accelerator',
-  'Other',
+const ORG_TYPES: { label: string; value: string }[] = [
+  { label: 'University accelerator', value: 'university' },
+  { label: 'Corporate accelerator', value: 'corporate' },
+  { label: 'VC-backed accelerator', value: 'vc_backed' },
+  { label: 'Government / nonprofit', value: 'government' },
+  { label: 'Independent accelerator', value: 'independent' },
+  { label: 'Other', value: 'other' },
 ]
 
 export default function GetStartedPage() {
@@ -58,7 +58,11 @@ export default function GetStartedPage() {
     setLoading(true)
     try {
       const name = `${firstName} ${lastName}`.trim()
-      await register(email, password, name)
+      await register(email, password, name, {
+        organizationName: orgName,
+        organizationType: orgType,
+        organizationWebsite: orgWebsite || undefined,
+      })
       setStep('verify')
       toast.success('Check your email for a 6-digit verification code')
     } catch (err: unknown) {
@@ -162,17 +166,17 @@ export default function GetStartedPage() {
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   {ORG_TYPES.map(type => (
                     <button
-                      key={type}
+                      key={type.value}
                       type="button"
-                      onClick={() => setOrgType(type)}
+                      onClick={() => setOrgType(type.value)}
                       className={cn(
                         'rounded-lg border px-3 py-2.5 text-left text-xs transition-all',
-                        orgType === type
+                        orgType === type.value
                           ? 'border-glass-border bg-glass-2 text-ink'
                           : 'border-glass-border bg-glass text-ink/40 hover:bg-glass-2 hover:text-ink/70',
                       )}
                     >
-                      {type}
+                      {type.label}
                     </button>
                   ))}
                 </div>

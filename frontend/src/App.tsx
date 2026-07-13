@@ -7,6 +7,7 @@ import LandingPage from '@/pages/landing'
 import LoginPage from '@/pages/login'
 import GetStartedPage from '@/pages/get-started'
 import DashboardPage from '@/pages/dashboard'
+import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
 
 function ProtectedLayout() {
   const { user, loading } = useAuth()
@@ -32,6 +33,7 @@ function AppRoutes() {
       {/* Protected — all under /app */}
       <Route path="/app" element={<ProtectedLayout />}>
         <Route index element={<DashboardPage />} />
+        <Route path="superadmin/plans" element={<PlansBillingPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Route>
 

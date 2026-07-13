@@ -1,16 +1,17 @@
-import { Building2, Users, TrendingUp, CreditCard, ArrowUpRight, type LucideIcon } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { Building2, Users, TrendingUp, CreditCard, type LucideIcon } from 'lucide-react'
+import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
+import type { PlatformStats, Tenant } from '@/types/billing'
 
 interface StatCardProps {
   label: string
   value: string
   sub?: string
   icon: LucideIcon
-  trend?: string
-  trendUp?: boolean
 }
 
-function StatCard({ label, value, sub, icon: Icon, trend, trendUp }: StatCardProps) {
+function StatCard({ label, value, sub, icon: Icon }: StatCardProps) {
   return (
     <div className="rounded-xl border bg-card p-5 space-y-3">
       <div className="flex items-center justify-between">
@@ -23,23 +24,37 @@ function StatCard({ label, value, sub, icon: Icon, trend, trendUp }: StatCardPro
         <p className="text-2xl font-bold">{value}</p>
         {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
       </div>
-      {trend && (
-        <p className={cn('text-xs flex items-center gap-1', trendUp ? 'text-green-600' : 'text-muted-foreground')}>
-          {trendUp && <ArrowUpRight className="h-3 w-3" />}
-          {trend}
-        </p>
-      )}
     </div>
   )
 }
 
-const TENANTS = [
-  { name: 'NWF Accelerator', plan: 'Pro', companies: 24, status: 'Active' },
-  { name: 'Velocity Labs', plan: 'Starter', companies: 8, status: 'Active' },
-  { name: 'Apex Incubator', plan: 'Pro', companies: 19, status: 'Trial' },
-]
+function statusLabel(tenant: Tenant) {
+  if (tenant.suspended) return 'Suspended'
+  if (!tenant.subscription) return 'Trial'
+  if (tenant.subscription.status === 'active') return 'Active'
+  if (tenant.subscription.status === 'trialing') return 'Trial'
+  if (tenant.subscription.status === 'past_due') return 'Past due'
+  if (tenant.subscription.status === 'canceled') return 'Canceled'
+  return 'Expired'
+}
+
+function statusColor(label: string) {
+  if (label === 'Active') return 'text-green-600'
+  if (label === 'Trial') return 'text-amber-600'
+  return 'text-muted-foreground'
+}
 
 export default function SuperAdminDashboard() {
+  const { data: stats } = useQuery({
+    queryKey: ['platform-stats'],
+    queryFn: async () => (await api.get<PlatformStats>('/api/platform/stats')).data,
+  })
+
+  const { data: tenants = [] } = useQuery({
+    queryKey: ['tenants'],
+    queryFn: async () => (await api.get<Tenant[]>('/api/tenants')).data,
+  })
+
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
@@ -50,10 +65,25 @@ export default function SuperAdminDashboard() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Tenants" value="3" sub="2 on Pro plan" icon={Building2} />
-        <StatCard label="Total Companies" value="51" icon={Users} trend="+4 this month" trendUp />
-        <StatCard label="Avg Platform Score" value="7.3" icon={TrendingUp} trend="+0.2" trendUp />
-        <StatCard label="MRR" value="$4,200" sub="3 active subs" icon={CreditCard} trend="+12%" trendUp />
+        <StatCard label="Tenants" value={stats ? String(stats.tenants) : '—'} icon={Building2} />
+        <StatCard
+          label="Total Companies"
+          value={stats?.totalCompanies == null ? '—' : String(stats.totalCompanies)}
+          sub={stats?.totalCompanies == null ? 'Not tracked yet' : undefined}
+          icon={Users}
+        />
+        <StatCard
+          label="Avg Platform Score"
+          value={stats?.avgPlatformScore == null ? '—' : stats.avgPlatformScore.toFixed(1)}
+          sub={stats?.avgPlatformScore == null ? 'Not tracked yet' : undefined}
+          icon={TrendingUp}
+        />
+        <StatCard
+          label="MRR"
+          value={stats ? `$${(stats.mrrCents / 100).toLocaleString()}` : '—'}
+          sub={stats ? `${stats.activeSubscriptions} active subs` : undefined}
+          icon={CreditCard}
+        />
       </div>
 
       {/* Tenants table */}
@@ -62,39 +92,44 @@ export default function SuperAdminDashboard() {
           <h2 className="font-semibold">Tenants</h2>
         </div>
         <div className="divide-y">
-          {TENANTS.map((t) => (
-            <div key={t.name} className="flex items-center justify-between px-6 py-3">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
-                  {t.name[0]}
+          {tenants.map((tenant) => {
+            const label = statusLabel(tenant)
+            return (
+              <div key={tenant.id} className="flex items-center justify-between px-6 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                    {tenant.name[0]}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{tenant.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {tenant.foundersUsed} founder{tenant.foundersUsed === 1 ? '' : 's'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.companies} companies</p>
+                <div className="flex items-center gap-4">
+                  <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-medium">
+                    {tenant.plan?.name ?? 'No plan'}
+                  </span>
+                  <span className={cn('text-xs font-medium', statusColor(label))}>{label}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-medium">
-                  {t.plan}
-                </span>
-                <span
-                  className={cn(
-                    'text-xs font-medium',
-                    t.status === 'Active' ? 'text-green-600' : 'text-amber-600',
-                  )}
-                >
-                  {t.status}
-                </span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
+          {tenants.length === 0 && (
+            <div className="px-6 py-6 text-center text-sm text-muted-foreground">No tenants yet.</div>
+          )}
         </div>
       </div>
 
       <div className="rounded-xl border bg-card p-6">
         <h2 className="font-semibold mb-2">Usage & Billing</h2>
         <p className="text-sm text-muted-foreground">
-          Detailed billing reports and usage analytics coming soon.
+          Manage plans, pricing, and tenant subscriptions on the{' '}
+          <a href="/app/superadmin/plans" className="underline underline-offset-2">
+            Plans &amp; Billing
+          </a>{' '}
+          page.
         </p>
       </div>
     </div>

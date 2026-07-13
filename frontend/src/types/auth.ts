@@ -5,7 +5,7 @@ export interface AuthUser {
   email: string
   name: string | null
   role: UserRole
-  tenantId: string | null
+  tenantId: number | null
 }
 
 export interface AuthTokens {

@@ -10,6 +10,8 @@ import {
   cognitoResendCode,
 } from '../services/auth.service'
 import { upsertUser } from '../services/users.service'
+import { db } from '../db/client'
+import { tenants, users } from '../models'
 
 /** Decode JWT payload without verifying — safe here since Cognito just issued it */
 function decodeJwtPayload(token: string): Record<string, unknown> {
@@ -23,6 +25,11 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   name: z.string().min(1),
+  organizationName: z.string().min(1).optional(),
+  organizationType: z
+    .enum(['university', 'corporate', 'vc_backed', 'government', 'independent', 'other'])
+    .optional(),
+  organizationWebsite: z.string().url().optional().or(z.literal('')),
 })
 
 const loginSchema = z.object({
@@ -37,7 +44,33 @@ router.post('/register', async (req: Request, res: Response) => {
     return
   }
   try {
-    await cognitoSignUp(parsed.data.email, parsed.data.password, parsed.data.name)
+    const result = await cognitoSignUp(parsed.data.email, parsed.data.password, parsed.data.name)
+    const cognitoSub = result.UserSub
+
+    // Onboarding wizard sends organization fields — create the tenant + its
+    // admin user row right away instead of waiting for first login, so the
+    // org data collected in "Start your program" step 1 isn't discarded.
+    if (parsed.data.organizationName && cognitoSub) {
+      await db.transaction(async (tx) => {
+        const [tenant] = await tx
+          .insert(tenants)
+          .values({
+            name: parsed.data.organizationName!,
+            orgType: parsed.data.organizationType ?? null,
+            website: parsed.data.organizationWebsite || null,
+          })
+          .returning()
+
+        await tx.insert(users).values({
+          cognitoSub,
+          email: parsed.data.email,
+          name: parsed.data.name,
+          role: 'admin',
+          tenantId: tenant.id,
+        })
+      })
+    }
+
     res.json({ message: 'Registered. Check your email for a verification code.' })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Registration failed'

@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
+import { getUserBySub } from '../services/users.service'
+import type { User } from '../models'
 
 const REGION = process.env.AWS_REGION || 'ap-southeast-1'
 const POOL_ID = process.env.COGNITO_USER_POOL_ID!
@@ -20,6 +22,7 @@ function getKey(header: jwt.JwtHeader, callback: jwt.SigningKeyCallback) {
 
 export interface AuthRequest extends Request {
   user?: { sub: string }
+  dbUser?: User
 }
 
 export function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
@@ -37,4 +40,26 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
     req.user = { sub: (decoded as jwt.JwtPayload).sub! }
     next()
   })
+}
+
+/** Loads the DB user row for the authenticated Cognito sub. Must run after requireAuth. */
+export async function loadUser(req: AuthRequest, res: Response, next: NextFunction) {
+  const user = await getUserBySub(req.user!.sub)
+  if (!user) {
+    res.status(404).json({ error: 'User not found' })
+    return
+  }
+  req.dbUser = user
+  next()
+}
+
+/** Restricts a route to specific roles. Must run after requireAuth + loadUser. */
+export function requireRole(...roles: User['role'][]) {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.dbUser || !roles.includes(req.dbUser.role)) {
+      res.status(403).json({ error: 'Forbidden' })
+      return
+    }
+    next()
+  }
 }

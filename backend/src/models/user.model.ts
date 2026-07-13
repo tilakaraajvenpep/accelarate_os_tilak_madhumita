@@ -1,4 +1,5 @@
-import { pgTable, serial, text, timestamp, pgEnum } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, timestamp, pgEnum, integer } from 'drizzle-orm/pg-core'
+import { tenants } from './tenant.model'
 
 export const roleEnum = pgEnum('role', [
   'founder',
@@ -14,7 +15,7 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   name: text('name'),
   role: roleEnum('role').notNull().default('founder'),
-  tenantId: text('tenant_id'),
+  tenantId: integer('tenant_id').references(() => tenants.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
