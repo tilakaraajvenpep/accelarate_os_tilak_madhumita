@@ -1,13 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/context/auth-context'
 import { ThemeProvider } from '@/context/theme-context'
+import { TenantSlugProvider, useTenantSlug } from '@/context/tenant-slug-context'
 import { Toaster } from 'sonner'
 import { AppShell } from '@/components/layout/app-shell'
 import LandingPage from '@/pages/landing'
 import LoginPage from '@/pages/login'
 import GetStartedPage from '@/pages/get-started'
+import VerifyInvitePage from '@/pages/verify-invite'
 import DashboardPage from '@/pages/dashboard'
 import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
+import TenantsAdminPage from '@/pages/dashboard/superadmin/tenants'
 
 function ProtectedLayout() {
   const { user, loading } = useAuth()
@@ -29,13 +32,18 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/get-started" element={<GetStartedPage />} />
+      <Route path="/verify-invite" element={<VerifyInvitePage />} />
 
       {/* Protected — all under /app */}
       <Route path="/app" element={<ProtectedLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path="superadmin/plans" element={<PlansBillingPage />} />
+        <Route path="superadmin/tenants" element={<TenantsAdminPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Route>
+
+      {/* Tenant-scoped, path-based (no real subdomains yet — see tenant-slug-context.tsx) */}
+      <Route path="/t/:slug/*" element={<TenantScopedApp />} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -47,6 +55,38 @@ function ComingSoon() {
   return (
     <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
       This page is coming soon.
+    </div>
+  )
+}
+
+function TenantScopedApp() {
+  return (
+    <TenantSlugProvider>
+      <TenantScopedContent />
+    </TenantSlugProvider>
+  )
+}
+
+function TenantScopedContent() {
+  const { tenant, loading } = useTenantSlug()
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-muted-foreground text-sm">
+        Loading…
+      </div>
+    )
+  }
+  if (!tenant) {
+    return (
+      <div className="flex h-screen items-center justify-center text-muted-foreground text-sm">
+        Tenant not found.
+      </div>
+    )
+  }
+  return (
+    <div className="flex h-screen items-center justify-center text-muted-foreground text-sm">
+      Welcome to {tenant.name}.
     </div>
   )
 }

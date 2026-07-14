@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm'
 import Stripe from 'stripe'
 import { db } from '../db/client'
 import { subscriptions, payments, plans, tenants } from '../models'
-import { getOrCreateCustomer, createCheckoutSession } from './stripe.service'
+import { getOrCreateCustomer, createCheckoutSession, cancelStripeSubscription } from './stripe.service'
 
 export async function assignOfflineSubscription(params: {
   tenantId: number
@@ -68,6 +68,32 @@ export async function createOnlineCheckoutSession(params: {
   })
 
   return { checkoutUrl: session.url, subscriptionId: subscription.id }
+}
+
+export async function cancelSubscription(tenantId: number, subscriptionId: number) {
+  const [subscription] = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.id, subscriptionId))
+    .limit(1)
+  if (!subscription || subscription.tenantId !== tenantId) throw new Error('Subscription not found')
+
+  if (subscription.billingType === 'online' && subscription.stripeSubscriptionId) {
+    try {
+      await cancelStripeSubscription(subscription.stripeSubscriptionId)
+    } catch (err: unknown) {
+      // Already canceled on Stripe's side (e.g. resource_missing) shouldn't block us
+      // from reflecting cancellation locally — anything else should surface.
+      if (!(err instanceof Stripe.errors.StripeError && err.code === 'resource_missing')) throw err
+    }
+  }
+
+  const [updated] = await db
+    .update(subscriptions)
+    .set({ status: 'canceled', updatedAt: new Date() })
+    .where(eq(subscriptions.id, subscriptionId))
+    .returning()
+  return updated
 }
 
 function getInvoiceSubscriptionId(invoice: Stripe.Invoice): string | undefined {

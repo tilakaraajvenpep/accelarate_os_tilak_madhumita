@@ -1,7 +1,7 @@
 import { Router, Response } from 'express'
 import { z } from 'zod'
 import { requireAuth, loadUser, requireRole, type AuthRequest } from '../middleware/auth.middleware'
-import { assignOfflineSubscription, createOnlineCheckoutSession } from '../services/subscriptions.service'
+import { assignOfflineSubscription, createOnlineCheckoutSession, cancelSubscription } from '../services/subscriptions.service'
 import { getTenantAdminEmail } from '../services/tenants.service'
 
 const router = Router({ mergeParams: true })
@@ -61,6 +61,23 @@ router.post(
       res.json(result)
     } catch (err: unknown) {
       res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to create checkout session' })
+    }
+  },
+)
+
+router.delete(
+  '/:id',
+  requireAuth,
+  loadUser,
+  requireRole('super_admin'),
+  async (req: AuthRequest, res: Response) => {
+    const tenantId = Number(req.params.tenantId)
+    const subscriptionId = Number(req.params.id)
+    try {
+      const subscription = await cancelSubscription(tenantId, subscriptionId)
+      res.json(subscription)
+    } catch (err: unknown) {
+      res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to cancel subscription' })
     }
   },
 )

@@ -50,6 +50,11 @@ export async function createCheckoutSession(params: {
   return session
 }
 
+export async function cancelStripeSubscription(stripeSubscriptionId: string) {
+  const stripe = getClient()
+  await stripe.subscriptions.cancel(stripeSubscriptionId)
+}
+
 export function constructWebhookEvent(rawBody: Buffer, signature: string) {
   const stripe = getClient()
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET

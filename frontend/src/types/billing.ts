@@ -36,6 +36,7 @@ export interface TenantSubscriptionSummary {
 export interface Tenant {
   id: number
   name: string
+  slug: string
   orgType: OrgType | null
   website: string | null
   suspended: boolean

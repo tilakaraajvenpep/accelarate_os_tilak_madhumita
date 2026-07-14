@@ -86,7 +86,7 @@ const SUPER_ADMIN_SECTIONS: NavSection[] = [
   {
     title: 'Platform',
     items: [
-      { href: '/app/admin/tenants', icon: Building2, title: 'Tenants' },
+      { href: '/app/superadmin/tenants', icon: Building2, title: 'Tenants' },
       { href: '/app/superadmin/plans', icon: CreditCard, title: 'Plans & Billing' },
       { href: '/app/superadmin/reports', icon: BarChart2, title: 'Reports' },
       { href: '/app/superadmin/settings', icon: Settings, title: 'Settings' },

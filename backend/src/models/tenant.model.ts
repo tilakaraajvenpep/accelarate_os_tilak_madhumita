@@ -12,6 +12,7 @@ export const orgTypeEnum = pgEnum('org_type', [
 export const tenants = pgTable('tenants', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
   orgType: orgTypeEnum('org_type'),
   website: text('website'),
   suspended: boolean('suspended').notNull().default(false),

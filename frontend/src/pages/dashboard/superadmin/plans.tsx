@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Plus, Pencil, CreditCard, Building2 } from 'lucide-react'
+import { Plus, Pencil, CreditCard, Building2, Trash2 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -65,6 +65,25 @@ export default function PlansBillingPage() {
     queryKey: ['tenants'],
     queryFn: async () => (await api.get<Tenant[]>('/api/tenants')).data,
   })
+
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: async (params: { tenantId: number; subscriptionId: number }) =>
+      (await api.delete(`/api/tenants/${params.tenantId}/subscriptions/${params.subscriptionId}`)).data,
+    onSuccess: () => {
+      toast.success('Subscription canceled')
+      queryClient.invalidateQueries({ queryKey: ['tenants'] })
+      queryClient.invalidateQueries({ queryKey: ['platform-stats'] })
+    },
+    onError: (err) => toast.error(apiError(err, 'Failed to cancel subscription')),
+  })
+
+  function handleCancelSubscription(tenant: Tenant) {
+    if (!tenant.subscription) return
+    if (!window.confirm(`Cancel ${tenant.name}'s subscription? This can't be undone from here — you'd need to assign a new plan.`)) {
+      return
+    }
+    cancelSubscriptionMutation.mutate({ tenantId: tenant.id, subscriptionId: tenant.subscription.id })
+  }
 
   function openCreatePlan() {
     setEditingPlan(null)
@@ -185,9 +204,22 @@ export default function PlansBillingPage() {
                     : '—'}
                 </TableCell>
                 <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => setAssignTenant(tenant)}>
-                    Assign Plan
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setAssignTenant(tenant)}>
+                      Assign Plan
+                    </Button>
+                    {tenant.subscription && tenant.subscription.status !== 'canceled' && (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Cancel subscription"
+                        disabled={cancelSubscriptionMutation.isPending}
+                        onClick={() => handleCancelSubscription(tenant)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

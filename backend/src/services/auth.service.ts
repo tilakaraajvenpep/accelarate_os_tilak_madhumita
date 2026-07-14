@@ -7,6 +7,10 @@ import {
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
   ResendConfirmationCodeCommand,
+  AdminCreateUserCommand,
+  AdminSetUserPasswordCommand,
+  AdminGetUserCommand,
+  AdminDeleteUserCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider'
 import crypto from 'crypto'
@@ -14,6 +18,7 @@ import crypto from 'crypto'
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID!
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET
 const REGION = process.env.COGNITO_REGION || process.env.AWS_REGION || 'ap-southeast-1'
+const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID!
 
 const getClient = () => new CognitoIdentityProviderClient({ region: REGION })
 
@@ -114,4 +119,45 @@ export async function cognitoResendCode(email: string) {
       SecretHash: secretHash(email),
     }),
   )
+}
+
+/** Admin-creates a Cognito user with a name attribute, no password set yet —
+ * the password is set separately via cognitoAdminSetPassword right after. */
+export async function cognitoAdminCreateUser(email: string, name: string) {
+  return getClient().send(
+    new AdminCreateUserCommand({
+      UserPoolId: USER_POOL_ID,
+      Username: email,
+      MessageAction: 'SUPPRESS',
+      UserAttributes: [
+        { Name: 'email', Value: email },
+        { Name: 'email_verified', Value: 'true' },
+        { Name: 'name', Value: name },
+      ],
+    }),
+  )
+}
+
+export async function cognitoAdminSetPassword(email: string, password: string) {
+  return getClient().send(
+    new AdminSetUserPasswordCommand({
+      UserPoolId: USER_POOL_ID,
+      Username: email,
+      Password: password,
+      Permanent: true,
+    }),
+  )
+}
+
+export async function cognitoAdminGetSub(email: string): Promise<string> {
+  const details = await getClient().send(
+    new AdminGetUserCommand({ UserPoolId: USER_POOL_ID, Username: email }),
+  )
+  const sub = details.UserAttributes?.find((a) => a.Name === 'sub')?.Value
+  if (!sub) throw new Error('Could not resolve Cognito sub for the user')
+  return sub
+}
+
+export async function cognitoAdminDeleteUser(email: string) {
+  return getClient().send(new AdminDeleteUserCommand({ UserPoolId: USER_POOL_ID, Username: email }))
 }

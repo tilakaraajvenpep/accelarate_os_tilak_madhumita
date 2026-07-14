@@ -10,6 +10,8 @@ import {
   cognitoResendCode,
 } from '../services/auth.service'
 import { upsertUser } from '../services/users.service'
+import { verifyTenantAdminEmail } from '../services/tenants.service'
+import { generateUniqueSlug } from '../utils/slug'
 import { db } from '../db/client'
 import { tenants, users } from '../models'
 
@@ -52,10 +54,12 @@ router.post('/register', async (req: Request, res: Response) => {
     // org data collected in "Start your program" step 1 isn't discarded.
     if (parsed.data.organizationName && cognitoSub) {
       await db.transaction(async (tx) => {
+        const slug = await generateUniqueSlug(parsed.data.organizationName!)
         const [tenant] = await tx
           .insert(tenants)
           .values({
             name: parsed.data.organizationName!,
+            slug,
             orgType: parsed.data.organizationType ?? null,
             website: parsed.data.organizationWebsite || null,
           })
@@ -108,6 +112,26 @@ router.post('/resend-code', async (req: Request, res: Response) => {
   }
 })
 
+const verifyInviteSchema = z.object({
+  email: z.string().email(),
+  code: z.string().min(1),
+})
+
+router.post('/verify-invite', async (req: Request, res: Response) => {
+  const parsed = verifyInviteSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() })
+    return
+  }
+  try {
+    const { tenantName } = await verifyTenantAdminEmail(parsed.data.email, parsed.data.code)
+    res.json({ tenantName, message: 'Email verified. You can now sign in.' })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Verification failed'
+    res.status(400).json({ error: msg })
+  }
+})
+
 router.post('/login', async (req: Request, res: Response) => {
   const parsed = loginSchema.safeParse(req.body)
   if (!parsed.success) {
@@ -126,6 +150,11 @@ router.post('/login', async (req: Request, res: Response) => {
       email: (claims.email as string) || parsed.data.email,
       name: (claims.name as string | undefined) ?? null,
     })
+
+    if (!user.emailVerified) {
+      res.status(403).json({ error: 'Please verify your email before signing in — check your inbox for the verification link.' })
+      return
+    }
 
     res.json({
       accessToken: t.AccessToken,

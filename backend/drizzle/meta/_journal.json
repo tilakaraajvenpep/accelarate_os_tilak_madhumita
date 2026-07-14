@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784005341206,
+      "tag": "0000_add_tenant_slug_and_invites",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784008682624,
+      "tag": "0001_add_email_verified",
+      "breakpoints": true
+    }
+  ]
+}
