@@ -7,8 +7,8 @@ import {
   getTenantBySlug,
   deleteTenant,
   setTenantEmailServiceEnabled,
+  sendTenantAdminOtp,
 } from '../services/tenants.service'
-import { sendVerificationEmail } from '../services/ses.service'
 
 const router = Router()
 
@@ -22,12 +22,39 @@ const createTenantSchema = z.object({
   adminEmail: z.string().email(),
   adminName: z.string().min(1),
   adminPassword: z.string().min(8),
+  otpCode: z.string().min(1),
+})
+
+const sendCodeSchema = z.object({
+  adminEmail: z.string().email(),
+  name: z.string().min(1),
 })
 
 router.get('/', requireAuth, loadUser, requireRole('super_admin'), async (_req: AuthRequest, res: Response) => {
   const tenants = await listTenantsWithSubscription()
   res.json(tenants)
 })
+
+router.post(
+  '/send-verification-code',
+  requireAuth,
+  loadUser,
+  requireRole('super_admin'),
+  async (req: AuthRequest, res: Response) => {
+    const parsed = sendCodeSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.flatten() })
+      return
+    }
+    try {
+      await sendTenantAdminOtp(parsed.data.adminEmail, parsed.data.name)
+      res.json({ message: 'Verification code sent' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to send verification code'
+      res.status(400).json({ error: msg })
+    }
+  },
+)
 
 router.post('/', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
   const parsed = createTenantSchema.safeParse(req.body)
@@ -36,7 +63,7 @@ router.post('/', requireAuth, loadUser, requireRole('super_admin'), async (req: 
     return
   }
   try {
-    const { tenant, invite } = await createTenantWithAdmin({
+    const tenant = await createTenantWithAdmin({
       name: parsed.data.name,
       orgType: parsed.data.orgType,
       website: parsed.data.website || null,
@@ -44,18 +71,9 @@ router.post('/', requireAuth, loadUser, requireRole('super_admin'), async (req: 
       adminEmail: parsed.data.adminEmail,
       adminName: parsed.data.adminName,
       adminPassword: parsed.data.adminPassword,
+      otpCode: parsed.data.otpCode,
     })
-
-    let emailSent = true
-    try {
-      const verifyUrl = `${process.env.FRONTEND_URL}/verify-invite?email=${encodeURIComponent(invite.email)}&code=${invite.token}`
-      await sendVerificationEmail({ to: invite.email, tenantName: tenant.name, code: invite.token, verifyUrl })
-    } catch (emailErr) {
-      emailSent = false
-      console.error('[tenants] failed to send verification email:', emailErr)
-    }
-
-    res.json({ tenant, emailSent })
+    res.json({ tenant })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Failed to create tenant'
     res.status(400).json({ error: msg })

@@ -15,7 +15,6 @@ interface AuthContextValue {
   logout: () => Promise<void>
   register: (email: string, password: string, name: string, org?: RegisterOrgFields) => Promise<void>
   verifyEmail: (email: string, code: string) => Promise<void>
-  verifyInvite: (email: string, code: string) => Promise<string>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -86,13 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await api.post('/auth/verify-email', { email, code })
   }
 
-  async function verifyInvite(email: string, code: string): Promise<string> {
-    const { data } = await api.post<{ tenantName: string }>('/auth/verify-invite', { email, code })
-    return data.tenantName
-  }
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register, verifyEmail, verifyInvite }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register, verifyEmail }}>
       {children}
     </AuthContext.Provider>
   )

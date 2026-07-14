@@ -12,7 +12,6 @@ import {
 } from '../services/auth.service'
 import { requireAuth, type AuthRequest } from '../middleware/auth.middleware'
 import { upsertUser } from '../services/users.service'
-import { verifyTenantAdminEmail } from '../services/tenants.service'
 import { generateUniqueSlug } from '../utils/slug'
 import { db } from '../db/client'
 import { tenants, users } from '../models'
@@ -110,26 +109,6 @@ router.post('/resend-code', async (req: Request, res: Response) => {
     res.json({ message: 'Code resent.' })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Failed to resend code'
-    res.status(400).json({ error: msg })
-  }
-})
-
-const verifyInviteSchema = z.object({
-  email: z.string().email(),
-  code: z.string().min(1),
-})
-
-router.post('/verify-invite', async (req: Request, res: Response) => {
-  const parsed = verifyInviteSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.flatten() })
-    return
-  }
-  try {
-    const { tenantName } = await verifyTenantAdminEmail(parsed.data.email, parsed.data.code)
-    res.json({ tenantName, message: 'Email verified. You can now sign in.' })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Verification failed'
     res.status(400).json({ error: msg })
   }
 })

@@ -7,7 +7,6 @@ import { AppShell } from '@/components/layout/app-shell'
 import LandingPage from '@/pages/landing'
 import LoginPage from '@/pages/login'
 import GetStartedPage from '@/pages/get-started'
-import VerifyInvitePage from '@/pages/verify-invite'
 import DashboardPage from '@/pages/dashboard'
 import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
 import TenantsAdminPage from '@/pages/dashboard/superadmin/tenants'
@@ -34,7 +33,6 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/get-started" element={<GetStartedPage />} />
-      <Route path="/verify-invite" element={<VerifyInvitePage />} />
 
       {/* Protected — all under /app */}
       <Route path="/app" element={<ProtectedLayout />}>

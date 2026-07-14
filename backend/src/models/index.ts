@@ -1,5 +1,6 @@
 export * from './tenant.model'
 export * from './tenant-invite.model'
+export * from './email-otp.model'
 export * from './plan.model'
 export * from './user.model'
 export * from './subscription.model'

@@ -179,6 +179,8 @@ const EMPTY_FORM: CreateTenantForm = {
   adminPassword: '',
 }
 
+type DialogStep = 'details' | 'verify'
+
 function CreateTenantDialog({
   open,
   onOpenChange,
@@ -189,9 +191,15 @@ function CreateTenantDialog({
   onCreated: () => void
 }) {
   const [form, setForm] = useState<CreateTenantForm>(EMPTY_FORM)
+  const [step, setStep] = useState<DialogStep>('details')
+  const [otpCode, setOtpCode] = useState('')
 
   function handleOpenChange(next: boolean) {
-    if (next) setForm(EMPTY_FORM)
+    if (next) {
+      setForm(EMPTY_FORM)
+      setStep('details')
+      setOtpCode('')
+    }
     onOpenChange(next)
   }
 
@@ -199,7 +207,16 @@ function CreateTenantDialog({
     setForm((f) => ({ ...f, name, slug: f.slugTouched ? f.slug : slugify(name) }))
   }
 
-  const mutation = useMutation({
+  const sendCodeMutation = useMutation({
+    mutationFn: async () => (await api.post('/api/tenants/send-verification-code', { adminEmail: form.adminEmail, name: form.name })).data,
+    onSuccess: () => {
+      toast.success(`Verification code sent to ${form.adminEmail}`)
+      setStep('verify')
+    },
+    onError: (err) => toast.error(apiError(err, 'Failed to send verification code')),
+  })
+
+  const createMutation = useMutation({
     mutationFn: async () => {
       return (
         await api.post('/api/tenants', {
@@ -210,20 +227,19 @@ function CreateTenantDialog({
           adminEmail: form.adminEmail,
           adminName: form.adminName,
           adminPassword: form.adminPassword,
+          otpCode,
         })
       ).data
     },
-    onSuccess: (data: { emailSent: boolean }) => {
-      toast.success(
-        data.emailSent
-          ? `Verification email sent to ${form.adminEmail}`
-          : `Tenant created, but the verification email failed to send — check SES config`,
-      )
+    onSuccess: () => {
+      toast.success(`Tenant "${form.name}" created`)
       onCreated()
       handleOpenChange(false)
     },
     onError: (err) => toast.error(apiError(err, 'Failed to create tenant')),
   })
+
+  const detailsValid = !!form.name && !!form.adminEmail && !!form.adminName && form.adminPassword.length >= 8
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -231,105 +247,139 @@ function CreateTenantDialog({
         <DialogHeader>
           <DialogTitle>Create tenant</DialogTitle>
           <DialogDescription>
-            Set the admin's password now — they'll just need to verify their email before signing in.
+            {step === 'details'
+              ? "Set the admin's password now — you'll verify their email next, right here."
+              : `Enter the code sent to ${form.adminEmail} to finish creating the tenant.`}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label>Organization name</Label>
-            <Input value={form.name} onChange={(e) => handleNameChange(e.target.value)} />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Slug</Label>
-            <Input
-              value={form.slug}
-              onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slugTouched: true })}
-            />
-            <p className="text-xs text-muted-foreground">Used to identify this tenant in URLs (/t/{form.slug || '…'})</p>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Org type</Label>
-            <Select value={form.orgType} onValueChange={(v) => setForm({ ...form, orgType: (v as OrgType) ?? '' })}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a type" />
-              </SelectTrigger>
-              <SelectContent>
-                {ORG_TYPES.map((t) => (
-                  <SelectItem key={t.value} value={t.value}>
-                    {t.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Website</Label>
-            <Input
-              type="url"
-              placeholder="https://example.com"
-              value={form.website}
-              onChange={(e) => setForm({ ...form, website: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Admin name</Label>
-            <Input value={form.adminName} onChange={(e) => setForm({ ...form, adminName: e.target.value })} />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Admin email</Label>
-            <Input
-              type="email"
-              value={form.adminEmail}
-              onChange={(e) => setForm({ ...form, adminEmail: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Admin password</Label>
-            <div className="flex gap-2">
-              <Input
-                value={form.adminPassword}
-                onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
-                placeholder="Min. 8 characters"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                title="Generate a password"
-                onClick={() => setForm({ ...form, adminPassword: generatePassword() })}
-              >
-                <Dices className="h-4 w-4" />
-              </Button>
+        {step === 'details' && (
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Organization name</Label>
+              <Input value={form.name} onChange={(e) => handleNameChange(e.target.value)} />
             </div>
-            <p className="text-xs text-muted-foreground">
-              Share this with the admin securely — it won't be shown again after you close this dialog.
-            </p>
+
+            <div className="space-y-1.5">
+              <Label>Slug</Label>
+              <Input
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slugTouched: true })}
+              />
+              <p className="text-xs text-muted-foreground">Used to identify this tenant in URLs (/t/{form.slug || '…'})</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Org type</Label>
+              <Select value={form.orgType} onValueChange={(v) => setForm({ ...form, orgType: (v as OrgType) ?? '' })}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ORG_TYPES.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>
+                      {t.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Website</Label>
+              <Input
+                type="url"
+                placeholder="https://example.com"
+                value={form.website}
+                onChange={(e) => setForm({ ...form, website: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Admin name</Label>
+              <Input value={form.adminName} onChange={(e) => setForm({ ...form, adminName: e.target.value })} />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Admin email</Label>
+              <Input
+                type="email"
+                value={form.adminEmail}
+                onChange={(e) => setForm({ ...form, adminEmail: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Admin password</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={form.adminPassword}
+                  onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                  placeholder="Min. 8 characters"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  title="Generate a password"
+                  onClick={() => setForm({ ...form, adminPassword: generatePassword() })}
+                >
+                  <Dices className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Share this with the admin securely — it won't be shown again after you close this dialog.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {step === 'verify' && (
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Verification code</Label>
+              <Input
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value)}
+                placeholder="000000"
+                inputMode="numeric"
+                maxLength={6}
+                className="text-center text-2xl tracking-[0.4em] font-mono"
+                autoFocus
+              />
+              <p className="text-xs text-muted-foreground">Code expires in 10 minutes.</p>
+            </div>
+            <button
+              type="button"
+              className="text-xs text-muted-foreground hover:text-foreground underline"
+              onClick={() => sendCodeMutation.mutate()}
+              disabled={sendCodeMutation.isPending}
+            >
+              Resend code
+            </button>
+          </div>
+        )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => mutation.mutate()}
-            disabled={
-              mutation.isPending ||
-              !form.name ||
-              !form.adminEmail ||
-              !form.adminName ||
-              form.adminPassword.length < 8
-            }
-          >
-            Create tenant
-          </Button>
+          {step === 'details' ? (
+            <>
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => sendCodeMutation.mutate()} disabled={sendCodeMutation.isPending || !detailsValid}>
+                Send verification code
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={() => setStep('details')}>
+                Back
+              </Button>
+              <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending || otpCode.length < 1}>
+                Verify & create tenant
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

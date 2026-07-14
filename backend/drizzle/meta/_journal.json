@@ -36,6 +36,13 @@
       "when": 1784026738998,
       "tag": "0004_add_plan_ai_provider_config",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784031288533,
+      "tag": "0005_add_email_otps",
+      "breakpoints": true
     }
   ]
 }

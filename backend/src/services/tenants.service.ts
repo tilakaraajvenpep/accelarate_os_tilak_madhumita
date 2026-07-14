@@ -1,7 +1,8 @@
 import { eq, and, inArray, desc, count } from 'drizzle-orm'
 import { db } from '../db/client'
-import { tenants, subscriptions, plans, users, tenantInvites, payments } from '../models'
+import { tenants, subscriptions, plans, users, tenantInvites, payments, emailOtps } from '../models'
 import { generateUniqueSlug } from '../utils/slug'
+import { sendVerificationEmail } from './ses.service'
 import {
   cognitoAdminCreateUser,
   cognitoAdminSetPassword,
@@ -9,10 +10,35 @@ import {
   cognitoAdminDeleteUser,
 } from './auth.service'
 
-const OTP_TTL_MS = 24 * 60 * 60 * 1000
+const OTP_TTL_MS = 10 * 60 * 1000
 
 function generateOtpCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
+/** Sends a one-time code to an email address before its tenant/account exists
+ * yet — verified inline in the Create Tenant dialog, so nothing is persisted
+ * (no tenant, no Cognito user) until the code is confirmed. */
+export async function sendTenantAdminOtp(email: string, orgName: string) {
+  const code = generateOtpCode()
+  await db.insert(emailOtps).values({ email, code, expiresAt: new Date(Date.now() + OTP_TTL_MS) })
+  await sendVerificationEmail({ to: email, tenantName: orgName, code })
+}
+
+async function consumeTenantAdminOtp(email: string, code: string) {
+  const [row] = await db
+    .select()
+    .from(emailOtps)
+    .where(and(eq(emailOtps.email, email), eq(emailOtps.code, code)))
+    .orderBy(desc(emailOtps.id))
+    .limit(1)
+
+  if (!row) throw new Error('Invalid verification code')
+  if (row.consumed || row.expiresAt < new Date()) {
+    throw new Error('This verification code has expired or was already used')
+  }
+
+  await db.update(emailOtps).set({ consumed: true, updatedAt: new Date() }).where(eq(emailOtps.id, row.id))
 }
 
 export async function listTenantsWithSubscription() {
@@ -75,11 +101,10 @@ export async function getTenantAdminEmail(tenantId: number): Promise<string | nu
 
 /**
  * Creates a tenant + its admin, with the password chosen by the super admin
- * up front (not by the invited admin). The Cognito account is fully active
- * immediately via the Admin APIs — no Cognito-side confirmation step exists
- * for this path. A separate app-level OTP (`tenantInvites`, repurposed here
- * to hold a 6-digit code rather than a link token) gates `users.emailVerified`
- * until the admin proves they own the inbox.
+ * up front. The admin's email must already be verified via a code sent by
+ * `sendTenantAdminOtp` and confirmed in the same Create Tenant dialog — that
+ * code is consumed here before anything is created, so no tenant or Cognito
+ * account ever exists for an unverified email.
  */
 export async function createTenantWithAdmin(data: {
   name: string
@@ -89,7 +114,10 @@ export async function createTenantWithAdmin(data: {
   adminEmail: string
   adminName: string
   adminPassword: string
+  otpCode: string
 }) {
+  await consumeTenantAdminOtp(data.adminEmail, data.otpCode)
+
   const slug = await generateUniqueSlug(data.slug || data.name)
 
   try {
@@ -117,21 +145,10 @@ export async function createTenantWithAdmin(data: {
       name: data.adminName,
       role: 'admin',
       tenantId: tenant.id,
-      emailVerified: false,
+      emailVerified: true,
     })
 
-    const [invite] = await tx
-      .insert(tenantInvites)
-      .values({
-        tenantId: tenant.id,
-        email: data.adminEmail,
-        name: data.adminName,
-        token: generateOtpCode(),
-        expiresAt: new Date(Date.now() + OTP_TTL_MS),
-      })
-      .returning()
-
-    return { tenant, invite }
+    return tenant
   })
 }
 
@@ -190,30 +207,3 @@ export async function getTenantBySlug(slug: string) {
   return tenant ?? null
 }
 
-export async function verifyTenantAdminEmail(email: string, code: string) {
-  const [row] = await db
-    .select({ invite: tenantInvites, tenantName: tenants.name })
-    .from(tenantInvites)
-    .innerJoin(tenants, eq(tenantInvites.tenantId, tenants.id))
-    .where(and(eq(tenantInvites.email, email), eq(tenantInvites.token, code)))
-    .orderBy(desc(tenantInvites.id))
-    .limit(1)
-
-  if (!row) throw new Error('Invalid verification code')
-  if (row.invite.status !== 'pending' || row.invite.expiresAt < new Date()) {
-    throw new Error('This verification code has expired or was already used')
-  }
-
-  await db.transaction(async (tx) => {
-    await tx
-      .update(tenantInvites)
-      .set({ status: 'accepted', updatedAt: new Date() })
-      .where(eq(tenantInvites.id, row.invite.id))
-    await tx
-      .update(users)
-      .set({ emailVerified: true, updatedAt: new Date() })
-      .where(and(eq(users.email, email), eq(users.tenantId, row.invite.tenantId)))
-  })
-
-  return { tenantName: row.tenantName }
-}

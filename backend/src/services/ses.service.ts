@@ -10,19 +10,14 @@ function getClient(): SESClient {
   return client
 }
 
-export async function sendVerificationEmail(params: {
-  to: string
-  tenantName: string
-  code: string
-  verifyUrl: string
-}) {
+export async function sendVerificationEmail(params: { to: string; tenantName: string; code: string }) {
   const from = process.env.AWS_SES_FROM_EMAIL
   if (!from) throw new Error('AWS_SES_FROM_EMAIL is not set')
 
   const ses = getClient()
   const subject = `Verify your email for ${params.tenantName} on AOS`
-  const text = `Your admin account for ${params.tenantName} on AOS is ready — sign in with the password you were given, once you verify this email.\n\nVerify by clicking: ${params.verifyUrl}\n\nOr enter this code manually: ${params.code}\n\nThis code expires in 24 hours.`
-  const html = `<p>Your admin account for <strong>${params.tenantName}</strong> on AOS is ready — sign in with the password you were given, once you verify this email.</p><p><a href="${params.verifyUrl}">Verify my email</a></p><p>Or enter this code manually: <strong>${params.code}</strong></p><p>This code expires in 24 hours.</p>`
+  const text = `You're setting up an admin account for ${params.tenantName} on AOS.\n\nEnter this code where you were asked to verify your email:\n\n${params.code}\n\nThis code expires in 10 minutes.`
+  const html = `<p>You're setting up an admin account for <strong>${params.tenantName}</strong> on AOS.</p><p>Enter this code where you were asked to verify your email:</p><p style="font-size:24px;font-weight:bold;letter-spacing:4px;">${params.code}</p><p>This code expires in 10 minutes.</p>`
 
   await ses.send(
     new SendEmailCommand({
