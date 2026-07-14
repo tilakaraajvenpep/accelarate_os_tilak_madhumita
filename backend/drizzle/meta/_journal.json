@@ -15,6 +15,27 @@
       "when": 1784008682624,
       "tag": "0001_add_email_verified",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784024556704,
+      "tag": "0002_add_super_admin_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784025611411,
+      "tag": "0003_add_ai_provider_configs_and_tenant_email_service",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784026738998,
+      "tag": "0004_add_plan_ai_provider_config",
+      "breakpoints": true
     }
   ]
 }

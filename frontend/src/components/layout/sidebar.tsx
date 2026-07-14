@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import {
   Home,
   LayoutDashboard,
@@ -14,12 +15,15 @@ import {
   Globe,
   CreditCard,
   MessageSquare,
+  ShieldCheck,
+  KeyRound,
   ChevronRight,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/auth-context'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ChangePasswordDialog } from '@/components/change-password-dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -87,6 +91,7 @@ const SUPER_ADMIN_SECTIONS: NavSection[] = [
     title: 'Platform',
     items: [
       { href: '/app/superadmin/tenants', icon: Building2, title: 'Tenants' },
+      { href: '/app/superadmin/admins', icon: ShieldCheck, title: 'Super Admins' },
       { href: '/app/superadmin/plans', icon: CreditCard, title: 'Plans & Billing' },
       { href: '/app/superadmin/reports', icon: BarChart2, title: 'Reports' },
       { href: '/app/superadmin/settings', icon: Settings, title: 'Settings' },
@@ -135,6 +140,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const sections = getSections(user?.role)
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   async function handleLogout() {
     await logout()
@@ -229,6 +235,10 @@ export function Sidebar({ collapsed }: SidebarProps) {
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setChangePasswordOpen(true)} className="focus:bg-glass-2 focus:text-ink">
+              <KeyRound className="h-4 w-4 mr-2" />
+              Change Password
+            </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-glass-2" />
             <DropdownMenuItem onClick={handleLogout} className="text-red-400 focus:text-red-400 focus:bg-red-400/10">
               <LogOut className="h-4 w-4 mr-2" />
@@ -237,6 +247,8 @@ export function Sidebar({ collapsed }: SidebarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </aside>
   )
 }

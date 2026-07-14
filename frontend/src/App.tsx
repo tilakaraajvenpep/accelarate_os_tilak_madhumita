@@ -11,6 +11,8 @@ import VerifyInvitePage from '@/pages/verify-invite'
 import DashboardPage from '@/pages/dashboard'
 import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
 import TenantsAdminPage from '@/pages/dashboard/superadmin/tenants'
+import SuperAdminsPage from '@/pages/dashboard/superadmin/admins'
+import SettingsPage from '@/pages/dashboard/superadmin/settings'
 
 function ProtectedLayout() {
   const { user, loading } = useAuth()
@@ -39,6 +41,8 @@ function AppRoutes() {
         <Route index element={<DashboardPage />} />
         <Route path="superadmin/plans" element={<PlansBillingPage />} />
         <Route path="superadmin/tenants" element={<TenantsAdminPage />} />
+        <Route path="superadmin/admins" element={<SuperAdminsPage />} />
+        <Route path="superadmin/settings" element={<SettingsPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Route>
 

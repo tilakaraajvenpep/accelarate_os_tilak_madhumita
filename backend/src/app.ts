@@ -7,6 +7,8 @@ import plansRouter from './routes/plans'
 import subscriptionsRouter from './routes/subscriptions'
 import billingWebhookRouter from './routes/billing-webhook'
 import platformRouter from './routes/platform'
+import superAdminsRouter from './routes/super-admins'
+import aiProviderConfigsRouter from './routes/ai-provider-configs'
 
 const app = express()
 
@@ -33,5 +35,7 @@ app.use('/api/tenants', tenantsRouter)
 app.use('/api/plans', plansRouter)
 app.use('/api/tenants/:tenantId/subscriptions', subscriptionsRouter)
 app.use('/api/platform', platformRouter)
+app.use('/api/super-admins', superAdminsRouter)
+app.use('/api/ai-provider-configs', aiProviderConfigsRouter)
 
 export default app

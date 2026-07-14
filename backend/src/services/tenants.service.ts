@@ -46,6 +46,7 @@ export async function listTenantsWithSubscription() {
       orgType: tenant.orgType,
       website: tenant.website,
       suspended: tenant.suspended,
+      emailServiceEnabled: tenant.emailServiceEnabled,
       createdAt: tenant.createdAt,
       plan: plan
         ? { id: plan.id, name: plan.name, foundersLimit: plan.foundersLimit, priceMonthlyCents: plan.priceMonthlyCents }
@@ -168,6 +169,16 @@ export async function deleteTenant(tenantId: number) {
       console.error(`[tenants] failed to delete Cognito user ${u.email}:`, err)
     }
   }
+}
+
+export async function setTenantEmailServiceEnabled(tenantId: number, enabled: boolean) {
+  const [updated] = await db
+    .update(tenants)
+    .set({ emailServiceEnabled: enabled, updatedAt: new Date() })
+    .where(eq(tenants.id, tenantId))
+    .returning()
+  if (!updated) throw new Error('Tenant not found')
+  return updated
 }
 
 export async function getTenantBySlug(slug: string) {

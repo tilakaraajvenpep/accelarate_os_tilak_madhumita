@@ -1,7 +1,7 @@
 import { Router, Response } from 'express'
 import { z } from 'zod'
 import { requireAuth, loadUser, requireRole, type AuthRequest } from '../middleware/auth.middleware'
-import { listPlans, createPlan, updatePlan } from '../services/plans.service'
+import { listPlans, createPlan, updatePlan, deletePlan } from '../services/plans.service'
 
 const router = Router()
 
@@ -14,6 +14,7 @@ const planSchema = z.object({
   priceMonthlyCents: z.number().int().min(0),
   isCustom: z.boolean().optional(),
   enableOnlineBilling: z.boolean().optional(),
+  aiProviderConfigId: z.number().int().positive().nullable().optional(),
 })
 
 const updatePlanSchema = planSchema.partial().extend({
@@ -55,6 +56,16 @@ router.patch('/:id', requireAuth, loadUser, requireRole('super_admin'), async (r
     res.json(plan)
   } catch (err: unknown) {
     res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to update plan' })
+  }
+})
+
+router.delete('/:id', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+  const id = Number(req.params.id)
+  try {
+    await deletePlan(id)
+    res.json({ message: 'Plan deleted' })
+  } catch (err: unknown) {
+    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to delete plan' })
   }
 })
 

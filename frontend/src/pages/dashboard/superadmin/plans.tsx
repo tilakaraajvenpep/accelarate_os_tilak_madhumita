@@ -33,7 +33,9 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { PROVIDER_LABELS } from '@/lib/ai-provider'
 import type { Plan, Tenant, CheckoutSessionResult } from '@/types/billing'
+import type { AiProviderConfig } from '@/types/ai-provider'
 
 function formatCents(cents: number) {
   return `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
@@ -55,11 +57,22 @@ export default function PlansBillingPage() {
   const [planDialogOpen, setPlanDialogOpen] = useState(false)
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null)
   const [assignTenant, setAssignTenant] = useState<Tenant | null>(null)
+  const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null)
 
   const { data: plans = [], isLoading: plansLoading } = useQuery({
     queryKey: ['plans'],
     queryFn: async () => (await api.get<Plan[]>('/api/plans')).data,
   })
+
+  const { data: aiConfigs = [] } = useQuery({
+    queryKey: ['ai-provider-configs'],
+    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-provider-configs')).data,
+  })
+  const aiConfigLabel = (id: number | null) => {
+    if (id === null) return '—'
+    const config = aiConfigs.find((c) => c.id === id)
+    return config ? `${PROVIDER_LABELS[config.provider]} — ${config.model}` : '—'
+  }
 
   const { data: tenants = [], isLoading: tenantsLoading } = useQuery({
     queryKey: ['tenants'],
@@ -95,6 +108,16 @@ export default function PlansBillingPage() {
     setPlanDialogOpen(true)
   }
 
+  const deletePlanMutation = useMutation({
+    mutationFn: async (planId: number) => (await api.delete(`/api/plans/${planId}`)).data,
+    onSuccess: () => {
+      toast.success('Plan deleted')
+      queryClient.invalidateQueries({ queryKey: ['plans'] })
+      setDeletingPlan(null)
+    },
+    onError: (err) => toast.error(apiError(err, 'Failed to delete plan')),
+  })
+
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
@@ -122,7 +145,8 @@ export default function PlansBillingPage() {
               <TableHead>Cohorts</TableHead>
               <TableHead>Founders</TableHead>
               <TableHead>Storage</TableHead>
-              <TableHead>Price / mo</TableHead>
+              <TableHead>Price / month</TableHead>
+              <TableHead>AI Key</TableHead>
               <TableHead>Status</TableHead>
               <TableHead />
             </TableRow>
@@ -144,21 +168,27 @@ export default function PlansBillingPage() {
                   {plan.storageLimitGb === null ? 'Unlimited' : `${plan.storageLimitGb} GB`}
                 </TableCell>
                 <TableCell>{formatCents(plan.priceMonthlyCents)}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">{aiConfigLabel(plan.aiProviderConfigId)}</TableCell>
                 <TableCell>
                   <Badge variant={plan.active ? 'default' : 'secondary'}>
                     {plan.active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon-sm" onClick={() => openEditPlan(plan)}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => openEditPlan(plan)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon-sm" title="Delete" onClick={() => setDeletingPlan(plan)}>
+                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
             {!plansLoading && plans.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-6">
                   No plans yet — create one to get started.
                 </TableCell>
               </TableRow>
@@ -250,7 +280,48 @@ export default function PlansBillingPage() {
           queryClient.invalidateQueries({ queryKey: ['platform-stats'] })
         }}
       />
+
+      <DeletePlanDialog
+        plan={deletingPlan}
+        onOpenChange={(open) => !open && setDeletingPlan(null)}
+        onConfirm={() => deletingPlan && deletePlanMutation.mutate(deletingPlan.id)}
+        pending={deletePlanMutation.isPending}
+      />
     </div>
+  )
+}
+
+function DeletePlanDialog({
+  plan,
+  onOpenChange,
+  onConfirm,
+  pending,
+}: {
+  plan: Plan | null
+  onOpenChange: (open: boolean) => void
+  onConfirm: () => void
+  pending: boolean
+}) {
+  return (
+    <Dialog open={!!plan} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Delete plan</DialogTitle>
+          <DialogDescription>
+            Permanently delete "{plan?.name}"? Tenants currently subscribed to it will need to be reassigned first. This
+            cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={onConfirm} disabled={pending}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -266,6 +337,7 @@ interface PlanFormState {
   foundersUnlimited: boolean
   storageLimitGb: string
   storageUnlimited: boolean
+  aiProviderConfigId: string
 }
 
 function planToFormState(plan: Plan | null): PlanFormState {
@@ -281,6 +353,7 @@ function planToFormState(plan: Plan | null): PlanFormState {
     foundersUnlimited: plan ? plan.foundersLimit === null : false,
     storageLimitGb: plan?.storageLimitGb?.toString() ?? '',
     storageUnlimited: plan ? plan.storageLimitGb === null : false,
+    aiProviderConfigId: plan?.aiProviderConfigId != null ? String(plan.aiProviderConfigId) : 'none',
   }
 }
 
@@ -304,6 +377,13 @@ function PlanFormDialog({
     setForm(planToFormState(plan))
   }
 
+  const { data: aiConfigs = [] } = useQuery({
+    queryKey: ['ai-provider-configs'],
+    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-provider-configs')).data,
+    enabled: open,
+  })
+  const enabledAiConfigs = aiConfigs.filter((c) => c.enabled)
+
   const mutation = useMutation({
     mutationFn: async () => {
       const body = {
@@ -315,6 +395,7 @@ function PlanFormDialog({
         cohortsLimit: form.cohortsUnlimited ? null : form.cohortsLimit ? Number(form.cohortsLimit) : null,
         foundersLimit: form.foundersUnlimited ? null : form.foundersLimit ? Number(form.foundersLimit) : null,
         storageLimitGb: form.storageUnlimited ? null : form.storageLimitGb ? Number(form.storageLimitGb) : null,
+        aiProviderConfigId: form.aiProviderConfigId === 'none' ? null : Number(form.aiProviderConfigId),
       }
       if (plan) {
         return (await api.patch(`/api/plans/${plan.id}`, body)).data
@@ -374,6 +455,27 @@ function PlanFormDialog({
             onValueChange={(v) => setForm({ ...form, storageLimitGb: v })}
             onUnlimitedChange={(v) => setForm({ ...form, storageUnlimited: v })}
           />
+
+          <div className="space-y-1.5">
+            <Label>AI key</Label>
+            <Select
+              value={form.aiProviderConfigId}
+              onValueChange={(v) => setForm({ ...form, aiProviderConfigId: v ?? 'none' })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="None" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                {enabledAiConfigs.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {PROVIDER_LABELS[c.provider]} — {c.model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Which AI provider key this plan's AI features will use.</p>
+          </div>
 
           <div className="space-y-1.5">
             <Label>Price / month (USD)</Label>

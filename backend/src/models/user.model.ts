@@ -17,6 +17,7 @@ export const users = pgTable('users', {
   role: roleEnum('role').notNull().default('founder'),
   tenantId: integer('tenant_id').references(() => tenants.id),
   emailVerified: boolean('email_verified').notNull().default(true),
+  disabled: boolean('disabled').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

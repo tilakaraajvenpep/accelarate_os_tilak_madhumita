@@ -7,6 +7,7 @@ import {
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
   ResendConfirmationCodeCommand,
+  ChangePasswordCommand,
   AdminCreateUserCommand,
   AdminSetUserPasswordCommand,
   AdminGetUserCommand,
@@ -117,6 +118,16 @@ export async function cognitoResendCode(email: string) {
       ClientId: CLIENT_ID,
       Username: email,
       SecretHash: secretHash(email),
+    }),
+  )
+}
+
+export async function cognitoChangePassword(accessToken: string, previousPassword: string, proposedPassword: string) {
+  return getClient().send(
+    new ChangePasswordCommand({
+      AccessToken: accessToken,
+      PreviousPassword: previousPassword,
+      ProposedPassword: proposedPassword,
     }),
   )
 }

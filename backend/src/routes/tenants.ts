@@ -6,6 +6,7 @@ import {
   createTenantWithAdmin,
   getTenantBySlug,
   deleteTenant,
+  setTenantEmailServiceEnabled,
 } from '../services/tenants.service'
 import { sendVerificationEmail } from '../services/ses.service'
 
@@ -68,6 +69,24 @@ router.delete('/:id', requireAuth, loadUser, requireRole('super_admin'), async (
     res.json({ message: 'Tenant deleted' })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Failed to delete tenant'
+    res.status(400).json({ error: msg })
+  }
+})
+
+const emailServiceSchema = z.object({ enabled: z.boolean() })
+
+router.patch('/:id/email-service', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+  const id = Number(req.params.id)
+  const parsed = emailServiceSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() })
+    return
+  }
+  try {
+    const tenant = await setTenantEmailServiceEnabled(id, parsed.data.enabled)
+    res.json(tenant)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Failed to update tenant'
     res.status(400).json({ error: msg })
   }
 })

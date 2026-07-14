@@ -8,7 +8,9 @@ import {
   cognitoForgotPassword,
   cognitoConfirmForgotPassword,
   cognitoResendCode,
+  cognitoChangePassword,
 } from '../services/auth.service'
+import { requireAuth, type AuthRequest } from '../middleware/auth.middleware'
 import { upsertUser } from '../services/users.service'
 import { verifyTenantAdminEmail } from '../services/tenants.service'
 import { generateUniqueSlug } from '../utils/slug'
@@ -156,6 +158,11 @@ router.post('/login', async (req: Request, res: Response) => {
       return
     }
 
+    if (user.role === 'super_admin' && user.disabled) {
+      res.status(403).json({ error: 'This super admin account has been deactivated.' })
+      return
+    }
+
     res.json({
       accessToken: t.AccessToken,
       idToken: t.IdToken,
@@ -220,6 +227,27 @@ router.post('/reset-password', async (req: Request, res: Response) => {
     res.json({ message: 'Password reset. You can now sign in.' })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Reset failed'
+    res.status(400).json({ error: msg })
+  }
+})
+
+router.post('/change-password', requireAuth, async (req: AuthRequest, res: Response) => {
+  const { currentPassword, newPassword } = req.body as { currentPassword?: string; newPassword?: string }
+  if (!currentPassword || !newPassword) {
+    res.status(400).json({ error: 'currentPassword and newPassword are required' })
+    return
+  }
+  const accessToken = req.headers.authorization!.slice(7)
+  try {
+    await cognitoChangePassword(accessToken, currentPassword, newPassword)
+    res.json({ message: 'Password changed.' })
+  } catch (err: unknown) {
+    const msg =
+      err instanceof Error && err.name === 'NotAuthorizedException'
+        ? 'Incorrect current password.'
+        : err instanceof Error
+          ? err.message
+          : 'Failed to change password'
     res.status(400).json({ error: msg })
   }
 })

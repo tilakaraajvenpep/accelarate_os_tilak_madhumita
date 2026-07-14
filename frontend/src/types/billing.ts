@@ -15,6 +15,7 @@ export interface Plan {
   isCustom: boolean
   active: boolean
   stripePriceId: string | null
+  aiProviderConfigId: number | null
   createdAt: string
   updatedAt: string
 }
@@ -40,6 +41,7 @@ export interface Tenant {
   orgType: OrgType | null
   website: string | null
   suspended: boolean
+  emailServiceEnabled: boolean
   createdAt: string
   plan: TenantPlanSummary | null
   subscription: TenantSubscriptionSummary | null

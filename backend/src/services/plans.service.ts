@@ -21,6 +21,7 @@ interface PlanInput {
   priceMonthlyCents: number
   isCustom?: boolean
   enableOnlineBilling?: boolean
+  aiProviderConfigId?: number | null
 }
 
 export async function createPlan(data: PlanInput) {
@@ -40,6 +41,7 @@ export async function createPlan(data: PlanInput) {
       priceMonthlyCents: data.priceMonthlyCents,
       isCustom: data.isCustom ?? false,
       stripePriceId,
+      aiProviderConfigId: data.aiProviderConfigId ?? null,
     })
     .returning()
   return created
@@ -70,9 +72,23 @@ export async function updatePlan(id: number, data: Partial<PlanInput> & { active
       isCustom: data.isCustom ?? existing.isCustom,
       active: data.active ?? existing.active,
       stripePriceId,
+      aiProviderConfigId: data.aiProviderConfigId !== undefined ? data.aiProviderConfigId : existing.aiProviderConfigId,
       updatedAt: new Date(),
     })
     .where(eq(plans.id, id))
     .returning()
   return updated
+}
+
+export async function deletePlan(id: number) {
+  try {
+    const [deleted] = await db.delete(plans).where(eq(plans.id, id)).returning()
+    if (!deleted) throw new Error('Plan not found')
+    return deleted
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === '23503') {
+      throw new Error('This plan has tenants subscribed to it — cancel or reassign those subscriptions before deleting it.')
+    }
+    throw err
+  }
 }
