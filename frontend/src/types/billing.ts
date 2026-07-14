@@ -15,6 +15,9 @@ export interface Plan {
   isCustom: boolean
   active: boolean
   stripePriceId: string | null
+  aiProviderConfigId: number | null
+  aiProvider: 'openai' | 'anthropic' | null
+  aiModel: string | null
   createdAt: string
   updatedAt: string
 }

@@ -1,5 +1,6 @@
 import { TrendingUp, CheckSquare, Calendar, ListTodo, ArrowUpRight, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
+import { useTranslation } from '@/i18n/I18nProvider'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps {
@@ -38,17 +39,18 @@ function StatCard({ label, value, sub, icon: Icon, accent, trend, trendUp }: Sta
   )
 }
 
-const PILLARS = [
-  { name: 'Product & Tech', pct: 72, color: 'oklch(0.65 0.22 265)' },
-  { name: 'Go-to-Market', pct: 55, color: 'oklch(0.65 0.20 200)' },
-  { name: 'Finance & Ops', pct: 40, color: 'oklch(0.65 0.22 30)' },
-  { name: 'Team & Culture', pct: 85, color: 'oklch(0.70 0.18 145)' },
-  { name: 'Legal & IP', pct: 30, color: 'oklch(0.65 0.22 310)' },
-]
-
 export default function FounderDashboard() {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const firstName = user?.name?.split(' ')[0]
+
+  const PILLARS = [
+    { name: t('dashboard.founder.pillar.productTech'), pct: 72, color: 'oklch(0.65 0.22 265)' },
+    { name: t('dashboard.founder.pillar.goToMarket'), pct: 55, color: 'oklch(0.65 0.20 200)' },
+    { name: t('dashboard.founder.pillar.financeOps'), pct: 40, color: 'oklch(0.65 0.22 30)' },
+    { name: t('dashboard.founder.pillar.teamCulture'), pct: 85, color: 'oklch(0.70 0.18 145)' },
+    { name: t('dashboard.founder.pillar.legalIp'), pct: 30, color: 'oklch(0.65 0.22 310)' },
+  ]
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -56,42 +58,42 @@ export default function FounderDashboard() {
       {/* Greeting */}
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-ink">
-          {firstName ? `Welcome back, ${firstName}` : 'Welcome back'} 👋
+          {firstName ? t('dashboard.founder.welcomeBack', { name: firstName }) : t('dashboard.founder.welcomeBackNoName')} 👋
         </h1>
         <p className="text-sm text-ink/35">
-          Here's your program overview for today.
+          {t('dashboard.founder.subtitle')}
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
-          label="Readiness Score"
+          label={t('dashboard.founder.readinessScore')}
           value="7.4"
-          sub="out of 10"
+          sub={t('dashboard.founder.outOf10')}
           icon={TrendingUp}
           accent="oklch(0.65 0.22 265)"
-          trend="+0.3 this week"
+          trend={t('dashboard.founder.trendThisWeek')}
           trendUp
         />
         <StatCard
-          label="Pillars Done"
+          label={t('dashboard.founder.pillarsDone')}
           value="3 / 8"
-          sub="5 in progress"
+          sub={t('dashboard.founder.inProgress')}
           icon={CheckSquare}
           accent="oklch(0.65 0.20 200)"
         />
         <StatCard
-          label="Days in Program"
+          label={t('dashboard.founder.daysInProgram')}
           value="42"
-          sub="of 90 days"
+          sub={t('dashboard.founder.ofDays')}
           icon={Calendar}
           accent="oklch(0.65 0.22 310)"
         />
         <StatCard
-          label="Open Actions"
+          label={t('dashboard.founder.openActions')}
           value="5"
-          sub="2 overdue"
+          sub={t('dashboard.founder.overdue')}
           icon={ListTodo}
           accent="oklch(0.70 0.20 30)"
         />
@@ -103,8 +105,8 @@ export default function FounderDashboard() {
         {/* Pillar progress — wider */}
         <div className="lg:col-span-3 rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-ink">Pillar Progress</h2>
-            <span className="text-xs text-ink/30">5 pillars tracked</span>
+            <h2 className="text-sm font-semibold text-ink">{t('dashboard.founder.pillarProgress')}</h2>
+            <span className="text-xs text-ink/30">{t('dashboard.founder.pillarsTracked')}</span>
           </div>
           <div className="space-y-4">
             {PILLARS.map((p) => (
@@ -129,7 +131,7 @@ export default function FounderDashboard() {
 
           {/* Score ring card */}
           <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6 flex flex-col items-center text-center space-y-3">
-            <p className="text-xs font-medium text-ink/35 uppercase tracking-wide">Overall Score</p>
+            <p className="text-xs font-medium text-ink/35 uppercase tracking-wide">{t('dashboard.founder.overallScore')}</p>
             <div className="relative h-24 w-24">
               <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="var(--glass-bd)" strokeWidth="8" />
@@ -145,16 +147,18 @@ export default function FounderDashboard() {
                 <span className="text-2xl font-bold text-ink">74<span className="text-sm text-ink/40">%</span></span>
               </div>
             </div>
-            <p className="text-xs text-ink/30 leading-relaxed">Performing above average<br/>for your cohort</p>
+            <p className="text-xs text-ink/30 leading-relaxed">
+              {t('dashboard.founder.performingAboveAverage1')}<br />{t('dashboard.founder.performingAboveAverage2')}
+            </p>
           </div>
 
           {/* Upcoming placeholder */}
           <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-ink">Upcoming</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('dashboard.founder.upcoming')}</h2>
             <div className="space-y-2">
               {[
-                { label: 'Mentor check-in', time: 'Tomorrow 10:00 AM', color: 'oklch(0.65 0.22 265)' },
-                { label: 'Cohort session', time: 'Thu 2:00 PM', color: 'oklch(0.65 0.20 200)' },
+                { label: t('dashboard.founder.mentorCheckIn'), time: t('dashboard.founder.mentorCheckInTime'), color: 'oklch(0.65 0.22 265)' },
+                { label: t('dashboard.founder.cohortSession'), time: t('dashboard.founder.cohortSessionTime'), color: 'oklch(0.65 0.20 200)' },
               ].map((e) => (
                 <div key={e.label} className="flex items-center gap-3 rounded-lg border border-glass-border bg-glass px-3 py-2">
                   <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: e.color }} />
@@ -164,7 +168,7 @@ export default function FounderDashboard() {
                   </div>
                 </div>
               ))}
-              <p className="text-[10px] text-ink/20 text-center pt-1">Calendar integration coming soon</p>
+              <p className="text-[10px] text-ink/20 text-center pt-1">{t('dashboard.founder.calendarComingSoon')}</p>
             </div>
           </div>
 
@@ -174,12 +178,12 @@ export default function FounderDashboard() {
       {/* Bottom row */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6">
-          <h2 className="text-sm font-semibold text-ink mb-3">Recent Documents</h2>
-          <p className="text-xs text-ink/30">Document library coming soon.</p>
+          <h2 className="text-sm font-semibold text-ink mb-3">{t('dashboard.founder.recentDocuments')}</h2>
+          <p className="text-xs text-ink/30">{t('dashboard.founder.documentLibraryComingSoon')}</p>
         </div>
         <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6">
-          <h2 className="text-sm font-semibold text-ink mb-3">Activity Feed</h2>
-          <p className="text-xs text-ink/30">Activity tracking coming soon.</p>
+          <h2 className="text-sm font-semibold text-ink mb-3">{t('dashboard.founder.activityFeed')}</h2>
+          <p className="text-xs text-ink/30">{t('dashboard.founder.activityTrackingComingSoon')}</p>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ const planSchema = z.object({
   priceMonthlyCents: z.number().int().min(0),
   isCustom: z.boolean().optional(),
   enableOnlineBilling: z.boolean().optional(),
+  aiProviderConfigId: z.number().int().positive().nullable().optional(),
 })
 
 const updatePlanSchema = planSchema.partial().extend({

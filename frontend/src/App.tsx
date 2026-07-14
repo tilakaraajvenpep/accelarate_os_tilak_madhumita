@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/context/auth-context'
 import { ThemeProvider } from '@/context/theme-context'
+import { I18nProvider, useTranslation } from '@/i18n/I18nProvider'
 import { Toaster } from 'sonner'
 import { AppShell } from '@/components/layout/app-shell'
 import LandingPage from '@/pages/landing'
@@ -8,13 +9,16 @@ import LoginPage from '@/pages/login'
 import GetStartedPage from '@/pages/get-started'
 import DashboardPage from '@/pages/dashboard'
 import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
+import SuperAdminsPage from '@/pages/dashboard/superadmin/admins'
+import SettingsPage from '@/pages/dashboard/superadmin/settings'
 
 function ProtectedLayout() {
   const { user, loading } = useAuth()
+  const { t } = useTranslation()
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-muted-foreground text-sm">
-        Loading…
+        {t('app.loading')}
       </div>
     )
   }
@@ -34,6 +38,8 @@ function AppRoutes() {
       <Route path="/app" element={<ProtectedLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path="superadmin/plans" element={<PlansBillingPage />} />
+        <Route path="superadmin/admins" element={<SuperAdminsPage />} />
+        <Route path="superadmin/settings" element={<SettingsPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Route>
 
@@ -44,20 +50,23 @@ function AppRoutes() {
 }
 
 function ComingSoon() {
+  const { t } = useTranslation()
   return (
     <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-      This page is coming soon.
+      {t('app.comingSoon')}
     </div>
   )
 }
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppRoutes />
-        <Toaster position="top-right" richColors />
-      </AuthProvider>
-    </ThemeProvider>
+    <I18nProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRoutes />
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
+      </ThemeProvider>
+    </I18nProvider>
   )
 }

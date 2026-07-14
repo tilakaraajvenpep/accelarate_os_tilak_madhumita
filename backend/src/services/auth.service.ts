@@ -7,6 +7,7 @@ import {
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
   ResendConfirmationCodeCommand,
+  ChangePasswordCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider'
 import crypto from 'crypto'
@@ -102,6 +103,20 @@ export async function cognitoConfirmForgotPassword(
       ConfirmationCode: code,
       Password: newPassword,
       SecretHash: secretHash(email),
+    }),
+  )
+}
+
+export async function cognitoChangePassword(
+  accessToken: string,
+  previousPassword: string,
+  proposedPassword: string,
+) {
+  return getClient().send(
+    new ChangePasswordCommand({
+      AccessToken: accessToken,
+      PreviousPassword: previousPassword,
+      ProposedPassword: proposedPassword,
     }),
   )
 }

@@ -15,6 +15,7 @@ export const tenants = pgTable('tenants', {
   orgType: orgTypeEnum('org_type'),
   website: text('website'),
   suspended: boolean('suspended').notNull().default(false),
+  emailServiceEnabled: boolean('email_service_enabled').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

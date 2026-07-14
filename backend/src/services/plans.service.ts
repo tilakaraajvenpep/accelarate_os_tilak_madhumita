@@ -1,10 +1,31 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../db/client'
-import { plans } from '../models'
+import { plans, aiProviderConfigs } from '../models'
 import { createProductAndPrice } from './stripe.service'
 
+function toPlanWithAi(row: {
+  plan: typeof plans.$inferSelect
+  aiProvider: string | null
+  aiModel: string | null
+}) {
+  return {
+    ...row.plan,
+    aiProvider: row.aiProvider,
+    aiModel: row.aiModel,
+  }
+}
+
 export async function listPlans() {
-  return db.select().from(plans).orderBy(plans.createdAt)
+  const rows = await db
+    .select({
+      plan: plans,
+      aiProvider: aiProviderConfigs.provider,
+      aiModel: aiProviderConfigs.model,
+    })
+    .from(plans)
+    .leftJoin(aiProviderConfigs, eq(plans.aiProviderConfigId, aiProviderConfigs.id))
+    .orderBy(plans.createdAt)
+  return rows.map(toPlanWithAi)
 }
 
 export async function getPlanById(id: number) {
@@ -21,6 +42,7 @@ interface PlanInput {
   priceMonthlyCents: number
   isCustom?: boolean
   enableOnlineBilling?: boolean
+  aiProviderConfigId?: number | null
 }
 
 export async function createPlan(data: PlanInput) {
@@ -40,6 +62,7 @@ export async function createPlan(data: PlanInput) {
       priceMonthlyCents: data.priceMonthlyCents,
       isCustom: data.isCustom ?? false,
       stripePriceId,
+      aiProviderConfigId: data.aiProviderConfigId ?? null,
     })
     .returning()
   return created
@@ -70,6 +93,7 @@ export async function updatePlan(id: number, data: Partial<PlanInput> & { active
       isCustom: data.isCustom ?? existing.isCustom,
       active: data.active ?? existing.active,
       stripePriceId,
+      aiProviderConfigId: data.aiProviderConfigId !== undefined ? data.aiProviderConfigId : existing.aiProviderConfigId,
       updatedAt: new Date(),
     })
     .where(eq(plans.id, id))

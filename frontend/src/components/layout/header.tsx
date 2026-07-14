@@ -1,6 +1,8 @@
 import { PanelLeft, Bell, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageToggle } from '@/i18n/LanguageToggle'
+import { useTranslation } from '@/i18n/I18nProvider'
 
 interface HeaderProps {
   onToggleSidebar: () => void
@@ -8,6 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({ onToggleSidebar, collapsed }: HeaderProps) {
+  const { t } = useTranslation()
   return (
     <header className="relative z-10 h-14 border-b border-glass-border bg-glass backdrop-blur-xl flex items-center gap-3 px-4 flex-shrink-0">
       <button
@@ -16,7 +19,7 @@ export function Header({ onToggleSidebar, collapsed }: HeaderProps) {
           'h-8 w-8 flex items-center justify-center rounded-lg border border-glass-border bg-glass',
           'hover:bg-glass-2 transition-colors text-ink/40 hover:text-ink/70',
         )}
-        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={collapsed ? t('header.expandSidebar') : t('header.collapseSidebar')}
       >
         <PanelLeft className="h-4 w-4" />
       </button>
@@ -27,7 +30,7 @@ export function Header({ onToggleSidebar, collapsed }: HeaderProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink/25" />
           <input
             type="text"
-            placeholder="Search…"
+            placeholder={t('header.searchPlaceholder')}
             className="w-full h-8 pl-8 pr-3 rounded-lg border border-glass-border bg-glass text-sm text-ink/70 placeholder:text-ink/20 outline-none focus:border-glass-border focus:bg-glass-2 transition-all"
           />
         </div>
@@ -35,6 +38,7 @@ export function Header({ onToggleSidebar, collapsed }: HeaderProps) {
 
       <div className="flex-1" />
 
+      <LanguageToggle />
       <ThemeToggle />
 
       {/* Notifications */}

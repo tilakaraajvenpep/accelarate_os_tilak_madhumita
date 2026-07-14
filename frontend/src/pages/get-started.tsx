@@ -5,28 +5,31 @@ import { Loader2, Building2, ChevronRight, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageToggle } from '@/i18n/LanguageToggle'
+import { useTranslation } from '@/i18n/I18nProvider'
 
 type Step = 'org' | 'account' | 'verify' | 'done'
-
-const STEPS: { id: Step; label: string }[] = [
-  { id: 'org', label: 'Your organization' },
-  { id: 'account', label: 'Create account' },
-  { id: 'verify', label: 'Verify email' },
-  { id: 'done', label: 'All set' },
-]
-
-const ORG_TYPES: { label: string; value: string }[] = [
-  { label: 'University accelerator', value: 'university' },
-  { label: 'Corporate accelerator', value: 'corporate' },
-  { label: 'VC-backed accelerator', value: 'vc_backed' },
-  { label: 'Government / nonprofit', value: 'government' },
-  { label: 'Independent accelerator', value: 'independent' },
-  { label: 'Other', value: 'other' },
-]
 
 export default function GetStartedPage() {
   const navigate = useNavigate()
   const { register, verifyEmail, login } = useAuth()
+  const { t } = useTranslation()
+
+  const STEPS: { id: Step; label: string }[] = [
+    { id: 'org', label: t('getStarted.steps.org') },
+    { id: 'account', label: t('getStarted.steps.account') },
+    { id: 'verify', label: t('getStarted.steps.verify') },
+    { id: 'done', label: t('getStarted.steps.done') },
+  ]
+
+  const ORG_TYPES: { label: string; value: string }[] = [
+    { label: t('getStarted.orgTypes.university'), value: 'university' },
+    { label: t('getStarted.orgTypes.corporate'), value: 'corporate' },
+    { label: t('getStarted.orgTypes.vcBacked'), value: 'vc_backed' },
+    { label: t('getStarted.orgTypes.government'), value: 'government' },
+    { label: t('getStarted.orgTypes.independent'), value: 'independent' },
+    { label: t('getStarted.orgTypes.other'), value: 'other' },
+  ]
 
   const [step, setStep] = useState<Step>('org')
   const [loading, setLoading] = useState(false)
@@ -45,11 +48,9 @@ export default function GetStartedPage() {
   // Verify
   const [code, setCode] = useState('')
 
-  const stepIndex = STEPS.findIndex(s => s.id === step)
-
   async function handleOrgNext(e: React.FormEvent) {
     e.preventDefault()
-    if (!orgType) { toast.error('Please select your organization type'); return }
+    if (!orgType) { toast.error(t('getStarted.toast.selectOrgType')); return }
     setStep('account')
   }
 
@@ -64,9 +65,9 @@ export default function GetStartedPage() {
         organizationWebsite: orgWebsite || undefined,
       })
       setStep('verify')
-      toast.success('Check your email for a 6-digit verification code')
+      toast.success(t('getStarted.toast.checkEmail'))
     } catch (err: unknown) {
-      toast.error(apiError(err, 'Registration failed'))
+      toast.error(apiError(err, t('getStarted.toast.registrationFailed')))
     } finally {
       setLoading(false)
     }
@@ -80,7 +81,7 @@ export default function GetStartedPage() {
       await login(email, password)
       setStep('done')
     } catch (err: unknown) {
-      toast.error(apiError(err, 'Verification failed'))
+      toast.error(apiError(err, t('getStarted.toast.verificationFailed')))
     } finally {
       setLoading(false)
     }
@@ -99,12 +100,13 @@ export default function GetStartedPage() {
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center font-bold text-sm">A</div>
-            <span className="font-semibold tracking-tight">AccelerateOS</span>
+            <span className="font-semibold tracking-tight">{t('common.brand')}</span>
           </a>
           <div className="flex items-center gap-3">
+            <LanguageToggle />
             <ThemeToggle />
             <button onClick={() => navigate('/login')} className="text-sm text-ink/40 hover:text-ink transition-colors">
-              Already have an account? Sign in
+              {t('getStarted.nav.alreadyHaveAccount')}
             </button>
           </div>
         </div>
@@ -147,14 +149,14 @@ export default function GetStartedPage() {
         {step === 'org' && (
           <form onSubmit={handleOrgNext} className="space-y-6">
             <div>
-              <h1 className="text-2xl font-semibold text-ink mb-1">Tell us about your organization</h1>
-              <p className="text-sm text-ink/40">This helps us set up your workspace correctly.</p>
+              <h1 className="text-2xl font-semibold text-ink mb-1">{t('getStarted.org.title')}</h1>
+              <p className="text-sm text-ink/40">{t('getStarted.org.subtitle')}</p>
             </div>
 
             <div className="space-y-4">
-              <FormField label="Organization name *">
+              <FormField label={t('getStarted.org.nameLabel')}>
                 <GlassInput
-                  placeholder="e.g. Techstars Boston"
+                  placeholder={t('getStarted.org.namePlaceholder')}
                   value={orgName}
                   onChange={e => setOrgName(e.target.value)}
                   required
@@ -162,7 +164,7 @@ export default function GetStartedPage() {
                 />
               </FormField>
 
-              <FormField label="Program type *">
+              <FormField label={t('getStarted.org.typeLabel')}>
                 <div className="grid grid-cols-2 gap-2 mt-1">
                   {ORG_TYPES.map(type => (
                     <button
@@ -182,10 +184,10 @@ export default function GetStartedPage() {
                 </div>
               </FormField>
 
-              <FormField label="Website (optional)">
+              <FormField label={t('getStarted.org.websiteLabel')}>
                 <GlassInput
                   type="url"
-                  placeholder="https://your-accelerator.com"
+                  placeholder={t('getStarted.org.websitePlaceholder')}
                   value={orgWebsite}
                   onChange={e => setOrgWebsite(e.target.value)}
                 />
@@ -193,7 +195,7 @@ export default function GetStartedPage() {
             </div>
 
             <PrimaryButton loading={false}>
-              Continue <ChevronRight className="h-4 w-4" />
+              {t('getStarted.org.continue')} <ChevronRight className="h-4 w-4" />
             </PrimaryButton>
           </form>
         )}
@@ -208,33 +210,33 @@ export default function GetStartedPage() {
                 </div>
                 <span className="text-xs text-ink/40">{orgName}</span>
               </div>
-              <h1 className="text-2xl font-semibold text-ink mb-1">Create your admin account</h1>
-              <p className="text-sm text-ink/40">You'll be the workspace owner and can invite your team later.</p>
+              <h1 className="text-2xl font-semibold text-ink mb-1">{t('getStarted.account.title')}</h1>
+              <p className="text-sm text-ink/40">{t('getStarted.account.subtitle')}</p>
             </div>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <FormField label="First name">
+                <FormField label={t('getStarted.account.firstNameLabel')}>
                   <GlassInput placeholder="Jane" value={firstName} onChange={e => setFirstName(e.target.value)} required autoFocus />
                 </FormField>
-                <FormField label="Last name">
+                <FormField label={t('getStarted.account.lastNameLabel')}>
                   <GlassInput placeholder="Smith" value={lastName} onChange={e => setLastName(e.target.value)} required />
                 </FormField>
               </div>
-              <FormField label="Work email">
+              <FormField label={t('getStarted.account.workEmailLabel')}>
                 <GlassInput type="email" placeholder="jane@accelerator.com" value={email} onChange={e => setEmail(e.target.value)} required />
               </FormField>
-              <FormField label="Password">
-                <GlassInput type="password" placeholder="Min. 8 characters" value={password} onChange={e => setPassword(e.target.value)} required minLength={8} />
+              <FormField label={t('common.password')}>
+                <GlassInput type="password" placeholder={t('getStarted.account.passwordPlaceholder')} value={password} onChange={e => setPassword(e.target.value)} required minLength={8} />
               </FormField>
             </div>
 
             <PrimaryButton loading={loading}>
-              Create account <ChevronRight className="h-4 w-4" />
+              {t('getStarted.account.createButton')} <ChevronRight className="h-4 w-4" />
             </PrimaryButton>
 
             <button type="button" onClick={() => setStep('org')} className="w-full text-center text-xs text-ink/30 hover:text-ink/60 transition-colors">
-              ← Back
+              ← {t('common.back')}
             </button>
           </form>
         )}
@@ -243,13 +245,13 @@ export default function GetStartedPage() {
         {step === 'verify' && (
           <form onSubmit={handleVerify} className="space-y-6">
             <div>
-              <h1 className="text-2xl font-semibold text-ink mb-1">Check your email</h1>
+              <h1 className="text-2xl font-semibold text-ink mb-1">{t('getStarted.verify.title')}</h1>
               <p className="text-sm text-ink/40">
-                We sent a 6-digit code to <span className="text-ink/70 font-medium">{email}</span>
+                {t('getStarted.verify.subtitle', { email })}
               </p>
             </div>
 
-            <FormField label="Verification code">
+            <FormField label={t('getStarted.verify.codeLabel')}>
               <GlassInput
                 placeholder="000000"
                 value={code}
@@ -262,10 +264,10 @@ export default function GetStartedPage() {
               />
             </FormField>
 
-            <PrimaryButton loading={loading}>Verify & continue</PrimaryButton>
+            <PrimaryButton loading={loading}>{t('getStarted.verify.button')}</PrimaryButton>
 
             <button type="button" onClick={() => setStep('account')} className="w-full text-center text-xs text-ink/30 hover:text-ink/60 transition-colors">
-              ← Back
+              ← {t('common.back')}
             </button>
           </form>
         )}
@@ -277,17 +279,17 @@ export default function GetStartedPage() {
               <CheckCircle2 className="h-10 w-10 text-green-400" />
             </div>
             <div>
-              <h1 className="text-2xl font-semibold text-ink mb-2">Your workspace is ready!</h1>
+              <h1 className="text-2xl font-semibold text-ink mb-2">{t('getStarted.done.title')}</h1>
               <p className="text-sm text-ink/40">
-                Welcome to AccelerateOS, {firstName}. Your <span className="text-ink/70 font-medium">{orgName}</span> workspace has been set up.
+                {t('getStarted.done.subtitle', { firstName, orgName })}
               </p>
             </div>
 
             <div className="rounded-xl border border-glass-border bg-glass p-4 text-left space-y-2">
               {[
-                'Set up your first cohort',
-                'Invite your team members',
-                'Onboard your first founders',
+                t('getStarted.done.checklist1'),
+                t('getStarted.done.checklist2'),
+                t('getStarted.done.checklist3'),
               ].map((item, i) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-ink/50">
                   <div className="h-5 w-5 rounded-full border border-glass-border flex items-center justify-center text-[10px] text-ink/30">{i + 1}</div>
@@ -300,7 +302,7 @@ export default function GetStartedPage() {
               onClick={() => navigate('/app')}
               className="w-full h-11 rounded-xl bg-ink text-page font-semibold text-sm hover:bg-ink/90 transition-colors flex items-center justify-center gap-2"
             >
-              Go to your dashboard →
+              {t('getStarted.done.goToDashboard')}
             </button>
           </div>
         )}

@@ -32,6 +32,7 @@ export async function listTenantsWithSubscription() {
       orgType: tenant.orgType,
       website: tenant.website,
       suspended: tenant.suspended,
+      emailServiceEnabled: tenant.emailServiceEnabled,
       createdAt: tenant.createdAt,
       plan: plan
         ? { id: plan.id, name: plan.name, foundersLimit: plan.foundersLimit, priceMonthlyCents: plan.priceMonthlyCents }
@@ -56,6 +57,16 @@ export async function getTenantAdminEmail(tenantId: number): Promise<string | nu
     .where(eq(users.tenantId, tenantId))
     .limit(1)
   return admin?.email ?? null
+}
+
+export async function setTenantEmailServiceEnabled(tenantId: number, enabled: boolean) {
+  const [updated] = await db
+    .update(tenants)
+    .set({ emailServiceEnabled: enabled, updatedAt: new Date() })
+    .where(eq(tenants.id, tenantId))
+    .returning()
+  if (!updated) throw new Error('Tenant not found')
+  return updated
 }
 
 export async function createTenant(data: {

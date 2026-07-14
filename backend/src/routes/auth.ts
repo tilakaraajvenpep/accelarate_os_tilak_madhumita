@@ -8,10 +8,12 @@ import {
   cognitoForgotPassword,
   cognitoConfirmForgotPassword,
   cognitoResendCode,
+  cognitoChangePassword,
 } from '../services/auth.service'
 import { upsertUser } from '../services/users.service'
 import { db } from '../db/client'
 import { tenants, users } from '../models'
+import { requireAuth, type AuthRequest } from '../middleware/auth.middleware'
 
 /** Decode JWT payload without verifying — safe here since Cognito just issued it */
 function decodeJwtPayload(token: string): Record<string, unknown> {
@@ -35,6 +37,11 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
+})
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8),
 })
 
 router.post('/register', async (req: Request, res: Response) => {
@@ -191,6 +198,22 @@ router.post('/reset-password', async (req: Request, res: Response) => {
     res.json({ message: 'Password reset. You can now sign in.' })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Reset failed'
+    res.status(400).json({ error: msg })
+  }
+})
+
+router.post('/change-password', requireAuth, async (req: AuthRequest, res: Response) => {
+  const parsed = changePasswordSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() })
+    return
+  }
+  const accessToken = req.headers.authorization!.slice(7)
+  try {
+    await cognitoChangePassword(accessToken, parsed.data.currentPassword, parsed.data.newPassword)
+    res.json({ message: 'Password changed.' })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Failed to change password'
     res.status(400).json({ error: msg })
   }
 })
