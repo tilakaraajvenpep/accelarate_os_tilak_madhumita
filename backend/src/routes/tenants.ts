@@ -8,6 +8,7 @@ import {
   deleteTenant,
   setTenantEmailServiceEnabled,
   sendTenantAdminOtp,
+  getTenantDashboardInfo,
 } from '../services/tenants.service'
 
 const router = Router()
@@ -107,6 +108,20 @@ router.patch('/:id/email-service', requireAuth, loadUser, requireRole('super_adm
     const msg = err instanceof Error ? err.message : 'Failed to update tenant'
     res.status(400).json({ error: msg })
   }
+})
+
+router.get('/me/dashboard', requireAuth, loadUser, requireRole('admin', 'super_admin'), async (req: AuthRequest, res: Response) => {
+  const tenantId = req.dbUser!.tenantId
+  if (!tenantId) {
+    res.status(400).json({ error: 'No tenant associated with this account' })
+    return
+  }
+  const info = await getTenantDashboardInfo(tenantId)
+  if (!info) {
+    res.status(404).json({ error: 'Tenant not found' })
+    return
+  }
+  res.json(info)
 })
 
 router.get('/by-slug/:slug', async (req: Request, res: Response) => {

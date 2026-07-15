@@ -198,6 +198,30 @@ export async function setTenantEmailServiceEnabled(tenantId: number, enabled: bo
   return updated
 }
 
+export async function getTenantDashboardInfo(tenantId: number) {
+  const [tenant] = await db.select().from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+  if (!tenant) return null
+
+  const [sub] = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.tenantId, tenantId))
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1)
+
+  let plan: { id: number; name: string; aiCredits: number } | null = null
+  if (sub) {
+    const [p] = await db.select().from(plans).where(eq(plans.id, sub.planId)).limit(1)
+    if (p) plan = { id: p.id, name: p.name, aiCredits: p.aiCredits }
+  }
+
+  return {
+    aiCreditsBalance: tenant.aiCreditsBalance,
+    plan,
+    subscriptionStatus: sub?.status ?? null,
+  }
+}
+
 export async function getTenantBySlug(slug: string) {
   const [tenant] = await db
     .select({ id: tenants.id, name: tenants.name, slug: tenants.slug })

@@ -19,8 +19,7 @@ router.get('/', async (_req: AuthRequest, res: Response) => {
 })
 
 const createSchema = z.object({
-  provider: z.enum(['openai', 'anthropic']),
-  model: z.string().min(1),
+  provider: z.enum(['openai', 'anthropic', 'manus']),
   apiKey: z.string().min(1),
 })
 
@@ -40,7 +39,6 @@ router.post('/', async (req: AuthRequest, res: Response) => {
 })
 
 const updateSchema = z.object({
-  model: z.string().min(1).optional(),
   apiKey: z.string().min(1).optional(),
 })
 

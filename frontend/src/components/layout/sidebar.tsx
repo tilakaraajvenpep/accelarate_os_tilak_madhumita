@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/auth-context'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ChangePasswordDialog } from '@/components/change-password-dialog'
+import { PlanCreditsWidget } from '@/components/layout/plan-credits-widget'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -204,6 +205,8 @@ export function Sidebar({ collapsed }: SidebarProps) {
           </div>
         ))}
       </nav>
+
+      {!collapsed && user?.role === 'admin' && <PlanCreditsWidget />}
 
       {/* User footer */}
       <div className="border-t border-glass-border p-2 flex-shrink-0">

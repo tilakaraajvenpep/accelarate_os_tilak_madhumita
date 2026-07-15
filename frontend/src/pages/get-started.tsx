@@ -6,6 +6,7 @@ import { Loader2, Building2, ChevronRight, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 type Step = 'org' | 'account' | 'verify' | 'done'
 
@@ -104,6 +105,7 @@ export default function GetStartedPage() {
             <span className="font-semibold tracking-tight">AccelerateOS</span>
           </a>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <ThemeToggle />
             <button onClick={() => navigate('/login')} className="text-sm text-ink/40 hover:text-ink transition-colors">
               {t('nav.signInPrompt')}

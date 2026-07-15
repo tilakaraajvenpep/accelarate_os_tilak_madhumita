@@ -1,5 +1,4 @@
 import { pgTable, serial, text, timestamp, integer, boolean } from 'drizzle-orm/pg-core'
-import { aiProviderConfigs } from './ai-provider-config.model'
 
 export const plans = pgTable('plans', {
   id: serial('id').primaryKey(),
@@ -12,7 +11,7 @@ export const plans = pgTable('plans', {
   isCustom: boolean('is_custom').notNull().default(false),
   active: boolean('active').notNull().default(true),
   stripePriceId: text('stripe_price_id'),
-  aiProviderConfigId: integer('ai_provider_config_id').references(() => aiProviderConfigs.id, { onDelete: 'set null' }),
+  aiCredits: integer('ai_credits').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

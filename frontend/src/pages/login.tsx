@@ -7,6 +7,7 @@ import { useAuth } from '@/context/auth-context'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 type View = 'signin' | 'verify-email' | 'forgot-password' | 'reset-password'
 
@@ -52,7 +53,8 @@ export default function LoginPage() {
       </div>
 
       {/* Theme toggle */}
-      <div className="absolute top-5 right-5 z-20">
+      <div className="absolute top-5 right-5 z-20 flex items-center gap-2">
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
 

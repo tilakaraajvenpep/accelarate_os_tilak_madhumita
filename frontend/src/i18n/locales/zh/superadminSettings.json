@@ -8,7 +8,7 @@
       "title": "AI 提供商密钥",
       "subtitle": "配置平台中所使用的 AI 模型的 API 密钥。",
       "addButton": "添加 AI 密钥",
-      "searchPlaceholder": "按提供商或模型搜索…",
+      "searchPlaceholder": "按提供商搜索…",
       "emptyNone": "尚未配置任何 AI 密钥。",
       "emptyNoMatch": "没有与搜索条件匹配的密钥。",
       "toast": {
@@ -20,22 +20,8 @@
     "formDialog": {
       "editTitle": "编辑 AI 密钥",
       "addTitle": "添加 AI 密钥",
-      "editDescription": "更新模型或替换 API 密钥。",
-      "addDescription": "选择提供商和模型,然后提供 API 密钥。",
-      "modelLabel": "模型",
-      "modelPlaceholder": "选择模型",
-      "selectProviderFirstPlaceholder": "请先选择提供商",
-      "modelNotes": {
-        "gpt-5.1": "GPT-5.1 可通过详细推理处理全深度的创始人和公司评分。",
-        "gpt-5.1-mini": "GPT-5.1 Mini 速度更快、成本更低，适合大批量或较轻量的评分场景。",
-        "gpt-5": "GPT-5 具备强大的通用推理能力，适合创始人和公司评分。",
-        "gpt-4.1": "GPT-4.1 适合处理涉及较长公司文档的评分任务。",
-        "gpt-4o": "GPT-4o 具备快速、经济高效的评分能力和扎实的通用推理水平。",
-        "claude-sonnet-5": "Claude Sonnet 5 在质量与速度之间取得平衡，是创始人/公司评分的可靠默认选择。",
-        "claude-opus-4-8": "Claude Opus 4.8 是 Anthropic 能力最强的模型，最适合最精细、最高风险的评分场景。",
-        "claude-fable-5": "Claude Fable 5 针对快速、轻量级评分进行了优化，成本更低。",
-        "claude-haiku-4-5-20251001": "Claude Haiku 4.5 是速度最快、最经济实惠的选择，适合快速或大批量评分。"
-      },
+      "editDescription": "替换 API 密钥。",
+      "addDescription": "选择提供商，然后提供 API 密钥。",
       "apiKeyLabel": "API 密钥",
       "apiKeyPlaceholderEdit": "留空以保留当前密钥",
       "toast": {
@@ -47,7 +33,17 @@
     },
     "deleteDialog": {
       "title": "删除 AI 密钥",
-      "confirmDelete": "永久删除 {{provider}}({{model}})密钥?此操作无法撤销。"
+      "confirmDelete": "永久删除 {{provider}} 密钥?此操作无法撤销。"
+    }
+  },
+  "aiCreditRate": {
+    "title": "AI 额度单价",
+    "subtitle": "设置每个 AI 额度的价格，租户充值时将看到该价格。",
+    "rateLabel": "每额度价格（美元）",
+    "rateHint": "租户充值时，将按此价格计算其套餐额度的费用。",
+    "toast": {
+      "updated": "AI 额度单价已更新",
+      "updateFailed": "更新 AI 额度单价失败"
     }
   },
   "tenantEmailService": {

@@ -30,5 +30,21 @@
     "reports": "报告",
     "settings": "设置"
   },
-  "changePassword": "修改密码"
+  "changePassword": "修改密码",
+  "planCredits": {
+    "planLabel": "套餐",
+    "noPlan": "尚未分配套餐",
+    "creditsLabel": "额度",
+    "rechargeButton": "充值",
+    "recharge": {
+      "title": "充值 AI 额度",
+      "description": "根据您套餐的默认额度进行充值。",
+      "creditsLabel": "额度数量",
+      "rateLabel": "单价",
+      "perCredit": "每额度",
+      "totalLabel": "总计",
+      "payOnline": "在线支付",
+      "paymentComingSoon": "在线支付功能即将上线，请稍后再来查看。"
+    }
+  }
 }

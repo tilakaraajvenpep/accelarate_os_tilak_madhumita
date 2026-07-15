@@ -30,5 +30,21 @@
     "reports": "Reports",
     "settings": "Settings"
   },
-  "changePassword": "Change Password"
+  "changePassword": "Change Password",
+  "planCredits": {
+    "planLabel": "Plan",
+    "noPlan": "No plan assigned",
+    "creditsLabel": "credits",
+    "rechargeButton": "Recharge",
+    "recharge": {
+      "title": "Recharge AI credits",
+      "description": "Top up your AI credits based on your plan's default allowance.",
+      "creditsLabel": "Credits",
+      "rateLabel": "Rate",
+      "perCredit": "per credit",
+      "totalLabel": "Total",
+      "payOnline": "Pay online",
+      "paymentComingSoon": "Online payments are coming soon — check back later."
+    }
+  }
 }

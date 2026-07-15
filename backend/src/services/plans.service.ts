@@ -21,7 +21,7 @@ interface PlanInput {
   priceMonthlyCents: number
   isCustom?: boolean
   enableOnlineBilling?: boolean
-  aiProviderConfigId?: number | null
+  aiCredits?: number
 }
 
 export async function createPlan(data: PlanInput) {
@@ -41,7 +41,7 @@ export async function createPlan(data: PlanInput) {
       priceMonthlyCents: data.priceMonthlyCents,
       isCustom: data.isCustom ?? false,
       stripePriceId,
-      aiProviderConfigId: data.aiProviderConfigId ?? null,
+      aiCredits: data.aiCredits ?? 0,
     })
     .returning()
   return created
@@ -72,7 +72,7 @@ export async function updatePlan(id: number, data: Partial<PlanInput> & { active
       isCustom: data.isCustom ?? existing.isCustom,
       active: data.active ?? existing.active,
       stripePriceId,
-      aiProviderConfigId: data.aiProviderConfigId !== undefined ? data.aiProviderConfigId : existing.aiProviderConfigId,
+      aiCredits: data.aiCredits ?? existing.aiCredits,
       updatedAt: new Date(),
     })
     .where(eq(plans.id, id))

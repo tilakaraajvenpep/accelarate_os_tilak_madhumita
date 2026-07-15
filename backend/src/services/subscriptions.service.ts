@@ -31,6 +31,14 @@ export async function assignOfflineSubscription(params: {
     note: params.note ?? null,
   })
 
+  const [plan] = await db.select().from(plans).where(eq(plans.id, params.planId)).limit(1)
+  if (plan) {
+    await db
+      .update(tenants)
+      .set({ aiCreditsBalance: plan.aiCredits, updatedAt: new Date() })
+      .where(eq(tenants.id, params.tenantId))
+  }
+
   return subscription
 }
 
@@ -118,10 +126,20 @@ export async function handleStripeWebhookEvent(event: Stripe.Event) {
       if (!subscriptionId) break
       const stripeSubscriptionId =
         typeof session.subscription === 'string' ? session.subscription : session.subscription?.id
+      const [sub] = await db.select().from(subscriptions).where(eq(subscriptions.id, subscriptionId)).limit(1)
       await db
         .update(subscriptions)
         .set({ status: 'active', stripeSubscriptionId, updatedAt: new Date() })
         .where(eq(subscriptions.id, subscriptionId))
+      if (sub) {
+        const [plan] = await db.select().from(plans).where(eq(plans.id, sub.planId)).limit(1)
+        if (plan) {
+          await db
+            .update(tenants)
+            .set({ aiCreditsBalance: plan.aiCredits, updatedAt: new Date() })
+            .where(eq(tenants.id, sub.tenantId))
+        }
+      }
       if (session.amount_total) {
         await db.insert(payments).values({
           subscriptionId,

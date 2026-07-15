@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, pgEnum, boolean } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, timestamp, pgEnum, boolean, integer } from 'drizzle-orm/pg-core'
 
 export const orgTypeEnum = pgEnum('org_type', [
   'university',
@@ -17,6 +17,7 @@ export const tenants = pgTable('tenants', {
   website: text('website'),
   suspended: boolean('suspended').notNull().default(false),
   emailServiceEnabled: boolean('email_service_enabled').notNull().default(true),
+  aiCreditsBalance: integer('ai_credits_balance').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

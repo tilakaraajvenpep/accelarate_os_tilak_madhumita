@@ -34,9 +34,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { PROVIDER_LABELS } from '@/lib/ai-provider'
 import type { Plan, Tenant, CheckoutSessionResult } from '@/types/billing'
-import type { AiProviderConfig } from '@/types/ai-provider'
 
 function formatCents(cents: number) {
   return `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
@@ -65,16 +63,6 @@ export default function PlansBillingPage() {
     queryKey: ['plans'],
     queryFn: async () => (await api.get<Plan[]>('/api/plans')).data,
   })
-
-  const { data: aiConfigs = [] } = useQuery({
-    queryKey: ['ai-provider-configs'],
-    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-provider-configs')).data,
-  })
-  const aiConfigLabel = (id: number | null) => {
-    if (id === null) return '—'
-    const config = aiConfigs.find((c) => c.id === id)
-    return config ? `${PROVIDER_LABELS[config.provider]} — ${config.model}` : '—'
-  }
 
   const { data: tenants = [], isLoading: tenantsLoading } = useQuery({
     queryKey: ['tenants'],
@@ -148,7 +136,7 @@ export default function PlansBillingPage() {
               <TableHead>{t('plansTable.founders')}</TableHead>
               <TableHead>{t('plansTable.storage')}</TableHead>
               <TableHead>{t('plansTable.priceMonth')}</TableHead>
-              <TableHead>{t('plansTable.aiKey')}</TableHead>
+              <TableHead>{t('plansTable.aiCredits')}</TableHead>
               <TableHead>{t('common:status')}</TableHead>
               <TableHead />
             </TableRow>
@@ -170,7 +158,7 @@ export default function PlansBillingPage() {
                   {plan.storageLimitGb === null ? t('common:unlimited') : `${plan.storageLimitGb} GB`}
                 </TableCell>
                 <TableCell>{formatCents(plan.priceMonthlyCents)}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">{aiConfigLabel(plan.aiProviderConfigId)}</TableCell>
+                <TableCell>{plan.aiCredits.toLocaleString()}</TableCell>
                 <TableCell>
                   <Badge variant={plan.active ? 'default' : 'secondary'}>
                     {plan.active ? t('common:active') : t('common:inactive')}
@@ -339,7 +327,7 @@ interface PlanFormState {
   foundersUnlimited: boolean
   storageLimitGb: string
   storageUnlimited: boolean
-  aiProviderConfigId: string
+  aiCredits: string
 }
 
 function planToFormState(plan: Plan | null): PlanFormState {
@@ -355,7 +343,7 @@ function planToFormState(plan: Plan | null): PlanFormState {
     foundersUnlimited: plan ? plan.foundersLimit === null : false,
     storageLimitGb: plan?.storageLimitGb?.toString() ?? '',
     storageUnlimited: plan ? plan.storageLimitGb === null : false,
-    aiProviderConfigId: plan?.aiProviderConfigId != null ? String(plan.aiProviderConfigId) : 'none',
+    aiCredits: plan ? plan.aiCredits.toString() : '0',
   }
 }
 
@@ -380,13 +368,6 @@ function PlanFormDialog({
     setForm(planToFormState(plan))
   }
 
-  const { data: aiConfigs = [] } = useQuery({
-    queryKey: ['ai-provider-configs'],
-    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-provider-configs')).data,
-    enabled: open,
-  })
-  const enabledAiConfigs = aiConfigs.filter((c) => c.enabled)
-
   const mutation = useMutation({
     mutationFn: async () => {
       const body = {
@@ -398,7 +379,7 @@ function PlanFormDialog({
         cohortsLimit: form.cohortsUnlimited ? null : form.cohortsLimit ? Number(form.cohortsLimit) : null,
         foundersLimit: form.foundersUnlimited ? null : form.foundersLimit ? Number(form.foundersLimit) : null,
         storageLimitGb: form.storageUnlimited ? null : form.storageLimitGb ? Number(form.storageLimitGb) : null,
-        aiProviderConfigId: form.aiProviderConfigId === 'none' ? null : Number(form.aiProviderConfigId),
+        aiCredits: form.aiCredits ? Number(form.aiCredits) : 0,
       }
       if (plan) {
         return (await api.patch(`/api/plans/${plan.id}`, body)).data
@@ -460,24 +441,15 @@ function PlanFormDialog({
           />
 
           <div className="space-y-1.5">
-            <Label>{t('planDialog.aiKey')}</Label>
-            <Select
-              value={form.aiProviderConfigId}
-              onValueChange={(v) => setForm({ ...form, aiProviderConfigId: v ?? 'none' })}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={t('planDialog.aiKeyPlaceholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">{t('common:none')}</SelectItem>
-                {enabledAiConfigs.map((c) => (
-                  <SelectItem key={c.id} value={String(c.id)}>
-                    {PROVIDER_LABELS[c.provider]} — {c.model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">{t('planDialog.aiKeyHint')}</p>
+            <Label>{t('planDialog.aiCredits')}</Label>
+            <Input
+              type="number"
+              min="0"
+              step="1"
+              value={form.aiCredits}
+              onChange={(e) => setForm({ ...form, aiCredits: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">{t('planDialog.aiCreditsHint')}</p>
           </div>
 
           <div className="space-y-1.5">

@@ -8,7 +8,6 @@ export async function listAiProviderConfigs() {
     .select({
       id: aiProviderConfigs.id,
       provider: aiProviderConfigs.provider,
-      model: aiProviderConfigs.model,
       apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
       enabled: aiProviderConfigs.enabled,
       createdAt: aiProviderConfigs.createdAt,
@@ -17,19 +16,17 @@ export async function listAiProviderConfigs() {
     .orderBy(desc(aiProviderConfigs.createdAt))
 }
 
-export async function createAiProviderConfig(data: { provider: 'openai' | 'anthropic'; model: string; apiKey: string }) {
+export async function createAiProviderConfig(data: { provider: 'openai' | 'anthropic' | 'manus'; apiKey: string }) {
   const [created] = await db
     .insert(aiProviderConfigs)
     .values({
       provider: data.provider,
-      model: data.model,
       apiKeyCiphertext: encryptSecret(data.apiKey),
       apiKeyLastFour: data.apiKey.slice(-4),
     })
     .returning({
       id: aiProviderConfigs.id,
       provider: aiProviderConfigs.provider,
-      model: aiProviderConfigs.model,
       apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
       enabled: aiProviderConfigs.enabled,
       createdAt: aiProviderConfigs.createdAt,
@@ -37,9 +34,8 @@ export async function createAiProviderConfig(data: { provider: 'openai' | 'anthr
   return created
 }
 
-export async function updateAiProviderConfig(id: number, data: { model?: string; apiKey?: string }) {
+export async function updateAiProviderConfig(id: number, data: { apiKey?: string }) {
   const update: Partial<typeof aiProviderConfigs.$inferInsert> = { updatedAt: new Date() }
-  if (data.model) update.model = data.model
   if (data.apiKey) {
     update.apiKeyCiphertext = encryptSecret(data.apiKey)
     update.apiKeyLastFour = data.apiKey.slice(-4)
@@ -52,7 +48,6 @@ export async function updateAiProviderConfig(id: number, data: { model?: string;
     .returning({
       id: aiProviderConfigs.id,
       provider: aiProviderConfigs.provider,
-      model: aiProviderConfigs.model,
       apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
       enabled: aiProviderConfigs.enabled,
       createdAt: aiProviderConfigs.createdAt,

@@ -15,7 +15,7 @@ export interface Plan {
   isCustom: boolean
   active: boolean
   stripePriceId: string | null
-  aiProviderConfigId: number | null
+  aiCredits: number
   createdAt: string
   updatedAt: string
 }
@@ -59,4 +59,16 @@ export interface PlatformStats {
 export interface CheckoutSessionResult {
   checkoutUrl: string | null
   subscriptionId: number
+}
+
+export interface TenantDashboardPlan {
+  id: number
+  name: string
+  aiCredits: number
+}
+
+export interface TenantDashboardInfo {
+  aiCreditsBalance: number
+  plan: TenantDashboardPlan | null
+  subscriptionStatus: SubscriptionStatus | null
 }

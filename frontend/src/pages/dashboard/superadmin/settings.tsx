@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { KeyRound, Mail, Plus, Pencil, Trash2, ChevronUp, ChevronDown, Bot, Sparkles, Search } from 'lucide-react'
+import { KeyRound, Mail, Plus, Pencil, Trash2, ChevronUp, ChevronDown, Bot, Sparkles, Zap, Search } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -22,16 +21,13 @@ import {
 import { PROVIDER_LABELS } from '@/lib/ai-provider'
 import type { AiProvider, AiProviderConfig } from '@/types/ai-provider'
 import type { Tenant } from '@/types/billing'
+import type { PlatformSettings } from '@/types/platform-settings'
 
 const PROVIDERS: { value: AiProvider; label: string; icon: typeof Bot; iconBg: string; iconColor: string }[] = [
   { value: 'openai', label: PROVIDER_LABELS.openai, icon: Bot, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-600' },
   { value: 'anthropic', label: PROVIDER_LABELS.anthropic, icon: Sparkles, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-600' },
+  { value: 'manus', label: PROVIDER_LABELS.manus, icon: Zap, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-600' },
 ]
-
-const MODELS_BY_PROVIDER: Record<AiProvider, string[]> = {
-  openai: ['gpt-5.1', 'gpt-5.1-mini', 'gpt-5', 'gpt-4.1', 'gpt-4o'],
-  anthropic: ['claude-sonnet-5', 'claude-opus-4-8', 'claude-fable-5', 'claude-haiku-4-5-20251001'],
-}
 
 function providerMeta(provider: AiProvider) {
   return PROVIDERS.find((p) => p.value === provider)!
@@ -47,7 +43,67 @@ export default function SettingsPage() {
       </div>
 
       <AiProviderKeysSection />
+      <AiCreditRateSection />
       <TenantEmailServiceSection />
+    </div>
+  )
+}
+
+function AiCreditRateSection() {
+  const { t } = useTranslation('superadminSettings')
+  const queryClient = useQueryClient()
+  const [rateDollars, setRateDollars] = useState('')
+  const [initialized, setInitialized] = useState(false)
+
+  const { data: settings } = useQuery({
+    queryKey: ['platform-settings'],
+    queryFn: async () => (await api.get<PlatformSettings>('/api/platform/settings')).data,
+  })
+
+  if (settings && !initialized) {
+    setRateDollars((settings.aiCreditRateCents / 100).toString())
+    setInitialized(true)
+  }
+
+  const mutation = useMutation({
+    mutationFn: async () =>
+      (
+        await api.patch('/api/platform/settings', {
+          aiCreditRateCents: Math.round(parseFloat(rateDollars || '0') * 100),
+        })
+      ).data,
+    onSuccess: () => {
+      toast.success(t('aiCreditRate.toast.updated'))
+      queryClient.invalidateQueries({ queryKey: ['platform-settings'] })
+    },
+    onError: (err) => toast.error(apiError(err, t('aiCreditRate.toast.updateFailed'))),
+  })
+
+  return (
+    <div className="rounded-xl border bg-card">
+      <div className="px-6 py-4 border-b flex items-center gap-2">
+        <Zap className="h-4 w-4 text-muted-foreground" />
+        <div>
+          <h2 className="font-semibold">{t('aiCreditRate.title')}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('aiCreditRate.subtitle')}</p>
+        </div>
+      </div>
+      <div className="p-4">
+        <div className="space-y-1.5 max-w-xs">
+          <Label>{t('aiCreditRate.rateLabel')}</Label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            value={rateDollars}
+            onChange={(e) => setRateDollars(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">{t('aiCreditRate.rateHint')}</p>
+        </div>
+        <Button className="mt-3" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+          {t('common:saveChanges')}
+        </Button>
+      </div>
     </div>
   )
 }
@@ -89,7 +145,7 @@ function AiProviderKeysSection() {
   const filtered = configs.filter((c) => {
     const q = search.trim().toLowerCase()
     if (!q) return true
-    return providerMeta(c.provider).label.toLowerCase().includes(q) || c.model.toLowerCase().includes(q)
+    return providerMeta(c.provider).label.toLowerCase().includes(q)
   })
 
   return (
@@ -129,7 +185,6 @@ function AiProviderKeysSection() {
                   </div>
                   <div>
                     <p className="text-sm font-medium">{meta.label}</p>
-                    <p className="text-xs text-muted-foreground">{config.model}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -185,21 +240,18 @@ function AiKeyFormDialog({
   const { t } = useTranslation('superadminSettings')
   const isEdit = !!config
   const [provider, setProvider] = useState<AiProvider | null>(config?.provider ?? null)
-  const [model, setModel] = useState(config?.model ?? '')
   const [apiKey, setApiKey] = useState('')
   const [lastConfigId, setLastConfigId] = useState<number | null | undefined>(undefined)
 
   if (open && config?.id !== lastConfigId) {
     setLastConfigId(config?.id ?? null)
     setProvider(config?.provider ?? null)
-    setModel(config?.model ?? '')
     setApiKey('')
   }
 
   function handleOpenChange(next: boolean) {
     if (next && !config) {
       setProvider(null)
-      setModel('')
       setApiKey('')
     }
     onOpenChange(next)
@@ -208,20 +260,14 @@ function AiKeyFormDialog({
   function handleProviderSelect(p: AiProvider) {
     if (isEdit) return
     setProvider(p)
-    setModel('')
   }
 
   const mutation = useMutation({
     mutationFn: async () => {
       if (isEdit) {
-        return (
-          await api.patch(`/api/ai-provider-configs/${config!.id}`, {
-            model,
-            ...(apiKey ? { apiKey } : {}),
-          })
-        ).data
+        return (await api.patch(`/api/ai-provider-configs/${config!.id}`, { apiKey })).data
       }
-      return (await api.post('/api/ai-provider-configs', { provider, model, apiKey })).data
+      return (await api.post('/api/ai-provider-configs', { provider, apiKey })).data
     },
     onSuccess: () => {
       toast.success(isEdit ? t('aiKeys.formDialog.toast.updated') : t('aiKeys.formDialog.toast.created'))
@@ -234,9 +280,7 @@ function AiKeyFormDialog({
       ),
   })
 
-  const models = provider ? MODELS_BY_PROVIDER[provider] : []
-  const modelNotes = t('aiKeys.formDialog.modelNotes', { returnObjects: true }) as Record<string, string>
-  const canSubmit = isEdit ? !!model && (!!apiKey || true) : !!provider && !!model && !!apiKey
+  const canSubmit = isEdit ? true : !!provider && !!apiKey
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -249,7 +293,7 @@ function AiKeyFormDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {PROVIDERS.map((p) => (
               <button
                 key={p.value}
@@ -268,27 +312,6 @@ function AiKeyFormDialog({
                 {p.label}
               </button>
             ))}
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>{t('aiKeys.formDialog.modelLabel')}</Label>
-            <Select value={model} onValueChange={(v) => setModel(v ?? '')} disabled={!provider}>
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={provider ? t('aiKeys.formDialog.modelPlaceholder') : t('aiKeys.formDialog.selectProviderFirstPlaceholder')}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {models.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {provider && model && modelNotes[model] && (
-              <p className="text-xs text-muted-foreground">{modelNotes[model]}</p>
-            )}
           </div>
 
           <div className="space-y-1.5">
@@ -336,7 +359,6 @@ function DeleteAiKeyDialog({
             {config &&
               t('aiKeys.deleteDialog.confirmDelete', {
                 provider: providerMeta(config.provider).label,
-                model: config.model,
               })}
           </DialogDescription>
         </DialogHeader>
