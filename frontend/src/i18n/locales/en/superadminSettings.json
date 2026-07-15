@@ -25,6 +25,17 @@
       "modelLabel": "Model",
       "modelPlaceholder": "Select a model",
       "selectProviderFirstPlaceholder": "Select a provider first",
+      "modelNotes": {
+        "gpt-5.1": "GPT-5.1 handles full-depth founder and company scoring with detailed reasoning.",
+        "gpt-5.1-mini": "GPT-5.1 Mini is a faster, lower-cost option — good for high-volume or lighter-weight scoring.",
+        "gpt-5": "GPT-5 offers strong general-purpose reasoning for founder and company scoring.",
+        "gpt-4.1": "GPT-4.1 works well for scoring tasks that involve long company documents.",
+        "gpt-4o": "GPT-4o offers fast, cost-efficient scoring with solid general reasoning.",
+        "claude-sonnet-5": "Claude Sonnet 5 balances quality and speed — a strong default for founder/company scoring.",
+        "claude-opus-4-8": "Claude Opus 4.8 is Anthropic's most capable model — best for the most nuanced, highest-stakes scoring.",
+        "claude-fable-5": "Claude Fable 5 is tuned for fast, lightweight scoring at lower cost.",
+        "claude-haiku-4-5-20251001": "Claude Haiku 4.5 is the fastest, most affordable option — suited for quick or high-volume scoring."
+      },
       "apiKeyLabel": "API key",
       "apiKeyPlaceholderEdit": "Leave blank to keep the current key",
       "toast": {

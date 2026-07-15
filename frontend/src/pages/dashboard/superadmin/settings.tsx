@@ -235,6 +235,7 @@ function AiKeyFormDialog({
   })
 
   const models = provider ? MODELS_BY_PROVIDER[provider] : []
+  const modelNotes = t('aiKeys.formDialog.modelNotes', { returnObjects: true }) as Record<string, string>
   const canSubmit = isEdit ? !!model && (!!apiKey || true) : !!provider && !!model && !!apiKey
 
   return (
@@ -285,6 +286,9 @@ function AiKeyFormDialog({
                 ))}
               </SelectContent>
             </Select>
+            {provider && model && modelNotes[model] && (
+              <p className="text-xs text-muted-foreground">{modelNotes[model]}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">

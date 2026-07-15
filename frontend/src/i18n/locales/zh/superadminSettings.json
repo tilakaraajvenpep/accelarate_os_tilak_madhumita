@@ -25,6 +25,17 @@
       "modelLabel": "模型",
       "modelPlaceholder": "选择模型",
       "selectProviderFirstPlaceholder": "请先选择提供商",
+      "modelNotes": {
+        "gpt-5.1": "GPT-5.1 可通过详细推理处理全深度的创始人和公司评分。",
+        "gpt-5.1-mini": "GPT-5.1 Mini 速度更快、成本更低，适合大批量或较轻量的评分场景。",
+        "gpt-5": "GPT-5 具备强大的通用推理能力，适合创始人和公司评分。",
+        "gpt-4.1": "GPT-4.1 适合处理涉及较长公司文档的评分任务。",
+        "gpt-4o": "GPT-4o 具备快速、经济高效的评分能力和扎实的通用推理水平。",
+        "claude-sonnet-5": "Claude Sonnet 5 在质量与速度之间取得平衡，是创始人/公司评分的可靠默认选择。",
+        "claude-opus-4-8": "Claude Opus 4.8 是 Anthropic 能力最强的模型，最适合最精细、最高风险的评分场景。",
+        "claude-fable-5": "Claude Fable 5 针对快速、轻量级评分进行了优化，成本更低。",
+        "claude-haiku-4-5-20251001": "Claude Haiku 4.5 是速度最快、最经济实惠的选择，适合快速或大批量评分。"
+      },
       "apiKeyLabel": "API 密钥",
       "apiKeyPlaceholderEdit": "留空以保留当前密钥",
       "toast": {
