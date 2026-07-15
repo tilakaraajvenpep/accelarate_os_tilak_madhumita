@@ -1,0 +1,34 @@
+{
+  "roleLabels": {
+    "founder": "Founder",
+    "admin": "Admin",
+    "super_admin": "Super Admin",
+    "mentor": "Mentor",
+    "funding_team": "Funding Team"
+  },
+  "sections": {
+    "management": "Management",
+    "tools": "Tools",
+    "platform": "Platform"
+  },
+  "nav": {
+    "overview": "Overview",
+    "platformOverview": "Platform Overview",
+    "myPillars": "My Pillars",
+    "documents": "Documents",
+    "calendar": "Calendar",
+    "messages": "Messages",
+    "cohorts": "Cohorts",
+    "companies": "Companies",
+    "myCompanies": "My Companies",
+    "programs": "Programs",
+    "scoring": "Scoring",
+    "emailTemplates": "Email Templates",
+    "tenants": "Tenants",
+    "superAdmins": "Super Admins",
+    "plansBilling": "Plans & Billing",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "changePassword": "Change Password"
+}

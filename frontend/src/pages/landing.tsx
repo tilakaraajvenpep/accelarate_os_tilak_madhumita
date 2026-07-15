@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ScanLine, Map, Rocket, TrendingUp,
   BarChart3, Users, ShieldCheck, Layers, ArrowRight, CheckCircle2,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default function LandingPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation('landing')
 
   return (
     <div className="relative bg-page text-ink overflow-x-hidden">
@@ -22,21 +25,22 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center font-bold text-sm">A</div>
-            <span className="font-semibold tracking-tight">AccelerateOS</span>
+            <span className="font-semibold tracking-tight">{t('nav.brand')}</span>
           </div>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <ThemeToggle />
             <button
               onClick={() => navigate('/login')}
               className="text-sm text-ink/50 hover:text-ink transition-colors px-4 py-2"
             >
-              Sign in
+              {t('nav.signIn')}
             </button>
             <button
               onClick={() => navigate('/get-started')}
               className="text-sm font-medium bg-ink text-page px-4 py-2 rounded-lg hover:bg-ink/90 transition-colors"
             >
-              Get started →
+              {t('nav.getStarted')}
             </button>
           </div>
         </div>
@@ -45,25 +49,25 @@ export default function LandingPage() {
       {/* ── Hero ──────────────────────────────────────── */}
       <section className="relative z-10 mx-auto max-w-6xl px-6 pt-28 pb-20 text-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] tracking-tight mb-6">
-          The operating system<br />
-          <span className="text-ink/40">for modern accelerators</span>
+          {t('hero.titleLine1')}<br />
+          <span className="text-ink/40">{t('hero.titleLine2')}</span>
         </h1>
         <p className="text-lg text-ink/40 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Run your entire program on one intelligent platform — from cohort selection and founder onboarding to mentorship tracking, AI-powered scoring, and investor-ready reporting.
+          {t('hero.subtitle')}
         </p>
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={() => navigate('/get-started')}
             className="group flex items-center gap-2 bg-ink text-page font-semibold px-6 py-3 rounded-xl hover:bg-ink/90 transition-colors text-sm"
           >
-            Start your program
+            {t('hero.startProgram')}
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </button>
           <button
             onClick={() => navigate('/login')}
             className="text-sm text-ink/50 hover:text-ink transition-colors px-6 py-3 rounded-xl border border-glass-border hover:border-glass-border hover:bg-glass"
           >
-            Sign in to your account
+            {t('hero.signInToAccount')}
           </button>
         </div>
 
@@ -83,10 +87,10 @@ export default function LandingPage() {
             {/* Stat cards row */}
             <div className="grid grid-cols-4 gap-3 mb-5">
               {[
-                { label: 'Active Founders', value: '24', color: 'oklch(0.65 0.22 265)' },
-                { label: 'Avg. Readiness', value: '7.2', color: 'oklch(0.65 0.20 200)' },
-                { label: 'Days to Demo', value: '31', color: 'oklch(0.65 0.22 310)' },
-                { label: 'Actions Open', value: '48', color: 'oklch(0.70 0.18 145)' },
+                { label: t('hero.dashboardPreview.activeFounders'), value: '24', color: 'oklch(0.65 0.22 265)' },
+                { label: t('hero.dashboardPreview.avgReadiness'), value: '7.2', color: 'oklch(0.65 0.20 200)' },
+                { label: t('hero.dashboardPreview.daysToDemo'), value: '31', color: 'oklch(0.65 0.22 310)' },
+                { label: t('hero.dashboardPreview.actionsOpen'), value: '48', color: 'oklch(0.70 0.18 145)' },
               ].map(({ label, value, color }) => (
                 <div key={label} className="rounded-xl border border-glass-border bg-glass p-3">
                   <p className="text-[10px] text-ink/30 mb-1">{label}</p>
@@ -97,9 +101,9 @@ export default function LandingPage() {
             {/* Progress bars */}
             <div className="space-y-2">
               {[
-                { name: 'Product & Tech', pct: 78 },
-                { name: 'Go-to-Market', pct: 54 },
-                { name: 'Finance & Ops', pct: 41 },
+                { name: t('hero.dashboardPreview.productTech'), pct: 78 },
+                { name: t('hero.dashboardPreview.goToMarket'), pct: 54 },
+                { name: t('hero.dashboardPreview.financeOps'), pct: 41 },
               ].map(({ name, pct }) => (
                 <div key={name} className="flex items-center gap-3">
                   <p className="text-xs text-ink/30 w-28 text-right flex-shrink-0">{name}</p>
@@ -123,10 +127,10 @@ export default function LandingPage() {
       <section className="relative z-10 border-y border-glass-border bg-glass">
         <div className="mx-auto max-w-6xl px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { value: '200+', label: 'programs launched' },
-            { value: '5,000+', label: 'founders served' },
-            { value: '8', label: 'evaluation pillars' },
-            { value: '94%', label: 'cohort completion rate' },
+            { value: '200+', label: t('stats.programsLaunched') },
+            { value: '5,000+', label: t('stats.foundersServed') },
+            { value: '8', label: t('stats.evaluationPillars') },
+            { value: '94%', label: t('stats.cohortCompletionRate') },
           ].map(({ value, label }) => (
             <div key={label}>
               <p className="text-3xl font-bold text-ink">{value}</p>
@@ -139,17 +143,17 @@ export default function LandingPage() {
       {/* ── Features ──────────────────────────────────── */}
       <section className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <div className="text-center mb-14">
-          <p className="text-xs uppercase tracking-[0.18em] text-ink/30 mb-3">Everything you need</p>
-          <h2 className="text-4xl font-bold">Built for program managers<br /><span className="text-ink/40">who move fast</span></h2>
+          <p className="text-xs uppercase tracking-[0.18em] text-ink/30 mb-3">{t('features.eyebrow')}</p>
+          <h2 className="text-4xl font-bold">{t('features.titleLine1')}<br /><span className="text-ink/40">{t('features.titleLine2')}</span></h2>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { icon: ScanLine, color: 'oklch(0.65 0.22 265)', title: 'AI-Powered Evaluation', desc: 'Score every startup across 8 structured pillars — product, GTM, finance, team, legal, and more — in minutes, not months.' },
-            { icon: BarChart3, color: 'oklch(0.65 0.20 200)', title: 'Live Progress Dashboards', desc: 'Real-time visibility into every founder\'s milestones, blockers, and readiness scores. No more status-update meetings.' },
-            { icon: Users, color: 'oklch(0.65 0.22 310)', title: 'Mentor & Cohort Network', desc: 'Match founders to the right mentors, facilitate peer accountability, and build a community that outlasts demo day.' },
-            { icon: Layers, color: 'oklch(0.70 0.18 145)', title: 'Multi-Tenant Programs', desc: 'Run multiple accelerator programs and cohorts from a single workspace. Each tenant gets their own isolated environment.' },
-            { icon: TrendingUp, color: 'oklch(0.65 0.22 30)', title: 'Investor-Ready Reporting', desc: 'One-click portfolio reports with traction metrics, readiness scores, and founder highlights — ready for your LP updates.' },
-            { icon: ShieldCheck, color: 'oklch(0.65 0.20 240)', title: 'Enterprise Security', desc: 'AWS Cognito authentication, role-based access control, and per-tenant data isolation built in from day one.' },
+            { icon: ScanLine, color: 'oklch(0.65 0.22 265)', title: t('features.items.evaluation.title'), desc: t('features.items.evaluation.desc') },
+            { icon: BarChart3, color: 'oklch(0.65 0.20 200)', title: t('features.items.dashboards.title'), desc: t('features.items.dashboards.desc') },
+            { icon: Users, color: 'oklch(0.65 0.22 310)', title: t('features.items.mentorNetwork.title'), desc: t('features.items.mentorNetwork.desc') },
+            { icon: Layers, color: 'oklch(0.70 0.18 145)', title: t('features.items.multiTenant.title'), desc: t('features.items.multiTenant.desc') },
+            { icon: TrendingUp, color: 'oklch(0.65 0.22 30)', title: t('features.items.reporting.title'), desc: t('features.items.reporting.desc') },
+            { icon: ShieldCheck, color: 'oklch(0.65 0.20 240)', title: t('features.items.security.title'), desc: t('features.items.security.desc') },
           ].map(({ icon: Icon, color, title, desc }) => (
             <div key={title} className="group rounded-2xl border border-glass-border bg-glass p-6 hover:bg-glass-2 hover:border-glass-border transition-all duration-200">
               <div
@@ -169,15 +173,15 @@ export default function LandingPage() {
       <section className="relative z-10 border-y border-glass-border bg-glass">
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="text-center mb-14">
-            <p className="text-xs uppercase tracking-[0.18em] text-ink/30 mb-3">The accelerateOS journey</p>
-            <h2 className="text-4xl font-bold">From day one to demo day<br /><span className="text-ink/40">and beyond</span></h2>
+            <p className="text-xs uppercase tracking-[0.18em] text-ink/30 mb-3">{t('journey.eyebrow')}</p>
+            <h2 className="text-4xl font-bold">{t('journey.titleLine1')}<br /><span className="text-ink/40">{t('journey.titleLine2')}</span></h2>
           </div>
           <div className="grid md:grid-cols-4 gap-4">
             {[
-              { icon: ScanLine, step: '01', color: 'oklch(0.65 0.22 265)', title: 'Assess', desc: 'Baseline every founder across 8 pillars with AI scoring in the first week.' },
-              { icon: Map, step: '02', color: 'oklch(0.65 0.20 200)', title: 'Align', desc: 'Build tailored roadmaps and match each founder to the right mentors and resources.' },
-              { icon: Rocket, step: '03', color: 'oklch(0.65 0.22 310)', title: 'Execute', desc: 'Weekly milestones, peer accountability, and live dashboards keep everyone on track.' },
-              { icon: TrendingUp, step: '04', color: 'oklch(0.70 0.18 145)', title: 'Raise', desc: 'Walk into demo day and investor meetings with data-backed proof of progress.' },
+              { icon: ScanLine, step: '01', color: 'oklch(0.65 0.22 265)', title: t('journey.steps.assess.title'), desc: t('journey.steps.assess.desc') },
+              { icon: Map, step: '02', color: 'oklch(0.65 0.20 200)', title: t('journey.steps.align.title'), desc: t('journey.steps.align.desc') },
+              { icon: Rocket, step: '03', color: 'oklch(0.65 0.22 310)', title: t('journey.steps.execute.title'), desc: t('journey.steps.execute.desc') },
+              { icon: TrendingUp, step: '04', color: 'oklch(0.70 0.18 145)', title: t('journey.steps.raise.title'), desc: t('journey.steps.raise.desc') },
             ].map(({ icon: Icon, step, color, title, desc }, i) => (
               <div key={step} className="relative">
                 {i < 3 && (
@@ -208,13 +212,13 @@ export default function LandingPage() {
             ))}
           </div>
           <blockquote className="text-xl md:text-2xl font-medium text-ink/80 leading-relaxed max-w-3xl mx-auto mb-8">
-            "Before AccelerateOS, our team of five was drowning in spreadsheets and follow-up emails. Now one program manager runs our entire 30-company cohort — with better outcomes than we ever had before."
+            "{t('testimonial.quote')}"
           </blockquote>
           <div className="flex items-center justify-center gap-3">
             <div className="h-10 w-10 rounded-full bg-glass-2 border border-glass-border flex items-center justify-center font-bold text-ink/70">S</div>
             <div className="text-left">
-              <p className="text-sm font-medium text-ink/70">Sarah K.</p>
-              <p className="text-xs text-ink/30">Managing Director · Techstars Alumni Network</p>
+              <p className="text-sm font-medium text-ink/70">{t('testimonial.authorName')}</p>
+              <p className="text-xs text-ink/30">{t('testimonial.authorTitle')}</p>
             </div>
           </div>
         </div>
@@ -228,21 +232,21 @@ export default function LandingPage() {
             <div className="absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-[oklch(0.50_0.25_310)] opacity-15 blur-3xl" />
           </div>
           <div className="relative">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to run a world-class program?</h2>
-            <p className="text-white/60 mb-8 max-w-lg mx-auto">Set up your accelerator workspace in minutes. No credit card required.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('cta.title')}</h2>
+            <p className="text-white/60 mb-8 max-w-lg mx-auto">{t('cta.subtitle')}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => navigate('/get-started')}
                 className="group flex items-center gap-2 bg-white text-[oklch(0.20_0.08_265)] font-semibold px-7 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm"
               >
-                Start your program for free
+                {t('cta.startProgramFree')}
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
               <button
                 onClick={() => navigate('/login')}
                 className="text-sm text-white/60 hover:text-white transition-colors"
               >
-                Already have an account?
+                {t('cta.alreadyHaveAccount')}
               </button>
             </div>
           </div>
@@ -254,12 +258,16 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="h-6 w-6 rounded-md bg-glass-2 border border-glass-border flex items-center justify-center font-bold text-xs">A</div>
-            <span className="text-sm text-ink/50">AccelerateOS</span>
+            <span className="text-sm text-ink/50">{t('nav.brand')}</span>
           </div>
-          <p className="text-xs text-ink/25">© {new Date().getFullYear()} AccelerateOS. All rights reserved.</p>
+          <p className="text-xs text-ink/25">{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           <div className="flex items-center gap-5">
-            {['Privacy', 'Terms', 'Contact'].map(l => (
-              <a key={l} href="#" className="text-xs text-ink/30 hover:text-ink/60 transition-colors">{l}</a>
+            {[
+              { key: 'privacy', label: t('footer.privacy') },
+              { key: 'terms', label: t('footer.terms') },
+              { key: 'contact', label: t('footer.contact') },
+            ].map(l => (
+              <a key={l.key} href="#" className="text-xs text-ink/30 hover:text-ink/60 transition-colors">{l.label}</a>
             ))}
           </div>
         </div>

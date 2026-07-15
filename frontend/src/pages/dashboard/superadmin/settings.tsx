@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { KeyRound, Mail, Plus, Pencil, Trash2, ChevronUp, ChevronDown, Bot, Sparkles, Search } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -37,11 +38,12 @@ function providerMeta(provider: AiProvider) {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation('superadminSettings')
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-muted-foreground text-sm mt-1">Platform-level configuration.</p>
+        <h1 className="text-2xl font-bold">{t('page.title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('page.subtitle')}</p>
       </div>
 
       <AiProviderKeysSection />
@@ -51,6 +53,7 @@ export default function SettingsPage() {
 }
 
 function AiProviderKeysSection() {
+  const { t } = useTranslation('superadminSettings')
   const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
@@ -70,17 +73,17 @@ function AiProviderKeysSection() {
     mutationFn: async (params: { id: number; enabled: boolean }) =>
       (await api.patch(`/api/ai-provider-configs/${params.id}/enabled`, { enabled: params.enabled })).data,
     onSuccess: invalidate,
-    onError: (err) => toast.error(apiError(err, 'Failed to update key')),
+    onError: (err) => toast.error(apiError(err, t('aiKeys.section.toast.updateFailed'))),
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => (await api.delete(`/api/ai-provider-configs/${id}`)).data,
     onSuccess: () => {
-      toast.success('AI key deleted')
+      toast.success(t('aiKeys.section.toast.deleted'))
       invalidate()
       setDeleting(null)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to delete AI key')),
+    onError: (err) => toast.error(apiError(err, t('aiKeys.section.toast.deleteFailed'))),
   })
 
   const filtered = configs.filter((c) => {
@@ -95,12 +98,12 @@ function AiProviderKeysSection() {
         <div className="flex items-center gap-2">
           <KeyRound className="h-4 w-4 text-muted-foreground" />
           <div>
-            <h2 className="font-semibold">AI Provider Keys</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Configure API keys for AI models used across the platform.</p>
+            <h2 className="font-semibold">{t('aiKeys.section.title')}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('aiKeys.section.subtitle')}</p>
           </div>
         </div>
         <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="h-4 w-4" /> Add AI key
+          <Plus className="h-4 w-4" /> {t('aiKeys.section.addButton')}
         </Button>
       </div>
 
@@ -109,7 +112,7 @@ function AiProviderKeysSection() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             className="pl-9 border-neutral-400 dark:border-neutral-600"
-            placeholder="Search by provider or model..."
+            placeholder={t('aiKeys.section.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -130,16 +133,18 @@ function AiProviderKeysSection() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={config.enabled ? 'default' : 'secondary'}>{config.enabled ? 'Active' : 'Inactive'}</Badge>
+                  <Badge variant={config.enabled ? 'default' : 'secondary'}>
+                    {config.enabled ? t('common:active') : t('common:inactive')}
+                  </Badge>
                   <Switch
                     checked={config.enabled}
                     disabled={toggleEnabledMutation.isPending}
                     onCheckedChange={(checked: boolean) => toggleEnabledMutation.mutate({ id: config.id, enabled: checked })}
                   />
-                  <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => setEditing(config)}>
+                  <Button variant="ghost" size="icon-sm" title={t('common:edit')} onClick={() => setEditing(config)}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon-sm" title="Delete" onClick={() => setDeleting(config)}>
+                  <Button variant="ghost" size="icon-sm" title={t('common:delete')} onClick={() => setDeleting(config)}>
                     <Trash2 className="h-3.5 w-3.5 text-destructive" />
                   </Button>
                 </div>
@@ -148,7 +153,7 @@ function AiProviderKeysSection() {
           })}
           {!isLoading && filtered.length === 0 && (
             <p className="text-center text-muted-foreground text-sm py-6">
-              {configs.length === 0 ? 'No AI keys configured yet.' : 'No keys match your search.'}
+              {configs.length === 0 ? t('aiKeys.section.emptyNone') : t('aiKeys.section.emptyNoMatch')}
             </p>
           )}
         </div>
@@ -177,6 +182,7 @@ function AiKeyFormDialog({
   config: AiProviderConfig | null
   onSaved: () => void
 }) {
+  const { t } = useTranslation('superadminSettings')
   const isEdit = !!config
   const [provider, setProvider] = useState<AiProvider | null>(config?.provider ?? null)
   const [model, setModel] = useState(config?.model ?? '')
@@ -218,11 +224,14 @@ function AiKeyFormDialog({
       return (await api.post('/api/ai-provider-configs', { provider, model, apiKey })).data
     },
     onSuccess: () => {
-      toast.success(isEdit ? 'AI key updated' : 'AI key created')
+      toast.success(isEdit ? t('aiKeys.formDialog.toast.updated') : t('aiKeys.formDialog.toast.created'))
       onSaved()
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, isEdit ? 'Failed to update AI key' : 'Failed to create AI key')),
+    onError: (err) =>
+      toast.error(
+        apiError(err, isEdit ? t('aiKeys.formDialog.toast.updateFailed') : t('aiKeys.formDialog.toast.createFailed')),
+      ),
   })
 
   const models = provider ? MODELS_BY_PROVIDER[provider] : []
@@ -232,9 +241,9 @@ function AiKeyFormDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? 'Edit AI key' : 'Add AI key'}</DialogTitle>
+          <DialogTitle>{isEdit ? t('aiKeys.formDialog.editTitle') : t('aiKeys.formDialog.addTitle')}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the model or replace the API key.' : 'Select a provider and model, then provide the API key.'}
+            {isEdit ? t('aiKeys.formDialog.editDescription') : t('aiKeys.formDialog.addDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -261,10 +270,12 @@ function AiKeyFormDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label>Model</Label>
+            <Label>{t('aiKeys.formDialog.modelLabel')}</Label>
             <Select value={model} onValueChange={(v) => setModel(v ?? '')} disabled={!provider}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={provider ? 'Select a model' : 'Select a provider first'} />
+                <SelectValue
+                  placeholder={provider ? t('aiKeys.formDialog.modelPlaceholder') : t('aiKeys.formDialog.selectProviderFirstPlaceholder')}
+                />
               </SelectTrigger>
               <SelectContent>
                 {models.map((m) => (
@@ -277,10 +288,10 @@ function AiKeyFormDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label>API key</Label>
+            <Label>{t('aiKeys.formDialog.apiKeyLabel')}</Label>
             <Input
               type="password"
-              placeholder={isEdit ? 'Leave blank to keep the current key' : provider === 'anthropic' ? 'sk-ant-...' : 'sk-...'}
+              placeholder={isEdit ? t('aiKeys.formDialog.apiKeyPlaceholderEdit') : provider === 'anthropic' ? 'sk-ant-...' : 'sk-...'}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
             />
@@ -289,10 +300,10 @@ function AiKeyFormDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !canSubmit}>
-            {isEdit ? 'Save changes' : 'Create'}
+            {isEdit ? t('common:saveChanges') : t('common:create')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -311,21 +322,26 @@ function DeleteAiKeyDialog({
   onConfirm: () => void
   pending: boolean
 }) {
+  const { t } = useTranslation('superadminSettings')
   return (
     <Dialog open={!!config} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Delete AI key</DialogTitle>
+          <DialogTitle>{t('aiKeys.deleteDialog.title')}</DialogTitle>
           <DialogDescription>
-            {config && `Permanently remove the ${providerMeta(config.provider).label} (${config.model}) key? This cannot be undone.`}
+            {config &&
+              t('aiKeys.deleteDialog.confirmDelete', {
+                provider: providerMeta(config.provider).label,
+                model: config.model,
+              })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button variant="destructive" onClick={onConfirm} disabled={pending}>
-            Delete
+            {t('common:delete')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -334,6 +350,7 @@ function DeleteAiKeyDialog({
 }
 
 function TenantEmailServiceSection() {
+  const { t } = useTranslation('superadminSettings')
   const queryClient = useQueryClient()
   const [expanded, setExpanded] = useState(true)
   const [search, setSearch] = useState('')
@@ -347,10 +364,10 @@ function TenantEmailServiceSection() {
     mutationFn: async (params: { id: number; enabled: boolean }) =>
       (await api.patch(`/api/tenants/${params.id}/email-service`, { enabled: params.enabled })).data,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tenants'] }),
-    onError: (err) => toast.error(apiError(err, 'Failed to update tenant')),
+    onError: (err) => toast.error(apiError(err, t('tenantEmailService.toast.updateFailed'))),
   })
 
-  const filtered = tenants.filter((t) => t.name.toLowerCase().includes(search.trim().toLowerCase()))
+  const filtered = tenants.filter((tenant) => tenant.name.toLowerCase().includes(search.trim().toLowerCase()))
 
   return (
     <div className="rounded-xl border bg-card">
@@ -362,8 +379,8 @@ function TenantEmailServiceSection() {
         <div className="flex items-center gap-2">
           <Mail className="h-4 w-4 text-muted-foreground" />
           <div>
-            <h2 className="font-semibold">Tenant Email Service</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Show tenants and enable or disable their email service individually.</p>
+            <h2 className="font-semibold">{t('tenantEmailService.title')}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('tenantEmailService.subtitle')}</p>
           </div>
         </div>
         {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
@@ -375,7 +392,7 @@ function TenantEmailServiceSection() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               className="pl-9 border-neutral-400 dark:border-neutral-600"
-              placeholder="Search tenants..."
+              placeholder={t('tenantEmailService.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -392,7 +409,7 @@ function TenantEmailServiceSection() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant={tenant.emailServiceEnabled ? 'default' : 'secondary'}>
-                    {tenant.emailServiceEnabled ? 'Enabled' : 'Disabled'}
+                    {tenant.emailServiceEnabled ? t('common:enabled') : t('common:disabled')}
                   </Badge>
                   <Switch
                     checked={tenant.emailServiceEnabled}
@@ -404,7 +421,7 @@ function TenantEmailServiceSection() {
             ))}
             {!isLoading && filtered.length === 0 && (
               <p className="text-center text-muted-foreground text-sm py-6">
-                {tenants.length === 0 ? 'No tenants yet.' : 'No tenants match your search.'}
+                {tenants.length === 0 ? t('tenantEmailService.emptyNone') : t('tenantEmailService.emptyNoMatch')}
               </p>
             )}
           </div>

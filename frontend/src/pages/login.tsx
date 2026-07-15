@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 import { Loader2, ScanLine, Map, Rocket, TrendingUp, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { api } from '@/lib/api'
@@ -10,6 +11,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 type View = 'signin' | 'verify-email' | 'forgot-password' | 'reset-password'
 
 export default function LoginPage() {
+  const { t } = useTranslation('login')
   const navigate = useNavigate()
   const { login, verifyEmail } = useAuth()
   const [view, setView] = useState<View>('signin')
@@ -23,7 +25,7 @@ export default function LoginPage() {
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault(); setLoading(true)
     try { await login(siEmail, siPassword); navigate('/app') }
-    catch (err) { toast.error(apiError(err, 'Sign in failed')) }
+    catch (err) { toast.error(apiError(err, t('signin.errorFallback'))) }
     finally { setLoading(false) }
   }
 
@@ -31,10 +33,10 @@ export default function LoginPage() {
     e.preventDefault(); setLoading(true)
     try {
       await verifyEmail(pendingEmail, verifyCode)
-      toast.success('Email verified! You can now sign in.')
+      toast.success(t('verifyEmail.successToast'))
       setSiEmail(pendingEmail); setView('signin')
     }
-    catch (err) { toast.error(apiError(err, 'Verification failed')) }
+    catch (err) { toast.error(apiError(err, t('verifyEmail.errorFallback'))) }
     finally { setLoading(false) }
   }
 
@@ -63,36 +65,36 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <a href="/" className="lg:hidden mb-8 flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center text-ink font-bold text-sm">A</div>
-            <span className="font-semibold text-ink">AccelerateOS</span>
+            <span className="font-semibold text-ink">{t('common:brand')}</span>
           </a>
 
           <div className="w-full max-w-sm">
 
             {view === 'signin' && (
               <>
-                <h1 className="text-2xl font-semibold text-ink mb-1">Login to your account</h1>
-                <p className="text-sm text-ink/40 mb-7">Enter your email below to login to your account</p>
+                <h1 className="text-2xl font-semibold text-ink mb-1">{t('signin.title')}</h1>
+                <p className="text-sm text-ink/40 mb-7">{t('signin.subtitle')}</p>
               </>
             )}
 
             {/* ── Sign In ── */}
             {view === 'signin' && (
               <form onSubmit={handleSignIn} className="space-y-4">
-                <Field label="Email">
-                  <GlassInput type="email" placeholder="m@example.com" value={siEmail} onChange={e => setSiEmail(e.target.value)} required autoFocus />
+                <Field label={t('common:email')}>
+                  <GlassInput type="email" placeholder={t('signin.emailPlaceholder')} value={siEmail} onChange={e => setSiEmail(e.target.value)} required autoFocus />
                 </Field>
-                <Field label="Password" aside={
+                <Field label={t('signin.passwordLabel')} aside={
                   <button type="button" onClick={() => setView('forgot-password')} className="text-xs text-ink/40 hover:text-ink/70 transition-colors">
-                    Forgot your password?
+                    {t('signin.forgotPasswordLink')}
                   </button>
                 }>
                   <GlassInput type="password" placeholder="••••••••" value={siPassword} onChange={e => setSiPassword(e.target.value)} required />
                 </Field>
-                <PrimaryButton loading={loading} className="mt-2">Login</PrimaryButton>
+                <PrimaryButton loading={loading} className="mt-2">{t('signin.submitButton')}</PrimaryButton>
                 <p className="text-center text-sm text-ink/40 pt-2">
-                  New to AccelerateOS?{' '}
+                  {t('signin.newToPlatform')}{' '}
                   <a href="/get-started" className="text-ink/70 underline underline-offset-2 hover:text-ink transition-colors">
-                    Start your program →
+                    {t('signin.startProgramLink')}
                   </a>
                 </p>
               </form>
@@ -101,10 +103,10 @@ export default function LoginPage() {
             {/* ── Verify email ── */}
             {view === 'verify-email' && (
               <>
-                <button onClick={() => setView('signin')} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">← Back</button>
-                <h1 className="text-2xl font-semibold text-ink mb-1">Check your email</h1>
+                <button onClick={() => setView('signin')} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">{t('verifyEmail.backButton')}</button>
+                <h1 className="text-2xl font-semibold text-ink mb-1">{t('verifyEmail.title')}</h1>
                 <p className="text-sm text-ink/40 mb-7">
-                  We sent a 6-digit code to <span className="text-ink/70 font-medium">{pendingEmail}</span>
+                  {t('verifyEmail.subtitlePrefix')} <span className="text-ink/70 font-medium">{pendingEmail}</span>
                 </p>
                 <form onSubmit={handleVerify} className="space-y-4">
                   <GlassInput
@@ -114,7 +116,7 @@ export default function LoginPage() {
                     required autoFocus inputMode="numeric" maxLength={6}
                     className="text-center text-2xl tracking-[0.4em] font-mono"
                   />
-                  <PrimaryButton loading={loading}>Verify email</PrimaryButton>
+                  <PrimaryButton loading={loading}>{t('verifyEmail.submitButton')}</PrimaryButton>
                 </form>
               </>
             )}
@@ -139,7 +141,7 @@ export default function LoginPage() {
             <div className="h-9 w-9 rounded-xl bg-glass-2 border border-glass-border backdrop-blur-sm flex items-center justify-center text-ink font-bold">
               A
             </div>
-            <span className="text-ink font-semibold tracking-tight">AccelerateOS</span>
+            <span className="text-ink font-semibold tracking-tight">{t('common:brand')}</span>
           </div>
 
           {/* Center content */}
@@ -147,12 +149,12 @@ export default function LoginPage() {
 
             {/* Headline */}
             <div className="space-y-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-ink/30 font-medium">The Entrepreneurial Journey</p>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-ink/30 font-medium">{t('brandPanel.eyebrow')}</p>
               <h2 className="text-[2.4rem] font-bold text-ink leading-[1.15]">
-                From first idea<br />to funded founder.
+                {t('brandPanel.headline.line1')}<br />{t('brandPanel.headline.line2')}
               </h2>
               <p className="text-sm text-ink/40 leading-relaxed max-w-xs">
-                AccelerateOS gives every founder a structured path, AI-powered insights, and the community to grow from zero to raise-ready — faster than ever before.
+                {t('brandPanel.description')}
               </p>
             </div>
 
@@ -163,29 +165,29 @@ export default function LoginPage() {
                   icon: ScanLine,
                   step: '01',
                   color: 'oklch(0.65 0.22 265)',
-                  title: 'Assess your foundations',
-                  desc: 'Get an honest baseline across 8 startup pillars — product, go-to-market, finance, team, legal, and more — in minutes.',
+                  title: t('brandPanel.steps.assess.title'),
+                  desc: t('brandPanel.steps.assess.desc'),
                 },
                 {
                   icon: Map,
                   step: '02',
                   color: 'oklch(0.65 0.20 200)',
-                  title: 'Build your roadmap',
-                  desc: 'Receive a tailored action plan. Work through curated milestones with your mentor and cohort peers to close gaps fast.',
+                  title: t('brandPanel.steps.roadmap.title'),
+                  desc: t('brandPanel.steps.roadmap.desc'),
                 },
                 {
                   icon: Rocket,
                   step: '03',
                   color: 'oklch(0.65 0.22 310)',
-                  title: 'Execute & stay accountable',
-                  desc: 'Weekly check-ins, live dashboards, and peer benchmarks keep you on track. No milestone falls through the cracks.',
+                  title: t('brandPanel.steps.execute.title'),
+                  desc: t('brandPanel.steps.execute.desc'),
                 },
                 {
                   icon: TrendingUp,
                   step: '04',
                   color: 'oklch(0.70 0.18 145)',
-                  title: 'Raise with confidence',
-                  desc: 'Walk into investor meetings with a data-backed performance report and a story that shows traction, not just potential.',
+                  title: t('brandPanel.steps.raise.title'),
+                  desc: t('brandPanel.steps.raise.desc'),
                 },
               ].map(({ icon: Icon, step, color, title, desc }) => (
                 <div key={step} className="group flex gap-4 rounded-xl border border-glass-border bg-glass backdrop-blur-sm p-4 hover:bg-glass-2 hover:border-glass-border transition-all duration-200">
@@ -265,6 +267,7 @@ function PrimaryButton({ loading, children, className }: { loading?: boolean; ch
 function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
   initialStep?: 'request' | 'reset'; onDone: () => void; onBack: () => void
 }) {
+  const { t } = useTranslation('login')
   const [step, setStep] = useState<'request' | 'reset'>(initialStep)
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -275,9 +278,9 @@ function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
     e.preventDefault(); setLoading(true)
     try {
       await api.post('/auth/forgot-password', { email })
-      toast.success('Reset code sent to your email'); setStep('reset')
+      toast.success(t('forgotPassword.successToast')); setStep('reset')
     }
-    catch (err) { toast.error(apiError(err, 'Failed to send reset code')) }
+    catch (err) { toast.error(apiError(err, t('forgotPassword.errorFallback'))) }
     finally { setLoading(false) }
   }
 
@@ -285,38 +288,38 @@ function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
     e.preventDefault(); setLoading(true)
     try {
       await api.post('/auth/reset-password', { email, code, newPassword })
-      toast.success('Password reset. You can now sign in.'); onDone()
+      toast.success(t('resetPassword.successToast')); onDone()
     }
-    catch (err) { toast.error(apiError(err, 'Reset failed')) }
+    catch (err) { toast.error(apiError(err, t('resetPassword.errorFallback'))) }
     finally { setLoading(false) }
   }
 
   return (
     <>
-      <button onClick={onBack} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">← Back to sign in</button>
+      <button onClick={onBack} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">{t('forgotPassword.backButton')}</button>
       {step === 'request' ? (
         <>
-          <h1 className="text-2xl font-semibold text-ink mb-1">Forgot password</h1>
-          <p className="text-sm text-ink/40 mb-7">Enter your email and we'll send a reset code.</p>
+          <h1 className="text-2xl font-semibold text-ink mb-1">{t('forgotPassword.title')}</h1>
+          <p className="text-sm text-ink/40 mb-7">{t('forgotPassword.subtitle')}</p>
           <form onSubmit={handleRequest} className="space-y-4">
-            <Field label="Email">
+            <Field label={t('common:email')}>
               <GlassInput type="email" placeholder="m@example.com" value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
             </Field>
-            <PrimaryButton loading={loading}>Send reset code</PrimaryButton>
+            <PrimaryButton loading={loading}>{t('forgotPassword.submitButton')}</PrimaryButton>
           </form>
         </>
       ) : (
         <>
-          <h1 className="text-2xl font-semibold text-ink mb-1">Reset password</h1>
-          <p className="text-sm text-ink/40 mb-7">Enter the code from your email and your new password.</p>
+          <h1 className="text-2xl font-semibold text-ink mb-1">{t('resetPassword.title')}</h1>
+          <p className="text-sm text-ink/40 mb-7">{t('resetPassword.subtitle')}</p>
           <form onSubmit={handleReset} className="space-y-4">
-            <Field label="Reset code">
+            <Field label={t('resetPassword.resetCodeLabel')}>
               <GlassInput placeholder="000000" value={code} onChange={e => setCode(e.target.value)} required autoFocus inputMode="numeric" className="text-center tracking-widest" />
             </Field>
-            <Field label="New password">
-              <GlassInput type="password" placeholder="Min. 8 characters" value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={8} />
+            <Field label={t('resetPassword.newPasswordLabel')}>
+              <GlassInput type="password" placeholder={t('resetPassword.newPasswordPlaceholder')} value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={8} />
             </Field>
-            <PrimaryButton loading={loading}>Reset password</PrimaryButton>
+            <PrimaryButton loading={loading}>{t('resetPassword.submitButton')}</PrimaryButton>
           </form>
         </>
       )}

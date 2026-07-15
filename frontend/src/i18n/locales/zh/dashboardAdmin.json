@@ -1,0 +1,35 @@
+{
+  "title": "管理员仪表盘",
+  "subtitle": "批次健康状况与项目概览。",
+  "stats": {
+    "activeCompanies": "活跃企业",
+    "activeCompaniesSub": "分布于 3 个批次",
+    "cohorts": "批次",
+    "cohortsSub": "1 个即将启动",
+    "avgReadiness": "平均准备度",
+    "avgReadinessTrend": "本月 +0.4",
+    "completionRate": "完成率",
+    "completionRateSub": "目标 80%"
+  },
+  "topCompanies": {
+    "title": "评分最高企业",
+    "stage": {
+      "seriesA": "A 轮",
+      "seed": "种子轮",
+      "preSeed": "天使轮",
+      "idea": "创意阶段"
+    },
+    "status": {
+      "onTrack": "进展顺利",
+      "atRisk": "存在风险"
+    }
+  },
+  "recentActivity": {
+    "title": "近期动态",
+    "empty": "活动动态即将上线。"
+  },
+  "upcomingEvents": {
+    "title": "近期活动",
+    "empty": "日历集成即将上线。"
+  }
+}

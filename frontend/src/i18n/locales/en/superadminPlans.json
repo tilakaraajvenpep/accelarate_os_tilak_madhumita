@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "Plans & Billing",
+    "subtitle": "Define plans and manage tenant subscriptions.",
+    "newPlanButton": "New Plan"
+  },
+  "plansTable": {
+    "cardTitle": "Plans",
+    "cohorts": "Cohorts",
+    "founders": "Founders",
+    "storage": "Storage",
+    "priceMonth": "Price / month",
+    "aiKey": "AI Key",
+    "custom": "Custom",
+    "editButtonTitle": "Edit",
+    "deleteButtonTitle": "Delete",
+    "empty": "No plans yet — create one to get started."
+  },
+  "subscriptionsTable": {
+    "cardTitle": "Tenant Subscriptions",
+    "tenant": "Tenant",
+    "plan": "Plan",
+    "foundersUsed": "Founders used",
+    "nextPayment": "Next payment",
+    "noSubscription": "No subscription",
+    "assignPlanButton": "Assign Plan",
+    "cancelSubscriptionTitle": "Cancel subscription",
+    "empty": "No tenants yet.",
+    "confirmCancelSubscription": "Cancel {{name}}'s subscription? This can't be undone from here — you'd need to assign a new plan."
+  },
+  "toast": {
+    "subscriptionCanceled": "Subscription canceled",
+    "cancelSubscriptionFailed": "Failed to cancel subscription",
+    "planDeleted": "Plan deleted",
+    "deletePlanFailed": "Failed to delete plan",
+    "planUpdated": "Plan updated",
+    "planCreated": "Plan created",
+    "savePlanFailed": "Failed to save plan",
+    "offlinePaymentRecorded": "Offline payment recorded",
+    "recordPaymentFailed": "Failed to record payment",
+    "checkoutSessionCreated": "Checkout session created",
+    "startCheckoutFailed": "Failed to start checkout"
+  },
+  "planDialog": {
+    "editTitle": "Edit plan",
+    "newTitle": "New plan",
+    "description": "Define limits and pricing for this plan.",
+    "descriptionLabel": "Description",
+    "cohorts": "Cohorts",
+    "foundersLearners": "Founders / learners",
+    "storageGb": "Storage (GB)",
+    "aiKey": "AI key",
+    "aiKeyPlaceholder": "None",
+    "aiKeyHint": "Which AI provider key this plan's AI features will use.",
+    "priceMonthUsd": "Price / month (USD)",
+    "customPlan": "Custom plan",
+    "customPlanHint": "Bespoke plan negotiated with a tenant",
+    "enableOnlineBilling": "Enable online billing",
+    "enableOnlineBillingHint": "Syncs a Stripe product/price for Checkout",
+    "createButton": "Create plan"
+  },
+  "limitField": {
+    "unlimited": "Unlimited",
+    "unlimitedPlaceholder": "Unlimited"
+  },
+  "assignDialog": {
+    "title": "Assign plan — {{name}}",
+    "description": "Pick a plan and how this tenant will pay.",
+    "planLabel": "Plan",
+    "planPlaceholder": "Select a plan",
+    "recordOfflinePayment": "Record offline payment",
+    "payOnline": "Pay online",
+    "onlineBillingNotConfigured": "This plan isn't configured for online billing yet — enable it when editing the plan.",
+    "amountReceivedUsd": "Amount received (USD)",
+    "activeUntil": "Active until",
+    "note": "Note (PO / check number, etc.)",
+    "recordPaymentButton": "Record payment",
+    "continueToStripeButton": "Continue to Stripe"
+  },
+  "deleteDialog": {
+    "title": "Delete plan",
+    "confirmDelete": "Permanently delete \"{{name}}\"? Tenants currently subscribed to it will need to be reassigned first. This cannot be undone."
+  }
+}

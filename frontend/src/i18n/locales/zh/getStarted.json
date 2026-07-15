@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "signInPrompt": "已经有账号了？登录"
+  },
+  "stepIndicator": {
+    "organization": "您的组织",
+    "account": "创建账号",
+    "verify": "验证邮箱",
+    "done": "完成"
+  },
+  "orgTypes": {
+    "university": "大学孵化器",
+    "corporate": "企业孵化器",
+    "vcBacked": "风投背景孵化器",
+    "government": "政府/非营利机构",
+    "independent": "独立孵化器",
+    "other": "其他"
+  },
+  "org": {
+    "title": "介绍一下您的组织",
+    "subtitle": "这将帮助我们正确设置您的工作区。",
+    "nameLabel": "组织名称 *",
+    "namePlaceholder": "例如：Techstars Boston",
+    "typeLabel": "项目类型 *",
+    "websiteLabel": "网站（可选）",
+    "websitePlaceholder": "https://your-accelerator.com",
+    "continue": "继续",
+    "typeRequiredError": "请选择您的组织类型"
+  },
+  "account": {
+    "title": "创建您的管理员账号",
+    "subtitle": "您将成为工作区所有者，可以稍后邀请团队成员。",
+    "firstNameLabel": "名",
+    "firstNamePlaceholder": "小明",
+    "lastNameLabel": "姓",
+    "lastNamePlaceholder": "王",
+    "emailLabel": "工作邮箱",
+    "emailPlaceholder": "jane@accelerator.com",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 8 个字符",
+    "createAccount": "创建账号",
+    "back": "← 返回",
+    "verificationSent": "请查看您的邮箱以获取 6 位验证码",
+    "registrationFailed": "注册失败"
+  },
+  "verify": {
+    "title": "查看您的邮箱",
+    "subtitlePrefix": "我们已将 6 位验证码发送至",
+    "codeLabel": "验证码",
+    "codePlaceholder": "000000",
+    "verifyAndContinue": "验证并继续",
+    "back": "← 返回",
+    "verificationFailed": "验证失败"
+  },
+  "done": {
+    "title": "您的工作区已准备就绪！",
+    "subtitlePrefix": "欢迎加入 AccelerateOS，{{firstName}}。您的",
+    "subtitleSuffix": "工作区已设置完成。",
+    "checklistItems": [
+      "创建您的第一个孵化批次",
+      "邀请您的团队成员",
+      "为您的第一批创始人完成入驻"
+    ],
+    "goToDashboard": "前往您的控制台 →"
+  }
+}

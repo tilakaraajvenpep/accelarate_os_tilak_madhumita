@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "brand": "AccelerateOS",
+    "signIn": "Sign in",
+    "getStarted": "Get started →"
+  },
+  "hero": {
+    "titleLine1": "The operating system",
+    "titleLine2": "for modern accelerators",
+    "subtitle": "Run your entire program on one intelligent platform — from cohort selection and founder onboarding to mentorship tracking, AI-powered scoring, and investor-ready reporting.",
+    "startProgram": "Start your program",
+    "signInToAccount": "Sign in to your account",
+    "dashboardPreview": {
+      "activeFounders": "Active Founders",
+      "avgReadiness": "Avg. Readiness",
+      "daysToDemo": "Days to Demo",
+      "actionsOpen": "Actions Open",
+      "productTech": "Product & Tech",
+      "goToMarket": "Go-to-Market",
+      "financeOps": "Finance & Ops"
+    }
+  },
+  "stats": {
+    "programsLaunched": "programs launched",
+    "foundersServed": "founders served",
+    "evaluationPillars": "evaluation pillars",
+    "cohortCompletionRate": "cohort completion rate"
+  },
+  "features": {
+    "eyebrow": "Everything you need",
+    "titleLine1": "Built for program managers",
+    "titleLine2": "who move fast",
+    "items": {
+      "evaluation": {
+        "title": "AI-Powered Evaluation",
+        "desc": "Score every startup across 8 structured pillars — product, GTM, finance, team, legal, and more — in minutes, not months."
+      },
+      "dashboards": {
+        "title": "Live Progress Dashboards",
+        "desc": "Real-time visibility into every founder's milestones, blockers, and readiness scores. No more status-update meetings."
+      },
+      "mentorNetwork": {
+        "title": "Mentor & Cohort Network",
+        "desc": "Match founders to the right mentors, facilitate peer accountability, and build a community that outlasts demo day."
+      },
+      "multiTenant": {
+        "title": "Multi-Tenant Programs",
+        "desc": "Run multiple accelerator programs and cohorts from a single workspace. Each tenant gets their own isolated environment."
+      },
+      "reporting": {
+        "title": "Investor-Ready Reporting",
+        "desc": "One-click portfolio reports with traction metrics, readiness scores, and founder highlights — ready for your LP updates."
+      },
+      "security": {
+        "title": "Enterprise Security",
+        "desc": "AWS Cognito authentication, role-based access control, and per-tenant data isolation built in from day one."
+      }
+    }
+  },
+  "journey": {
+    "eyebrow": "The accelerateOS journey",
+    "titleLine1": "From day one to demo day",
+    "titleLine2": "and beyond",
+    "steps": {
+      "assess": {
+        "title": "Assess",
+        "desc": "Baseline every founder across 8 pillars with AI scoring in the first week."
+      },
+      "align": {
+        "title": "Align",
+        "desc": "Build tailored roadmaps and match each founder to the right mentors and resources."
+      },
+      "execute": {
+        "title": "Execute",
+        "desc": "Weekly milestones, peer accountability, and live dashboards keep everyone on track."
+      },
+      "raise": {
+        "title": "Raise",
+        "desc": "Walk into demo day and investor meetings with data-backed proof of progress."
+      }
+    }
+  },
+  "testimonial": {
+    "quote": "Before AccelerateOS, our team of five was drowning in spreadsheets and follow-up emails. Now one program manager runs our entire 30-company cohort — with better outcomes than we ever had before.",
+    "authorName": "Sarah K.",
+    "authorTitle": "Managing Director · Techstars Alumni Network"
+  },
+  "cta": {
+    "title": "Ready to run a world-class program?",
+    "subtitle": "Set up your accelerator workspace in minutes. No credit card required.",
+    "startProgramFree": "Start your program for free",
+    "alreadyHaveAccount": "Already have an account?"
+  },
+  "footer": {
+    "copyright": "© {{year}} AccelerateOS. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact"
+  }
+}

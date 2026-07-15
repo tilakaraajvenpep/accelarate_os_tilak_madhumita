@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Plus, ShieldCheck, Pencil, Trash2 } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -26,9 +27,10 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import type { SuperAdmin } from '@/types/admin'
-import { PASSWORD_PATTERN, PASSWORD_HINT } from '@/lib/validation'
+import { PASSWORD_PATTERN } from '@/lib/validation'
 
 export default function SuperAdminsPage() {
+  const { t } = useTranslation('superadminAdmins')
   const queryClient = useQueryClient()
   const { user: currentUser } = useAuth()
   const [createOpen, setCreateOpen] = useState(false)
@@ -50,44 +52,42 @@ export default function SuperAdminsPage() {
     onSuccess: () => {
       invalidate()
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to update status')),
+    onError: (err) => toast.error(apiError(err, t('toasts.statusUpdateFailed'))),
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => (await api.delete(`/api/super-admins/${id}`)).data,
     onSuccess: () => {
-      toast.success('Super admin deleted')
+      toast.success(t('toasts.deleteSuccess'))
       invalidate()
       setDeleting(null)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to delete super admin')),
+    onError: (err) => toast.error(apiError(err, t('toasts.deleteFailed'))),
   })
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Super Admins</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Grant platform-level access. New admins verify their email before their account is created.
-          </p>
+          <h1 className="text-2xl font-bold">{t('page.title')}</h1>
+          <p className="text-muted-foreground text-sm mt-1">{t('page.description')}</p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="h-4 w-4" /> New super admin
+          <Plus className="h-4 w-4" /> {t('page.newButton')}
         </Button>
       </div>
 
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b flex items-center gap-2">
           <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">Current super admins</h2>
+          <h2 className="font-semibold">{t('table.sectionTitle')}</h2>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t('common:name')}</TableHead>
+              <TableHead>{t('common:email')}</TableHead>
+              <TableHead>{t('common:status')}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -100,32 +100,32 @@ export default function SuperAdminsPage() {
                   <TableCell className="text-muted-foreground">{admin.email}</TableCell>
                   <TableCell>
                     <Badge variant={admin.active ? 'default' : 'secondary'}>
-                      {admin.active ? 'Active' : 'Inactive'}
+                      {admin.active ? t('common:active') : t('common:inactive')}
                     </Badge>
                     {!admin.emailVerified && (
                       <Badge variant="outline" className="ml-2">
-                        Unverified
+                        {t('table.unverified')}
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-3">
-                      <span className="text-xs text-muted-foreground">Active</span>
+                      <span className="text-xs text-muted-foreground">{t('table.activeSwitchLabel')}</span>
                       <Switch
                         checked={admin.active}
                         disabled={isSelf || toggleActiveMutation.isPending}
-                        title={isSelf ? "You can't change your own status" : undefined}
+                        title={isSelf ? t('table.selfStatusTooltip') : undefined}
                         onCheckedChange={(checked: boolean) =>
                           toggleActiveMutation.mutate({ id: admin.id, active: checked })
                         }
                       />
-                      <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => setEditing(admin)}>
+                      <Button variant="ghost" size="icon-sm" title={t('common:edit')} onClick={() => setEditing(admin)}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        title={isSelf ? "You can't delete your own account" : 'Delete'}
+                        title={isSelf ? t('table.selfDeleteTooltip') : t('common:delete')}
                         disabled={isSelf || deleteMutation.isPending}
                         onClick={() => setDeleting(admin)}
                       >
@@ -139,7 +139,7 @@ export default function SuperAdminsPage() {
             {!isLoading && admins.length === 0 && (
               <TableRow>
                 <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                  No super admins yet.
+                  {t('table.empty')}
                 </TableCell>
               </TableRow>
             )}
@@ -178,6 +178,7 @@ function CreateSuperAdminDialog({
   onOpenChange: (open: boolean) => void
   onCreated: () => void
 }) {
+  const { t } = useTranslation('superadminAdmins')
   const [step, setStep] = useState<CreateStep>('form')
   const [form, setForm] = useState<CreateForm>(EMPTY_CREATE_FORM)
   const [otp, setOtp] = useState('')
@@ -204,22 +205,22 @@ function CreateSuperAdminDialog({
     onSuccess: (data) => {
       toast.success(
         data.emailSent
-          ? `Verification code sent to ${form.email}`
-          : `Account created, but the verification email failed to send — check SES config`,
+          ? t('createDialog.otp.otpSent', { email: form.email })
+          : t('createDialog.otp.otpSendFailed'),
       )
       setStep('otp')
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to create super admin')),
+    onError: (err) => toast.error(apiError(err, t('createDialog.errors.createFailed'))),
   })
 
   const verifyMutation = useMutation({
     mutationFn: async () => (await api.post('/api/super-admins/verify-otp', { email: form.email, code: otp })).data,
     onSuccess: () => {
-      toast.success('Super admin verified and activated')
+      toast.success(t('createDialog.otp.verifiedSuccess'))
       onCreated()
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, 'Verification failed')),
+    onError: (err) => toast.error(apiError(err, t('createDialog.otp.verifyFailed'))),
   })
 
   return (
@@ -228,20 +229,18 @@ function CreateSuperAdminDialog({
         {step === 'form' && (
           <>
             <DialogHeader>
-              <DialogTitle>New super admin</DialogTitle>
-              <DialogDescription>
-                We'll email a 6-digit code to verify their email before the account is created.
-              </DialogDescription>
+              <DialogTitle>{t('createDialog.title')}</DialogTitle>
+              <DialogDescription>{t('createDialog.description')}</DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label>Name (optional)</Label>
+                <Label>{t('createDialog.form.nameLabel')}</Label>
                 <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
 
               <div className="space-y-1.5">
-                <Label>Email</Label>
+                <Label>{t('createDialog.form.emailLabel')}</Label>
                 <Input
                   type="email"
                   value={form.email}
@@ -250,26 +249,26 @@ function CreateSuperAdminDialog({
               </div>
 
               <div className="space-y-1.5">
-                <Label>Password</Label>
+                <Label>{t('createDialog.form.passwordLabel')}</Label>
                 <Input
                   type="password"
-                  placeholder="Min. 8 characters"
+                  placeholder={t('createDialog.form.passwordPlaceholder')}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
-                <p className="text-xs text-muted-foreground">{PASSWORD_HINT}</p>
+                <p className="text-xs text-muted-foreground">{t('createDialog.form.passwordHint')}</p>
               </div>
             </div>
 
             <DialogFooter>
               <Button variant="outline" onClick={() => handleOpenChange(false)}>
-                Cancel
+                {t('common:cancel')}
               </Button>
               <Button
                 onClick={() => createMutation.mutate()}
                 disabled={createMutation.isPending || !form.email || !PASSWORD_PATTERN.test(form.password)}
               >
-                Send verification code
+                {t('createDialog.form.submit')}
               </Button>
             </DialogFooter>
           </>
@@ -278,28 +277,28 @@ function CreateSuperAdminDialog({
         {step === 'otp' && (
           <>
             <DialogHeader>
-              <DialogTitle>Verify email</DialogTitle>
-              <DialogDescription>Enter the 6-digit code we sent to {form.email}.</DialogDescription>
+              <DialogTitle>{t('createDialog.otp.title')}</DialogTitle>
+              <DialogDescription>{t('createDialog.otp.description', { email: form.email })}</DialogDescription>
             </DialogHeader>
 
             <div className="space-y-1.5">
-              <Label>Verification code</Label>
+              <Label>{t('createDialog.otp.label')}</Label>
               <Input
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 inputMode="numeric"
                 maxLength={6}
-                placeholder="000000"
+                placeholder={t('createDialog.otp.placeholder')}
                 className="text-center text-2xl tracking-[0.4em] font-mono"
               />
             </div>
 
             <DialogFooter>
               <Button variant="outline" onClick={() => setStep('form')}>
-                Back
+                {t('common:back')}
               </Button>
               <Button onClick={() => verifyMutation.mutate()} disabled={verifyMutation.isPending || otp.length !== 6}>
-                Verify &amp; activate
+                {t('createDialog.otp.submit')}
               </Button>
             </DialogFooter>
           </>
@@ -318,6 +317,7 @@ function EditSuperAdminDialog({
   onOpenChange: (open: boolean) => void
   onSaved: () => void
 }) {
+  const { t } = useTranslation('superadminAdmins')
   const [form, setForm] = useState({ name: '', email: '' })
   const [lastAdminId, setLastAdminId] = useState<number | null | undefined>(undefined)
 
@@ -332,42 +332,40 @@ function EditSuperAdminDialog({
       return (await api.patch(`/api/super-admins/${admin.id}`, { name: form.name, email: form.email })).data
     },
     onSuccess: () => {
-      toast.success('Super admin updated')
+      toast.success(t('editDialog.updatedSuccess'))
       onSaved()
       onOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to save changes')),
+    onError: (err) => toast.error(apiError(err, t('editDialog.saveFailed'))),
   })
 
   return (
     <Dialog open={!!admin} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit super admin</DialogTitle>
-          <DialogDescription>Update this super admin's name and email.</DialogDescription>
+          <DialogTitle>{t('editDialog.title')}</DialogTitle>
+          <DialogDescription>{t('editDialog.description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Name (optional)</Label>
+            <Label>{t('editDialog.nameLabel')}</Label>
             <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </div>
 
           <div className="space-y-1.5">
-            <Label>Email</Label>
+            <Label>{t('editDialog.emailLabel')}</Label>
             <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            <p className="text-xs text-muted-foreground">
-              Changing this re-issues their login — a new temporary password is emailed to the new address.
-            </p>
+            <p className="text-xs text-muted-foreground">{t('editDialog.emailHint')}</p>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.email}>
-            Save changes
+            {t('common:saveChanges')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -386,22 +384,23 @@ function DeleteSuperAdminDialog({
   onConfirm: () => void
   pending: boolean
 }) {
+  const { t } = useTranslation('superadminAdmins')
   return (
     <Dialog open={!!admin} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Delete super admin</DialogTitle>
+          <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
           <DialogDescription>
-            Permanently remove "{admin?.name || admin?.email}" as a super admin? This cannot be undone.
+            {admin && t('deleteDialog.description', { name: admin.name || admin.email })}
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button variant="destructive" onClick={onConfirm} disabled={pending}>
-            Delete
+            {t('common:delete')}
           </Button>
         </DialogFooter>
       </DialogContent>

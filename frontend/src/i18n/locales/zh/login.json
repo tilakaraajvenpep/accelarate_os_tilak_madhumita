@@ -1,0 +1,65 @@
+{
+  "signin": {
+    "title": "登录您的账户",
+    "subtitle": "请在下方输入您的邮箱以登录账户",
+    "passwordLabel": "密码",
+    "emailPlaceholder": "m@example.com",
+    "forgotPasswordLink": "忘记密码？",
+    "submitButton": "登录",
+    "newToPlatform": "初次使用 AccelerateOS？",
+    "startProgramLink": "开始您的项目 →",
+    "errorFallback": "登录失败"
+  },
+  "verifyEmail": {
+    "backButton": "← 返回",
+    "title": "查看您的邮箱",
+    "subtitlePrefix": "我们已发送 6 位验证码至",
+    "submitButton": "验证邮箱",
+    "successToast": "邮箱验证成功！您现在可以登录了。",
+    "errorFallback": "验证失败"
+  },
+  "forgotPassword": {
+    "backButton": "← 返回登录",
+    "title": "忘记密码",
+    "subtitle": "请输入您的邮箱，我们将发送重置验证码。",
+    "submitButton": "发送重置验证码",
+    "successToast": "重置验证码已发送至您的邮箱",
+    "errorFallback": "发送重置验证码失败"
+  },
+  "resetPassword": {
+    "title": "重置密码",
+    "subtitle": "请输入邮箱中的验证码和您的新密码。",
+    "resetCodeLabel": "重置验证码",
+    "newPasswordLabel": "新密码",
+    "newPasswordPlaceholder": "至少 8 个字符",
+    "submitButton": "重置密码",
+    "successToast": "密码重置成功。您现在可以登录了。",
+    "errorFallback": "重置失败"
+  },
+  "brandPanel": {
+    "eyebrow": "创业之旅",
+    "headline": {
+      "line1": "从最初的想法",
+      "line2": "到获得融资的创始人。"
+    },
+    "description": "AccelerateOS 为每位创始人提供结构化的成长路径、AI 驱动的洞察，以及帮助您从零基础成长为融资就绪状态的社区支持——比以往更快。",
+    "steps": {
+      "assess": {
+        "title": "评估您的基础",
+        "desc": "在数分钟内，针对产品、市场推广、财务、团队、法律等 8 大创业支柱，获得真实的基线评估。"
+      },
+      "roadmap": {
+        "title": "制定您的路线图",
+        "desc": "获取量身定制的行动计划。与您的导师和同期伙伴共同完成精选里程碑，快速弥补差距。"
+      },
+      "execute": {
+        "title": "执行并保持问责",
+        "desc": "每周签到、实时仪表盘和同行基准让您始终保持进度，确保每个里程碑都不会被遗漏。"
+      },
+      "raise": {
+        "title": "自信地进行融资",
+        "desc": "带着数据支撑的业绩报告和展现真实成长而非潜力的故事，从容走进投资人会议。"
+      }
+    }
+  }
+}

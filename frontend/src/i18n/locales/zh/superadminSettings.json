@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "设置",
+    "subtitle": "平台级配置。"
+  },
+  "aiKeys": {
+    "section": {
+      "title": "AI 提供商密钥",
+      "subtitle": "配置平台中所使用的 AI 模型的 API 密钥。",
+      "addButton": "添加 AI 密钥",
+      "searchPlaceholder": "按提供商或模型搜索…",
+      "emptyNone": "尚未配置任何 AI 密钥。",
+      "emptyNoMatch": "没有与搜索条件匹配的密钥。",
+      "toast": {
+        "updateFailed": "更新密钥失败",
+        "deleted": "AI 密钥已删除",
+        "deleteFailed": "删除 AI 密钥失败"
+      }
+    },
+    "formDialog": {
+      "editTitle": "编辑 AI 密钥",
+      "addTitle": "添加 AI 密钥",
+      "editDescription": "更新模型或替换 API 密钥。",
+      "addDescription": "选择提供商和模型,然后提供 API 密钥。",
+      "modelLabel": "模型",
+      "modelPlaceholder": "选择模型",
+      "selectProviderFirstPlaceholder": "请先选择提供商",
+      "apiKeyLabel": "API 密钥",
+      "apiKeyPlaceholderEdit": "留空以保留当前密钥",
+      "toast": {
+        "updated": "AI 密钥已更新",
+        "created": "AI 密钥已创建",
+        "updateFailed": "更新 AI 密钥失败",
+        "createFailed": "创建 AI 密钥失败"
+      }
+    },
+    "deleteDialog": {
+      "title": "删除 AI 密钥",
+      "confirmDelete": "永久删除 {{provider}}({{model}})密钥?此操作无法撤销。"
+    }
+  },
+  "tenantEmailService": {
+    "title": "租户邮件服务",
+    "subtitle": "显示租户列表,并可单独启用或停用其邮件服务。",
+    "searchPlaceholder": "搜索租户…",
+    "emptyNone": "暂无租户。",
+    "emptyNoMatch": "没有与搜索条件匹配的租户。",
+    "toast": {
+      "updateFailed": "更新租户失败"
+    }
+  }
+}

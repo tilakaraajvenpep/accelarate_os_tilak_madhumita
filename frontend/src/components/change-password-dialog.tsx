@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
-import { PASSWORD_PATTERN, PASSWORD_HINT } from '@/lib/validation'
+import { PASSWORD_PATTERN } from '@/lib/validation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,6 +25,7 @@ export function ChangePasswordDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
+  const { t } = useTranslation('changePassword')
   const [form, setForm] = useState(EMPTY_FORM)
 
   function handleOpenChange(next: boolean) {
@@ -40,10 +42,10 @@ export function ChangePasswordDialog({
         })
       ).data,
     onSuccess: () => {
-      toast.success('Password changed')
+      toast.success(t('success'))
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to change password')),
+    onError: (err) => toast.error(apiError(err, t('failure'))),
   })
 
   const canSubmit =
@@ -53,13 +55,13 @@ export function ChangePasswordDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Change Password</DialogTitle>
-          <DialogDescription>Enter your current password and choose a new one.</DialogDescription>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Current password</Label>
+            <Label>{t('currentPassword')}</Label>
             <Input
               type="password"
               value={form.currentPassword}
@@ -68,34 +70,34 @@ export function ChangePasswordDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label>New password</Label>
+            <Label>{t('newPassword')}</Label>
             <Input
               type="password"
               value={form.newPassword}
               onChange={(e) => setForm({ ...form, newPassword: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">{PASSWORD_HINT}</p>
+            <p className="text-xs text-muted-foreground">{t('passwordHint')}</p>
           </div>
 
           <div className="space-y-1.5">
-            <Label>Confirm new password</Label>
+            <Label>{t('confirmNewPassword')}</Label>
             <Input
               type="password"
               value={form.confirmPassword}
               onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
             />
             {form.confirmPassword && form.newPassword !== form.confirmPassword && (
-              <p className="text-xs text-destructive">Passwords don't match.</p>
+              <p className="text-xs text-destructive">{t('passwordsDontMatch')}</p>
             )}
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !canSubmit}>
-            Change password
+            {t('submit')}
           </Button>
         </DialogFooter>
       </DialogContent>

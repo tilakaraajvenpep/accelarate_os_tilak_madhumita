@@ -1,0 +1,50 @@
+{
+  "greeting": {
+    "welcomeName": "欢迎回来，{{name}}",
+    "welcome": "欢迎回来",
+    "subtitle": "这是您今天的项目概览。"
+  },
+  "stats": {
+    "readinessScore": "准备度评分",
+    "readinessScoreSub": "满分 10 分",
+    "readinessScoreTrend": "本周 +0.3",
+    "pillarsDone": "已完成支柱",
+    "pillarsDoneSub": "5 项进行中",
+    "daysInProgram": "项目进行天数",
+    "daysInProgramSub": "共 90 天",
+    "openActions": "待办事项",
+    "openActionsSub": "2 项已逾期"
+  },
+  "pillars": {
+    "productTech": "产品与技术",
+    "goToMarket": "市场推广",
+    "financeOps": "财务与运营",
+    "teamCulture": "团队与文化",
+    "legalIp": "法务与知识产权"
+  },
+  "pillarProgress": {
+    "title": "支柱进度",
+    "tracked": "跟踪 5 个支柱"
+  },
+  "scoreRing": {
+    "title": "总体评分",
+    "performanceLine1": "表现优于平均水平",
+    "performanceLine2": "领先于您的批次"
+  },
+  "upcoming": {
+    "title": "即将开始",
+    "mentorCheckIn": "导师沟通会",
+    "mentorCheckInTime": "明天上午 10:00",
+    "cohortSession": "批次交流会",
+    "cohortSessionTime": "周四下午 2:00",
+    "empty": "日历集成即将上线"
+  },
+  "recentDocuments": {
+    "title": "近期文档",
+    "empty": "文档库即将上线。"
+  },
+  "activityFeed": {
+    "title": "活动动态",
+    "empty": "活动跟踪即将上线。"
+  }
+}

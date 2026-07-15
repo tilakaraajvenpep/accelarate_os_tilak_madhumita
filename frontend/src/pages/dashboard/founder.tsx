@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { TrendingUp, CheckSquare, Calendar, ListTodo, ArrowUpRight, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { cn } from '@/lib/utils'
@@ -39,14 +40,20 @@ function StatCard({ label, value, sub, icon: Icon, accent, trend, trendUp }: Sta
 }
 
 const PILLARS = [
-  { name: 'Product & Tech', pct: 72, color: 'oklch(0.65 0.22 265)' },
-  { name: 'Go-to-Market', pct: 55, color: 'oklch(0.65 0.20 200)' },
-  { name: 'Finance & Ops', pct: 40, color: 'oklch(0.65 0.22 30)' },
-  { name: 'Team & Culture', pct: 85, color: 'oklch(0.70 0.18 145)' },
-  { name: 'Legal & IP', pct: 30, color: 'oklch(0.65 0.22 310)' },
+  { id: 'productTech', pct: 72, color: 'oklch(0.65 0.22 265)' },
+  { id: 'goToMarket', pct: 55, color: 'oklch(0.65 0.20 200)' },
+  { id: 'financeOps', pct: 40, color: 'oklch(0.65 0.22 30)' },
+  { id: 'teamCulture', pct: 85, color: 'oklch(0.70 0.18 145)' },
+  { id: 'legalIp', pct: 30, color: 'oklch(0.65 0.22 310)' },
+]
+
+const UPCOMING_EVENTS = [
+  { id: 'mentorCheckIn', color: 'oklch(0.65 0.22 265)' },
+  { id: 'cohortSession', color: 'oklch(0.65 0.20 200)' },
 ]
 
 export default function FounderDashboard() {
+  const { t } = useTranslation('dashboardFounder')
   const { user } = useAuth()
   const firstName = user?.name?.split(' ')[0]
 
@@ -56,42 +63,42 @@ export default function FounderDashboard() {
       {/* Greeting */}
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-ink">
-          {firstName ? `Welcome back, ${firstName}` : 'Welcome back'} 👋
+          {firstName ? t('greeting.welcomeName', { name: firstName }) : t('greeting.welcome')} 👋
         </h1>
         <p className="text-sm text-ink/35">
-          Here's your program overview for today.
+          {t('greeting.subtitle')}
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
-          label="Readiness Score"
+          label={t('stats.readinessScore')}
           value="7.4"
-          sub="out of 10"
+          sub={t('stats.readinessScoreSub')}
           icon={TrendingUp}
           accent="oklch(0.65 0.22 265)"
-          trend="+0.3 this week"
+          trend={t('stats.readinessScoreTrend')}
           trendUp
         />
         <StatCard
-          label="Pillars Done"
+          label={t('stats.pillarsDone')}
           value="3 / 8"
-          sub="5 in progress"
+          sub={t('stats.pillarsDoneSub')}
           icon={CheckSquare}
           accent="oklch(0.65 0.20 200)"
         />
         <StatCard
-          label="Days in Program"
+          label={t('stats.daysInProgram')}
           value="42"
-          sub="of 90 days"
+          sub={t('stats.daysInProgramSub')}
           icon={Calendar}
           accent="oklch(0.65 0.22 310)"
         />
         <StatCard
-          label="Open Actions"
+          label={t('stats.openActions')}
           value="5"
-          sub="2 overdue"
+          sub={t('stats.openActionsSub')}
           icon={ListTodo}
           accent="oklch(0.70 0.20 30)"
         />
@@ -103,14 +110,14 @@ export default function FounderDashboard() {
         {/* Pillar progress — wider */}
         <div className="lg:col-span-3 rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-ink">Pillar Progress</h2>
-            <span className="text-xs text-ink/30">5 pillars tracked</span>
+            <h2 className="text-sm font-semibold text-ink">{t('pillarProgress.title')}</h2>
+            <span className="text-xs text-ink/30">{t('pillarProgress.tracked')}</span>
           </div>
           <div className="space-y-4">
             {PILLARS.map((p) => (
-              <div key={p.name} className="space-y-1.5">
+              <div key={p.id} className="space-y-1.5">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-ink/70 font-medium text-xs">{p.name}</span>
+                  <span className="text-ink/70 font-medium text-xs">{t(`pillars.${p.id}`)}</span>
                   <span className="text-xs font-semibold" style={{ color: p.color }}>{p.pct}%</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-glass-2 overflow-hidden">
@@ -129,7 +136,7 @@ export default function FounderDashboard() {
 
           {/* Score ring card */}
           <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6 flex flex-col items-center text-center space-y-3">
-            <p className="text-xs font-medium text-ink/35 uppercase tracking-wide">Overall Score</p>
+            <p className="text-xs font-medium text-ink/35 uppercase tracking-wide">{t('scoreRing.title')}</p>
             <div className="relative h-24 w-24">
               <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="var(--glass-bd)" strokeWidth="8" />
@@ -145,26 +152,23 @@ export default function FounderDashboard() {
                 <span className="text-2xl font-bold text-ink">74<span className="text-sm text-ink/40">%</span></span>
               </div>
             </div>
-            <p className="text-xs text-ink/30 leading-relaxed">Performing above average<br/>for your cohort</p>
+            <p className="text-xs text-ink/30 leading-relaxed">{t('scoreRing.performanceLine1')}<br/>{t('scoreRing.performanceLine2')}</p>
           </div>
 
           {/* Upcoming placeholder */}
           <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-ink">Upcoming</h2>
+            <h2 className="text-sm font-semibold text-ink">{t('upcoming.title')}</h2>
             <div className="space-y-2">
-              {[
-                { label: 'Mentor check-in', time: 'Tomorrow 10:00 AM', color: 'oklch(0.65 0.22 265)' },
-                { label: 'Cohort session', time: 'Thu 2:00 PM', color: 'oklch(0.65 0.20 200)' },
-              ].map((e) => (
-                <div key={e.label} className="flex items-center gap-3 rounded-lg border border-glass-border bg-glass px-3 py-2">
+              {UPCOMING_EVENTS.map((e) => (
+                <div key={e.id} className="flex items-center gap-3 rounded-lg border border-glass-border bg-glass px-3 py-2">
                   <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: e.color }} />
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-ink/70 truncate">{e.label}</p>
-                    <p className="text-[10px] text-ink/30">{e.time}</p>
+                    <p className="text-xs font-medium text-ink/70 truncate">{t(`upcoming.${e.id}`)}</p>
+                    <p className="text-[10px] text-ink/30">{t(`upcoming.${e.id}Time`)}</p>
                   </div>
                 </div>
               ))}
-              <p className="text-[10px] text-ink/20 text-center pt-1">Calendar integration coming soon</p>
+              <p className="text-[10px] text-ink/20 text-center pt-1">{t('upcoming.empty')}</p>
             </div>
           </div>
 
@@ -174,12 +178,12 @@ export default function FounderDashboard() {
       {/* Bottom row */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6">
-          <h2 className="text-sm font-semibold text-ink mb-3">Recent Documents</h2>
-          <p className="text-xs text-ink/30">Document library coming soon.</p>
+          <h2 className="text-sm font-semibold text-ink mb-3">{t('recentDocuments.title')}</h2>
+          <p className="text-xs text-ink/30">{t('recentDocuments.empty')}</p>
         </div>
         <div className="rounded-2xl border border-glass-border bg-glass backdrop-blur-xl p-6">
-          <h2 className="text-sm font-semibold text-ink mb-3">Activity Feed</h2>
-          <p className="text-xs text-ink/30">Activity tracking coming soon.</p>
+          <h2 className="text-sm font-semibold text-ink mb-3">{t('activityFeed.title')}</h2>
+          <p className="text-xs text-ink/30">{t('activityFeed.empty')}</p>
         </div>
       </div>
 

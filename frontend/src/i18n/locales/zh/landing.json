@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "brand": "AccelerateOS",
+    "signIn": "登录",
+    "getStarted": "立即开始 →"
+  },
+  "hero": {
+    "titleLine1": "面向现代加速器的",
+    "titleLine2": "操作系统",
+    "subtitle": "在一个智能平台上运行您的整个项目——从遴选团队和创始人入驻，到导师跟踪、AI 智能评分以及投资人级别的报告，一站式完成。",
+    "startProgram": "启动您的项目",
+    "signInToAccount": "登录您的账户",
+    "dashboardPreview": {
+      "activeFounders": "活跃创始人",
+      "avgReadiness": "平均成熟度",
+      "daysToDemo": "距路演天数",
+      "actionsOpen": "待处理事项",
+      "productTech": "产品与技术",
+      "goToMarket": "市场推广",
+      "financeOps": "财务与运营"
+    }
+  },
+  "stats": {
+    "programsLaunched": "个已启动项目",
+    "foundersServed": "位创始人受益",
+    "evaluationPillars": "个评估维度",
+    "cohortCompletionRate": "批次完成率"
+  },
+  "features": {
+    "eyebrow": "满足您的一切需求",
+    "titleLine1": "为快速行动的",
+    "titleLine2": "项目管理者打造",
+    "items": {
+      "evaluation": {
+        "title": "AI 智能评估",
+        "desc": "在数分钟内（而非数月内）对每家初创企业进行 8 大结构化维度评分——产品、市场推广、财务、团队、法务等。"
+      },
+      "dashboards": {
+        "title": "实时进度看板",
+        "desc": "实时掌握每位创始人的里程碑、阻碍因素和成熟度评分，无需再开状态汇报会。"
+      },
+      "mentorNetwork": {
+        "title": "导师与团队网络",
+        "desc": "为创始人匹配合适的导师，促进同伴间的相互监督，打造在路演日之后仍能延续的社群。"
+      },
+      "multiTenant": {
+        "title": "多租户项目管理",
+        "desc": "在同一个工作空间内运行多个加速器项目和批次，每个租户拥有各自独立隔离的环境。"
+      },
+      "reporting": {
+        "title": "投资人级别报告",
+        "desc": "一键生成包含增长指标、成熟度评分和创始人亮点的投资组合报告，随时可用于有限合伙人（LP）更新。"
+      },
+      "security": {
+        "title": "企业级安全",
+        "desc": "内置 AWS Cognito 身份认证、基于角色的访问控制，以及自始即有的租户级数据隔离。"
+      }
+    }
+  },
+  "journey": {
+    "eyebrow": "accelerateOS 全流程",
+    "titleLine1": "从第一天到路演日，",
+    "titleLine2": "乃至更远",
+    "steps": {
+      "assess": {
+        "title": "评估",
+        "desc": "在第一周内通过 AI 评分为每位创始人建立 8 大维度基线。"
+      },
+      "align": {
+        "title": "对齐",
+        "desc": "制定量身定制的路线图，并为每位创始人匹配合适的导师与资源。"
+      },
+      "execute": {
+        "title": "执行",
+        "desc": "每周里程碑、同伴监督机制和实时看板，让所有人保持在正确的节奏上。"
+      },
+      "raise": {
+        "title": "融资",
+        "desc": "带着有数据支撑的进展证明，从容走上路演日和投资人会议。"
+      }
+    }
+  },
+  "testimonial": {
+    "quote": "在使用 AccelerateOS 之前，我们五人的团队被电子表格和跟进邮件淹没。现在，只需一位项目经理就能运营我们整个 30 家企业的批次——而且成果比以往任何时候都更好。",
+    "authorName": "Sarah K.",
+    "authorTitle": "董事总经理 · Techstars 校友网络"
+  },
+  "cta": {
+    "title": "准备好运营一个世界级项目了吗？",
+    "subtitle": "只需几分钟即可搭建您的加速器工作空间，无需信用卡。",
+    "startProgramFree": "免费启动您的项目",
+    "alreadyHaveAccount": "已经有账户了？"
+  },
+  "footer": {
+    "copyright": "© {{year}} AccelerateOS。保留所有权利。",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "contact": "联系我们"
+  }
+}

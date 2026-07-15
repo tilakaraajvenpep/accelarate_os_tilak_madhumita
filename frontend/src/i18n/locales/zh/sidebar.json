@@ -1,0 +1,34 @@
+{
+  "roleLabels": {
+    "founder": "创始人",
+    "admin": "管理员",
+    "super_admin": "超级管理员",
+    "mentor": "导师",
+    "funding_team": "融资团队"
+  },
+  "sections": {
+    "management": "管理",
+    "tools": "工具",
+    "platform": "平台"
+  },
+  "nav": {
+    "overview": "总览",
+    "platformOverview": "平台总览",
+    "myPillars": "我的项目",
+    "documents": "文档",
+    "calendar": "日历",
+    "messages": "消息",
+    "cohorts": "训练营",
+    "companies": "公司",
+    "myCompanies": "我的公司",
+    "programs": "项目",
+    "scoring": "评分",
+    "emailTemplates": "邮件模板",
+    "tenants": "租户",
+    "superAdmins": "超级管理员",
+    "plansBilling": "套餐与账单",
+    "reports": "报告",
+    "settings": "设置"
+  },
+  "changePassword": "修改密码"
+}

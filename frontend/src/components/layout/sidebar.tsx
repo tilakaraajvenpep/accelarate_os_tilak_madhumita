@@ -1,5 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import {
   Home,
   LayoutDashboard,
@@ -45,91 +47,91 @@ type NavSection = {
   items: NavItem[]
 }
 
-const FOUNDER_SECTIONS: NavSection[] = [
-  {
-    items: [
-      { href: '/app', icon: Home, title: 'Overview' },
-      { href: '/app/pillars', icon: LayoutDashboard, title: 'My Pillars' },
-      { href: '/app/documents', icon: FileText, title: 'Documents' },
-      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
-      { href: '/app/messages', icon: MessageSquare, title: 'Messages' },
-    ],
-  },
-]
+function founderSections(t: TFunction<'sidebar'>): NavSection[] {
+  return [
+    {
+      items: [
+        { href: '/app', icon: Home, title: t('nav.overview') },
+        { href: '/app/pillars', icon: LayoutDashboard, title: t('nav.myPillars') },
+        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
+        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
+        { href: '/app/messages', icon: MessageSquare, title: t('nav.messages') },
+      ],
+    },
+  ]
+}
 
-const ADMIN_SECTIONS: NavSection[] = [
-  {
-    items: [{ href: '/app', icon: Home, title: 'Overview' }],
-  },
-  {
-    title: 'Management',
-    items: [
-      { href: '/app/cohorts', icon: Users, title: 'Cohorts' },
-      { href: '/app/companies', icon: Building2, title: 'Companies' },
-      { href: '/app/programs', icon: BookOpen, title: 'Programs' },
-    ],
-  },
-  {
-    title: 'Tools',
-    items: [
-      { href: '/app/scoring', icon: BarChart2, title: 'Scoring' },
-      { href: '/app/documents', icon: FileText, title: 'Documents' },
-      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
-    ],
-  },
-  {
-    title: 'Settings',
-    items: [{ href: '/app/admin/email-templates', icon: Mail, title: 'Email Templates' }],
-  },
-]
+function adminSections(t: TFunction<'sidebar'>): NavSection[] {
+  return [
+    {
+      items: [{ href: '/app', icon: Home, title: t('nav.overview') }],
+    },
+    {
+      title: t('sections.management'),
+      items: [
+        { href: '/app/cohorts', icon: Users, title: t('nav.cohorts') },
+        { href: '/app/companies', icon: Building2, title: t('nav.companies') },
+        { href: '/app/programs', icon: BookOpen, title: t('nav.programs') },
+      ],
+    },
+    {
+      title: t('sections.tools'),
+      items: [
+        { href: '/app/scoring', icon: BarChart2, title: t('nav.scoring') },
+        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
+        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
+      ],
+    },
+    {
+      title: t('nav.settings'),
+      items: [{ href: '/app/admin/email-templates', icon: Mail, title: t('nav.emailTemplates') }],
+    },
+  ]
+}
 
-const SUPER_ADMIN_SECTIONS: NavSection[] = [
-  {
-    items: [{ href: '/app', icon: Globe, title: 'Platform Overview' }],
-  },
-  {
-    title: 'Platform',
-    items: [
-      { href: '/app/superadmin/tenants', icon: Building2, title: 'Tenants' },
-      { href: '/app/superadmin/admins', icon: ShieldCheck, title: 'Super Admins' },
-      { href: '/app/superadmin/plans', icon: CreditCard, title: 'Plans & Billing' },
-      { href: '/app/superadmin/reports', icon: BarChart2, title: 'Reports' },
-      { href: '/app/superadmin/settings', icon: Settings, title: 'Settings' },
-    ],
-  },
-]
+function superAdminSections(t: TFunction<'sidebar'>): NavSection[] {
+  return [
+    {
+      items: [{ href: '/app', icon: Globe, title: t('nav.platformOverview') }],
+    },
+    {
+      title: t('sections.platform'),
+      items: [
+        { href: '/app/superadmin/tenants', icon: Building2, title: t('nav.tenants') },
+        { href: '/app/superadmin/admins', icon: ShieldCheck, title: t('nav.superAdmins') },
+        { href: '/app/superadmin/plans', icon: CreditCard, title: t('nav.plansBilling') },
+        { href: '/app/superadmin/reports', icon: BarChart2, title: t('nav.reports') },
+        { href: '/app/superadmin/settings', icon: Settings, title: t('nav.settings') },
+      ],
+    },
+  ]
+}
 
-const MENTOR_SECTIONS: NavSection[] = [
-  {
-    items: [
-      { href: '/app', icon: Home, title: 'Overview' },
-      { href: '/app/companies', icon: Building2, title: 'My Companies' },
-      { href: '/app/calendar', icon: Calendar, title: 'Calendar' },
-      { href: '/app/documents', icon: FileText, title: 'Documents' },
-    ],
-  },
-]
+function mentorSections(t: TFunction<'sidebar'>): NavSection[] {
+  return [
+    {
+      items: [
+        { href: '/app', icon: Home, title: t('nav.overview') },
+        { href: '/app/companies', icon: Building2, title: t('nav.myCompanies') },
+        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
+        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
+      ],
+    },
+  ]
+}
 
-function getSections(role?: UserRole): NavSection[] {
+function getSections(t: TFunction<'sidebar'>, role?: UserRole): NavSection[] {
   switch (role) {
-    case 'super_admin': return SUPER_ADMIN_SECTIONS
-    case 'admin': return ADMIN_SECTIONS
-    case 'mentor': return MENTOR_SECTIONS
-    default: return FOUNDER_SECTIONS
+    case 'super_admin': return superAdminSections(t)
+    case 'admin': return adminSections(t)
+    case 'mentor': return mentorSections(t)
+    default: return founderSections(t)
   }
 }
 
 function initials(name?: string | null, email?: string) {
   if (name) return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2)
   return (email?.[0] ?? 'U').toUpperCase()
-}
-
-const ROLE_LABELS: Record<UserRole, string> = {
-  founder: 'Founder',
-  admin: 'Admin',
-  super_admin: 'Super Admin',
-  mentor: 'Mentor',
-  funding_team: 'Funding Team',
 }
 
 interface SidebarProps {
@@ -139,7 +141,15 @@ interface SidebarProps {
 export function Sidebar({ collapsed }: SidebarProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const sections = getSections(user?.role)
+  const { t } = useTranslation(['sidebar', 'common'])
+  const sections = getSections(t, user?.role)
+  const roleLabels: Record<UserRole, string> = {
+    founder: t('roleLabels.founder'),
+    admin: t('roleLabels.admin'),
+    super_admin: t('roleLabels.super_admin'),
+    mentor: t('roleLabels.mentor'),
+    funding_team: t('roleLabels.funding_team'),
+  }
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   async function handleLogout() {
@@ -159,7 +169,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
         <div className="h-8 w-8 flex-shrink-0 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center text-ink font-bold text-sm">
           A
         </div>
-        {!collapsed && <span className="font-semibold text-sm text-ink">AccelerateOS</span>}
+        {!collapsed && <span className="font-semibold text-sm text-ink">{t('common:brand')}</span>}
       </div>
 
       {/* Navigation */}
@@ -217,7 +227,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
                       {user?.name || user?.email?.split('@')[0] || 'User'}
                     </p>
                     <p className="text-xs text-ink/35 leading-tight">
-                      {user?.role ? ROLE_LABELS[user.role] : ''}
+                      {user?.role ? roleLabels[user.role] : ''}
                     </p>
                   </div>
                   <ChevronRight className="h-3.5 w-3.5 text-ink/25 flex-shrink-0" />
@@ -233,16 +243,16 @@ export function Sidebar({ collapsed }: SidebarProps) {
             <DropdownMenuSeparator className="bg-glass-2" />
             <DropdownMenuItem onClick={() => navigate('/app/settings')} className="focus:bg-glass-2 focus:text-ink">
               <Settings className="h-4 w-4 mr-2" />
-              Settings
+              {t('common:settings')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setChangePasswordOpen(true)} className="focus:bg-glass-2 focus:text-ink">
               <KeyRound className="h-4 w-4 mr-2" />
-              Change Password
+              {t('changePassword')}
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-glass-2" />
             <DropdownMenuItem onClick={handleLogout} className="text-red-400 focus:text-red-400 focus:bg-red-400/10">
               <LogOut className="h-4 w-4 mr-2" />
-              Sign out
+              {t('common:signOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

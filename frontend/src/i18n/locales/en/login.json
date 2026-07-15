@@ -1,0 +1,65 @@
+{
+  "signin": {
+    "title": "Login to your account",
+    "subtitle": "Enter your email below to login to your account",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "m@example.com",
+    "forgotPasswordLink": "Forgot your password?",
+    "submitButton": "Login",
+    "newToPlatform": "New to AccelerateOS?",
+    "startProgramLink": "Start your program →",
+    "errorFallback": "Sign in failed"
+  },
+  "verifyEmail": {
+    "backButton": "← Back",
+    "title": "Check your email",
+    "subtitlePrefix": "We sent a 6-digit code to",
+    "submitButton": "Verify email",
+    "successToast": "Email verified! You can now sign in.",
+    "errorFallback": "Verification failed"
+  },
+  "forgotPassword": {
+    "backButton": "← Back to sign in",
+    "title": "Forgot password",
+    "subtitle": "Enter your email and we'll send a reset code.",
+    "submitButton": "Send reset code",
+    "successToast": "Reset code sent to your email",
+    "errorFallback": "Failed to send reset code"
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "subtitle": "Enter the code from your email and your new password.",
+    "resetCodeLabel": "Reset code",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "Min. 8 characters",
+    "submitButton": "Reset password",
+    "successToast": "Password reset. You can now sign in.",
+    "errorFallback": "Reset failed"
+  },
+  "brandPanel": {
+    "eyebrow": "The Entrepreneurial Journey",
+    "headline": {
+      "line1": "From first idea",
+      "line2": "to funded founder."
+    },
+    "description": "AccelerateOS gives every founder a structured path, AI-powered insights, and the community to grow from zero to raise-ready — faster than ever before.",
+    "steps": {
+      "assess": {
+        "title": "Assess your foundations",
+        "desc": "Get an honest baseline across 8 startup pillars — product, go-to-market, finance, team, legal, and more — in minutes."
+      },
+      "roadmap": {
+        "title": "Build your roadmap",
+        "desc": "Receive a tailored action plan. Work through curated milestones with your mentor and cohort peers to close gaps fast."
+      },
+      "execute": {
+        "title": "Execute & stay accountable",
+        "desc": "Weekly check-ins, live dashboards, and peer benchmarks keep you on track. No milestone falls through the cracks."
+      },
+      "raise": {
+        "title": "Raise with confidence",
+        "desc": "Walk into investor meetings with a data-backed performance report and a story that shows traction, not just potential."
+      }
+    }
+  }
+}

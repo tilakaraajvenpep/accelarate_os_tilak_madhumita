@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Building2, Users, TrendingUp, CreditCard, type LucideIcon } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -28,23 +29,24 @@ function StatCard({ label, value, sub, icon: Icon }: StatCardProps) {
   )
 }
 
-function statusLabel(tenant: Tenant) {
-  if (tenant.suspended) return 'Suspended'
-  if (!tenant.subscription) return 'Trial'
-  if (tenant.subscription.status === 'active') return 'Active'
-  if (tenant.subscription.status === 'trialing') return 'Trial'
-  if (tenant.subscription.status === 'past_due') return 'Past due'
-  if (tenant.subscription.status === 'canceled') return 'Canceled'
-  return 'Expired'
+function statusKey(tenant: Tenant) {
+  if (tenant.suspended) return 'suspended'
+  if (!tenant.subscription) return 'trial'
+  if (tenant.subscription.status === 'active') return 'active'
+  if (tenant.subscription.status === 'trialing') return 'trial'
+  if (tenant.subscription.status === 'past_due') return 'pastDue'
+  if (tenant.subscription.status === 'canceled') return 'canceled'
+  return 'expired'
 }
 
-function statusColor(label: string) {
-  if (label === 'Active') return 'text-green-600'
-  if (label === 'Trial') return 'text-amber-600'
+function statusColor(key: string) {
+  if (key === 'active') return 'text-green-600'
+  if (key === 'trial') return 'text-amber-600'
   return 'text-muted-foreground'
 }
 
 export default function SuperAdminDashboard() {
+  const { t } = useTranslation('dashboardSuperAdmin')
   const { data: stats } = useQuery({
     queryKey: ['platform-stats'],
     queryFn: async () => (await api.get<PlatformStats>('/api/platform/stats')).data,
@@ -58,30 +60,30 @@ export default function SuperAdminDashboard() {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Platform Overview</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Cross-tenant health and usage at a glance.
+          {t('subtitle')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Tenants" value={stats ? String(stats.tenants) : '—'} icon={Building2} />
+        <StatCard label={t('stats.tenants')} value={stats ? String(stats.tenants) : '—'} icon={Building2} />
         <StatCard
-          label="Total Companies"
+          label={t('stats.totalCompanies')}
           value={stats?.totalCompanies == null ? '—' : String(stats.totalCompanies)}
-          sub={stats?.totalCompanies == null ? 'Not tracked yet' : undefined}
+          sub={stats?.totalCompanies == null ? t('stats.notTrackedYet') : undefined}
           icon={Users}
         />
         <StatCard
-          label="Avg Platform Score"
+          label={t('stats.avgPlatformScore')}
           value={stats?.avgPlatformScore == null ? '—' : stats.avgPlatformScore.toFixed(1)}
-          sub={stats?.avgPlatformScore == null ? 'Not tracked yet' : undefined}
+          sub={stats?.avgPlatformScore == null ? t('stats.notTrackedYet') : undefined}
           icon={TrendingUp}
         />
         <StatCard
-          label="MRR"
+          label={t('stats.mrr')}
           value={stats ? `$${(stats.mrrCents / 100).toLocaleString()}` : '—'}
-          sub={stats ? `${stats.activeSubscriptions} active subs` : undefined}
+          sub={stats ? t('stats.activeSubs', { count: stats.activeSubscriptions }) : undefined}
           icon={CreditCard}
         />
       </div>
@@ -89,11 +91,11 @@ export default function SuperAdminDashboard() {
       {/* Tenants table */}
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b">
-          <h2 className="font-semibold">Tenants</h2>
+          <h2 className="font-semibold">{t('tenantsSection.title')}</h2>
         </div>
         <div className="divide-y">
           {tenants.map((tenant) => {
-            const label = statusLabel(tenant)
+            const key = statusKey(tenant)
             return (
               <div key={tenant.id} className="flex items-center justify-between px-6 py-3">
                 <div className="flex items-center gap-3">
@@ -103,33 +105,33 @@ export default function SuperAdminDashboard() {
                   <div>
                     <p className="text-sm font-medium">{tenant.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {tenant.foundersUsed} founder{tenant.foundersUsed === 1 ? '' : 's'}
+                      {t('tenantsSection.founders', { count: tenant.foundersUsed })}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-medium">
-                    {tenant.plan?.name ?? 'No plan'}
+                    {tenant.plan?.name ?? t('tenantsSection.noPlan')}
                   </span>
-                  <span className={cn('text-xs font-medium', statusColor(label))}>{label}</span>
+                  <span className={cn('text-xs font-medium', statusColor(key))}>{t(`tenantStatus.${key}`)}</span>
                 </div>
               </div>
             )
           })}
           {tenants.length === 0 && (
-            <div className="px-6 py-6 text-center text-sm text-muted-foreground">No tenants yet.</div>
+            <div className="px-6 py-6 text-center text-sm text-muted-foreground">{t('tenantsSection.empty')}</div>
           )}
         </div>
       </div>
 
       <div className="rounded-xl border bg-card p-6">
-        <h2 className="font-semibold mb-2">Usage & Billing</h2>
+        <h2 className="font-semibold mb-2">{t('usageBilling.title')}</h2>
         <p className="text-sm text-muted-foreground">
-          Manage plans, pricing, and tenant subscriptions on the{' '}
+          {t('usageBilling.descriptionPrefix')}{' '}
           <a href="/app/superadmin/plans" className="underline underline-offset-2">
-            Plans &amp; Billing
+            {t('usageBilling.plansLink')}
           </a>{' '}
-          page.
+          {t('usageBilling.descriptionSuffix')}
         </p>
       </div>
     </div>

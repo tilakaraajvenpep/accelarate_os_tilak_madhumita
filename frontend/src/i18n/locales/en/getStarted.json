@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "signInPrompt": "Already have an account? Sign in"
+  },
+  "stepIndicator": {
+    "organization": "Your organization",
+    "account": "Create account",
+    "verify": "Verify email",
+    "done": "All set"
+  },
+  "orgTypes": {
+    "university": "University accelerator",
+    "corporate": "Corporate accelerator",
+    "vcBacked": "VC-backed accelerator",
+    "government": "Government / nonprofit",
+    "independent": "Independent accelerator",
+    "other": "Other"
+  },
+  "org": {
+    "title": "Tell us about your organization",
+    "subtitle": "This helps us set up your workspace correctly.",
+    "nameLabel": "Organization name *",
+    "namePlaceholder": "e.g. Techstars Boston",
+    "typeLabel": "Program type *",
+    "websiteLabel": "Website (optional)",
+    "websitePlaceholder": "https://your-accelerator.com",
+    "continue": "Continue",
+    "typeRequiredError": "Please select your organization type"
+  },
+  "account": {
+    "title": "Create your admin account",
+    "subtitle": "You'll be the workspace owner and can invite your team later.",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "Jane",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Smith",
+    "emailLabel": "Work email",
+    "emailPlaceholder": "jane@accelerator.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "createAccount": "Create account",
+    "back": "← Back",
+    "verificationSent": "Check your email for a 6-digit verification code",
+    "registrationFailed": "Registration failed"
+  },
+  "verify": {
+    "title": "Check your email",
+    "subtitlePrefix": "We sent a 6-digit code to",
+    "codeLabel": "Verification code",
+    "codePlaceholder": "000000",
+    "verifyAndContinue": "Verify & continue",
+    "back": "← Back",
+    "verificationFailed": "Verification failed"
+  },
+  "done": {
+    "title": "Your workspace is ready!",
+    "subtitlePrefix": "Welcome to AccelerateOS, {{firstName}}. Your",
+    "subtitleSuffix": "workspace has been set up.",
+    "checklistItems": [
+      "Set up your first cohort",
+      "Invite your team members",
+      "Onboard your first founders"
+    ],
+    "goToDashboard": "Go to your dashboard →"
+  }
+}

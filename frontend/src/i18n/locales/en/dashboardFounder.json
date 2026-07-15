@@ -1,0 +1,50 @@
+{
+  "greeting": {
+    "welcomeName": "Welcome back, {{name}}",
+    "welcome": "Welcome back",
+    "subtitle": "Here's your program overview for today."
+  },
+  "stats": {
+    "readinessScore": "Readiness Score",
+    "readinessScoreSub": "out of 10",
+    "readinessScoreTrend": "+0.3 this week",
+    "pillarsDone": "Pillars Done",
+    "pillarsDoneSub": "5 in progress",
+    "daysInProgram": "Days in Program",
+    "daysInProgramSub": "of 90 days",
+    "openActions": "Open Actions",
+    "openActionsSub": "2 overdue"
+  },
+  "pillars": {
+    "productTech": "Product & Tech",
+    "goToMarket": "Go-to-Market",
+    "financeOps": "Finance & Ops",
+    "teamCulture": "Team & Culture",
+    "legalIp": "Legal & IP"
+  },
+  "pillarProgress": {
+    "title": "Pillar Progress",
+    "tracked": "5 pillars tracked"
+  },
+  "scoreRing": {
+    "title": "Overall Score",
+    "performanceLine1": "Performing above average",
+    "performanceLine2": "for your cohort"
+  },
+  "upcoming": {
+    "title": "Upcoming",
+    "mentorCheckIn": "Mentor check-in",
+    "mentorCheckInTime": "Tomorrow 10:00 AM",
+    "cohortSession": "Cohort session",
+    "cohortSessionTime": "Thu 2:00 PM",
+    "empty": "Calendar integration coming soon"
+  },
+  "recentDocuments": {
+    "title": "Recent Documents",
+    "empty": "Document library coming soon."
+  },
+  "activityFeed": {
+    "title": "Activity Feed",
+    "empty": "Activity tracking coming soon."
+  }
+}

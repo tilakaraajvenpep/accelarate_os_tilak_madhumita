@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Plus, Pencil, CreditCard, Building2, Trash2 } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -41,8 +42,8 @@ function formatCents(cents: number) {
   return `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
 }
 
-function formatLimit(limit: number | null) {
-  return limit === null ? 'Unlimited' : limit.toLocaleString()
+function formatLimit(limit: number | null, t: (key: string) => string) {
+  return limit === null ? t('common:unlimited') : limit.toLocaleString()
 }
 
 function statusColor(status: string) {
@@ -53,6 +54,7 @@ function statusColor(status: string) {
 }
 
 export default function PlansBillingPage() {
+  const { t } = useTranslation('superadminPlans')
   const queryClient = useQueryClient()
   const [planDialogOpen, setPlanDialogOpen] = useState(false)
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null)
@@ -83,16 +85,16 @@ export default function PlansBillingPage() {
     mutationFn: async (params: { tenantId: number; subscriptionId: number }) =>
       (await api.delete(`/api/tenants/${params.tenantId}/subscriptions/${params.subscriptionId}`)).data,
     onSuccess: () => {
-      toast.success('Subscription canceled')
+      toast.success(t('toast.subscriptionCanceled'))
       queryClient.invalidateQueries({ queryKey: ['tenants'] })
       queryClient.invalidateQueries({ queryKey: ['platform-stats'] })
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to cancel subscription')),
+    onError: (err) => toast.error(apiError(err, t('toast.cancelSubscriptionFailed'))),
   })
 
   function handleCancelSubscription(tenant: Tenant) {
     if (!tenant.subscription) return
-    if (!window.confirm(`Cancel ${tenant.name}'s subscription? This can't be undone from here — you'd need to assign a new plan.`)) {
+    if (!window.confirm(t('subscriptionsTable.confirmCancelSubscription', { name: tenant.name }))) {
       return
     }
     cancelSubscriptionMutation.mutate({ tenantId: tenant.id, subscriptionId: tenant.subscription.id })
@@ -111,24 +113,24 @@ export default function PlansBillingPage() {
   const deletePlanMutation = useMutation({
     mutationFn: async (planId: number) => (await api.delete(`/api/plans/${planId}`)).data,
     onSuccess: () => {
-      toast.success('Plan deleted')
+      toast.success(t('toast.planDeleted'))
       queryClient.invalidateQueries({ queryKey: ['plans'] })
       setDeletingPlan(null)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to delete plan')),
+    onError: (err) => toast.error(apiError(err, t('toast.deletePlanFailed'))),
   })
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Plans & Billing</h1>
+          <h1 className="text-2xl font-bold">{t('page.title')}</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Define plans and manage tenant subscriptions.
+            {t('page.subtitle')}
           </p>
         </div>
         <Button onClick={openCreatePlan}>
-          <Plus className="h-4 w-4" /> New Plan
+          <Plus className="h-4 w-4" /> {t('page.newPlanButton')}
         </Button>
       </div>
 
@@ -136,18 +138,18 @@ export default function PlansBillingPage() {
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b flex items-center gap-2">
           <CreditCard className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">Plans</h2>
+          <h2 className="font-semibold">{t('plansTable.cardTitle')}</h2>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Cohorts</TableHead>
-              <TableHead>Founders</TableHead>
-              <TableHead>Storage</TableHead>
-              <TableHead>Price / month</TableHead>
-              <TableHead>AI Key</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t('common:name')}</TableHead>
+              <TableHead>{t('plansTable.cohorts')}</TableHead>
+              <TableHead>{t('plansTable.founders')}</TableHead>
+              <TableHead>{t('plansTable.storage')}</TableHead>
+              <TableHead>{t('plansTable.priceMonth')}</TableHead>
+              <TableHead>{t('plansTable.aiKey')}</TableHead>
+              <TableHead>{t('common:status')}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -158,28 +160,28 @@ export default function PlansBillingPage() {
                   {plan.name}
                   {plan.isCustom && (
                     <Badge variant="outline" className="ml-2">
-                      Custom
+                      {t('plansTable.custom')}
                     </Badge>
                   )}
                 </TableCell>
-                <TableCell>{formatLimit(plan.cohortsLimit)}</TableCell>
-                <TableCell>{formatLimit(plan.foundersLimit)}</TableCell>
+                <TableCell>{formatLimit(plan.cohortsLimit, t)}</TableCell>
+                <TableCell>{formatLimit(plan.foundersLimit, t)}</TableCell>
                 <TableCell>
-                  {plan.storageLimitGb === null ? 'Unlimited' : `${plan.storageLimitGb} GB`}
+                  {plan.storageLimitGb === null ? t('common:unlimited') : `${plan.storageLimitGb} GB`}
                 </TableCell>
                 <TableCell>{formatCents(plan.priceMonthlyCents)}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{aiConfigLabel(plan.aiProviderConfigId)}</TableCell>
                 <TableCell>
                   <Badge variant={plan.active ? 'default' : 'secondary'}>
-                    {plan.active ? 'Active' : 'Inactive'}
+                    {plan.active ? t('common:active') : t('common:inactive')}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="icon-sm" title="Edit" onClick={() => openEditPlan(plan)}>
+                    <Button variant="ghost" size="icon-sm" title={t('common:edit')} onClick={() => openEditPlan(plan)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="ghost" size="icon-sm" title="Delete" onClick={() => setDeletingPlan(plan)}>
+                    <Button variant="ghost" size="icon-sm" title={t('common:delete')} onClick={() => setDeletingPlan(plan)}>
                       <Trash2 className="h-3.5 w-3.5 text-destructive" />
                     </Button>
                   </div>
@@ -189,7 +191,7 @@ export default function PlansBillingPage() {
             {!plansLoading && plans.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="text-center text-muted-foreground py-6">
-                  No plans yet — create one to get started.
+                  {t('plansTable.empty')}
                 </TableCell>
               </TableRow>
             )}
@@ -201,16 +203,16 @@ export default function PlansBillingPage() {
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b flex items-center gap-2">
           <Building2 className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">Tenant Subscriptions</h2>
+          <h2 className="font-semibold">{t('subscriptionsTable.cardTitle')}</h2>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Tenant</TableHead>
-              <TableHead>Plan</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Founders used</TableHead>
-              <TableHead>Next payment</TableHead>
+              <TableHead>{t('subscriptionsTable.tenant')}</TableHead>
+              <TableHead>{t('subscriptionsTable.plan')}</TableHead>
+              <TableHead>{t('common:status')}</TableHead>
+              <TableHead>{t('subscriptionsTable.foundersUsed')}</TableHead>
+              <TableHead>{t('subscriptionsTable.nextPayment')}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -221,7 +223,7 @@ export default function PlansBillingPage() {
                 <TableCell>{tenant.plan?.name ?? '—'}</TableCell>
                 <TableCell>
                   <span className={cn('text-xs font-medium', statusColor(tenant.subscription?.status ?? ''))}>
-                    {tenant.subscription ? tenant.subscription.status : 'No subscription'}
+                    {tenant.subscription ? tenant.subscription.status : t('subscriptionsTable.noSubscription')}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -236,13 +238,13 @@ export default function PlansBillingPage() {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={() => setAssignTenant(tenant)}>
-                      Assign Plan
+                      {t('subscriptionsTable.assignPlanButton')}
                     </Button>
                     {tenant.subscription && tenant.subscription.status !== 'canceled' && (
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        title="Cancel subscription"
+                        title={t('subscriptionsTable.cancelSubscriptionTitle')}
                         disabled={cancelSubscriptionMutation.isPending}
                         onClick={() => handleCancelSubscription(tenant)}
                       >
@@ -256,7 +258,7 @@ export default function PlansBillingPage() {
             {!tenantsLoading && tenants.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
-                  No tenants yet.
+                  {t('subscriptionsTable.empty')}
                 </TableCell>
               </TableRow>
             )}
@@ -302,22 +304,22 @@ function DeletePlanDialog({
   onConfirm: () => void
   pending: boolean
 }) {
+  const { t } = useTranslation('superadminPlans')
   return (
     <Dialog open={!!plan} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Delete plan</DialogTitle>
+          <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
           <DialogDescription>
-            Permanently delete "{plan?.name}"? Tenants currently subscribed to it will need to be reassigned first. This
-            cannot be undone.
+            {t('deleteDialog.confirmDelete', { name: plan?.name })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button variant="destructive" onClick={onConfirm} disabled={pending}>
-            Delete
+            {t('common:delete')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -368,6 +370,7 @@ function PlanFormDialog({
   plan: Plan | null
   onSaved: () => void
 }) {
+  const { t } = useTranslation('superadminPlans')
   const [form, setForm] = useState<PlanFormState>(() => planToFormState(plan))
 
   // Re-seed form whenever the dialog is (re)opened for a different plan.
@@ -403,12 +406,12 @@ function PlanFormDialog({
       return (await api.post('/api/plans', body)).data
     },
     onSuccess: () => {
-      toast.success(plan ? 'Plan updated' : 'Plan created')
+      toast.success(plan ? t('toast.planUpdated') : t('toast.planCreated'))
       onSaved()
       onOpenChange(false)
     },
     onError: (err) => {
-      toast.error(apiError(err, 'Failed to save plan'))
+      toast.error(apiError(err, t('toast.savePlanFailed')))
     },
   })
 
@@ -416,18 +419,18 @@ function PlanFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{plan ? 'Edit plan' : 'New plan'}</DialogTitle>
-          <DialogDescription>Define limits and pricing for this plan.</DialogDescription>
+          <DialogTitle>{plan ? t('planDialog.editTitle') : t('planDialog.newTitle')}</DialogTitle>
+          <DialogDescription>{t('planDialog.description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Name</Label>
+            <Label>{t('common:name')}</Label>
             <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </div>
 
           <div className="space-y-1.5">
-            <Label>Description</Label>
+            <Label>{t('planDialog.descriptionLabel')}</Label>
             <Textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -435,21 +438,21 @@ function PlanFormDialog({
           </div>
 
           <LimitField
-            label="Cohorts"
+            label={t('planDialog.cohorts')}
             value={form.cohortsLimit}
             unlimited={form.cohortsUnlimited}
             onValueChange={(v) => setForm({ ...form, cohortsLimit: v })}
             onUnlimitedChange={(v) => setForm({ ...form, cohortsUnlimited: v })}
           />
           <LimitField
-            label="Founders / learners"
+            label={t('planDialog.foundersLearners')}
             value={form.foundersLimit}
             unlimited={form.foundersUnlimited}
             onValueChange={(v) => setForm({ ...form, foundersLimit: v })}
             onUnlimitedChange={(v) => setForm({ ...form, foundersUnlimited: v })}
           />
           <LimitField
-            label="Storage (GB)"
+            label={t('planDialog.storageGb')}
             value={form.storageLimitGb}
             unlimited={form.storageUnlimited}
             onValueChange={(v) => setForm({ ...form, storageLimitGb: v })}
@@ -457,16 +460,16 @@ function PlanFormDialog({
           />
 
           <div className="space-y-1.5">
-            <Label>AI key</Label>
+            <Label>{t('planDialog.aiKey')}</Label>
             <Select
               value={form.aiProviderConfigId}
               onValueChange={(v) => setForm({ ...form, aiProviderConfigId: v ?? 'none' })}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="None" />
+                <SelectValue placeholder={t('planDialog.aiKeyPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="none">{t('common:none')}</SelectItem>
                 {enabledAiConfigs.map((c) => (
                   <SelectItem key={c.id} value={String(c.id)}>
                     {PROVIDER_LABELS[c.provider]} — {c.model}
@@ -474,11 +477,11 @@ function PlanFormDialog({
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">Which AI provider key this plan's AI features will use.</p>
+            <p className="text-xs text-muted-foreground">{t('planDialog.aiKeyHint')}</p>
           </div>
 
           <div className="space-y-1.5">
-            <Label>Price / month (USD)</Label>
+            <Label>{t('planDialog.priceMonthUsd')}</Label>
             <Input
               type="number"
               min="0"
@@ -490,8 +493,8 @@ function PlanFormDialog({
 
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
-              <Label>Custom plan</Label>
-              <p className="text-xs text-muted-foreground">Bespoke plan negotiated with a tenant</p>
+              <Label>{t('planDialog.customPlan')}</Label>
+              <p className="text-xs text-muted-foreground">{t('planDialog.customPlanHint')}</p>
             </div>
             <Switch
               checked={form.isCustom}
@@ -501,8 +504,8 @@ function PlanFormDialog({
 
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
-              <Label>Enable online billing</Label>
-              <p className="text-xs text-muted-foreground">Syncs a Stripe product/price for Checkout</p>
+              <Label>{t('planDialog.enableOnlineBilling')}</Label>
+              <p className="text-xs text-muted-foreground">{t('planDialog.enableOnlineBillingHint')}</p>
             </div>
             <Switch
               checked={form.enableOnlineBilling}
@@ -513,10 +516,10 @@ function PlanFormDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.name}>
-            {plan ? 'Save changes' : 'Create plan'}
+            {plan ? t('common:saveChanges') : t('planDialog.createButton')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -537,12 +540,13 @@ function LimitField({
   onValueChange: (v: string) => void
   onUnlimitedChange: (v: boolean) => void
 }) {
+  const { t } = useTranslation('superadminPlans')
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <Label>{label}</Label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">Unlimited</span>
+          <span className="text-xs text-muted-foreground">{t('common:unlimited')}</span>
           <Switch checked={unlimited} onCheckedChange={onUnlimitedChange} />
         </div>
       </div>
@@ -551,7 +555,7 @@ function LimitField({
         min="0"
         disabled={unlimited}
         value={unlimited ? '' : value}
-        placeholder={unlimited ? 'Unlimited' : '0'}
+        placeholder={unlimited ? t('common:unlimited') : '0'}
         onChange={(e) => onValueChange(e.target.value)}
       />
     </div>
@@ -569,6 +573,7 @@ function AssignSubscriptionDialog({
   onOpenChange: (open: boolean) => void
   onAssigned: () => void
 }) {
+  const { t } = useTranslation('superadminPlans')
   const [planId, setPlanId] = useState<string>('')
   const [mode, setMode] = useState<'offline' | 'online'>('offline')
   const [amountDollars, setAmountDollars] = useState('')
@@ -590,11 +595,11 @@ function AssignSubscriptionDialog({
       ).data
     },
     onSuccess: () => {
-      toast.success('Offline payment recorded')
+      toast.success(t('toast.offlinePaymentRecorded'))
       onAssigned()
       onOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to record payment')),
+    onError: (err) => toast.error(apiError(err, t('toast.recordPaymentFailed'))),
   })
 
   const checkoutMutation = useMutation({
@@ -610,31 +615,31 @@ function AssignSubscriptionDialog({
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl
       } else {
-        toast.success('Checkout session created')
+        toast.success(t('toast.checkoutSessionCreated'))
         onAssigned()
         onOpenChange(false)
       }
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to start checkout')),
+    onError: (err) => toast.error(apiError(err, t('toast.startCheckoutFailed'))),
   })
 
   return (
     <Dialog open={!!tenant} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Assign plan — {tenant?.name}</DialogTitle>
-          <DialogDescription>Pick a plan and how this tenant will pay.</DialogDescription>
+          <DialogTitle>{t('assignDialog.title', { name: tenant?.name })}</DialogTitle>
+          <DialogDescription>{t('assignDialog.description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Plan</Label>
+            <Label>{t('assignDialog.planLabel')}</Label>
             <Select value={planId} onValueChange={(v) => setPlanId(v ?? '')}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a plan">
+                <SelectValue placeholder={t('assignDialog.planPlaceholder')}>
                   {(value: string | null) => {
                     const selected = plans.find((p) => String(p.id) === value)
-                    return selected ? `${selected.name} — ${formatCents(selected.priceMonthlyCents)}/mo` : 'Select a plan'
+                    return selected ? `${selected.name} — ${formatCents(selected.priceMonthlyCents)}/mo` : t('assignDialog.planPlaceholder')
                   }}
                 </SelectValue>
               </SelectTrigger>
@@ -652,26 +657,26 @@ function AssignSubscriptionDialog({
 
           <div className="grid grid-cols-2 gap-2">
             <Button variant={mode === 'offline' ? 'default' : 'outline'} onClick={() => setMode('offline')}>
-              Record offline payment
+              {t('assignDialog.recordOfflinePayment')}
             </Button>
             <Button
               variant={mode === 'online' ? 'default' : 'outline'}
               onClick={() => setMode('online')}
               disabled={!selectedPlan?.stripePriceId}
             >
-              Pay online
+              {t('assignDialog.payOnline')}
             </Button>
           </div>
           {mode === 'online' && !selectedPlan?.stripePriceId && (
             <p className="text-xs text-destructive">
-              This plan isn't configured for online billing yet — enable it when editing the plan.
+              {t('assignDialog.onlineBillingNotConfigured')}
             </p>
           )}
 
           {mode === 'offline' && (
             <>
               <div className="space-y-1.5">
-                <Label>Amount received (USD)</Label>
+                <Label>{t('assignDialog.amountReceivedUsd')}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -681,7 +686,7 @@ function AssignSubscriptionDialog({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Active until</Label>
+                <Label>{t('assignDialog.activeUntil')}</Label>
                 <Input
                   type="date"
                   value={paidThroughDate}
@@ -689,7 +694,7 @@ function AssignSubscriptionDialog({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Note (PO / check number, etc.)</Label>
+                <Label>{t('assignDialog.note')}</Label>
                 <Textarea value={note} onChange={(e) => setNote(e.target.value)} />
               </div>
             </>
@@ -698,21 +703,21 @@ function AssignSubscriptionDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('common:cancel')}
           </Button>
           {mode === 'offline' ? (
             <Button
               onClick={() => offlineMutation.mutate()}
               disabled={!planId || !paidThroughDate || offlineMutation.isPending}
             >
-              Record payment
+              {t('assignDialog.recordPaymentButton')}
             </Button>
           ) : (
             <Button
               onClick={() => checkoutMutation.mutate()}
               disabled={!planId || !selectedPlan?.stripePriceId || checkoutMutation.isPending}
             >
-              Continue to Stripe
+              {t('assignDialog.continueToStripeButton')}
             </Button>
           )}
         </DialogFooter>

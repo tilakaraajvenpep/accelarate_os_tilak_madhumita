@@ -1,0 +1,55 @@
+{
+  "page": {
+    "title": "租户",
+    "subtitle": "开通新租户并邀请其管理员。",
+    "createButton": "创建租户"
+  },
+  "table": {
+    "cardTitle": "全部租户",
+    "orgType": "组织类型",
+    "slug": "标识符",
+    "suspended": "已暂停",
+    "deleteButtonTitle": "删除租户",
+    "empty": "暂无租户——创建一个以开始使用。"
+  },
+  "toast": {
+    "deleted": "租户已删除",
+    "deleteFailed": "删除租户失败",
+    "verificationSent": "验证码已发送至 {{email}}",
+    "sendCodeFailed": "发送验证码失败",
+    "created": "租户“{{name}}”已创建",
+    "createFailed": "创建租户失败"
+  },
+  "confirmDelete": "确定要永久删除“{{name}}”吗？此操作将删除该租户及其订阅/付款记录和管理员账户（包括其登录信息）——此操作无法撤销。",
+  "orgTypes": {
+    "university": "高校孵化器",
+    "corporate": "企业孵化器",
+    "vcBacked": "风投支持的孵化器",
+    "government": "政府/非营利组织",
+    "independent": "独立孵化器",
+    "other": "其他"
+  },
+  "createDialog": {
+    "title": "创建租户",
+    "descriptionDetails": "现在设置管理员密码——接下来将在此处验证其邮箱。",
+    "descriptionVerify": "输入发送至 {{email}} 的验证码以完成租户创建。",
+    "orgName": "组织名称",
+    "slug": "标识符",
+    "slugHint": "用于在网址中标识此租户 (/t/{{slug}})",
+    "orgType": "组织类型",
+    "orgTypePlaceholder": "选择类型",
+    "website": "网站",
+    "websitePlaceholder": "https://example.com",
+    "adminName": "管理员姓名",
+    "adminEmail": "管理员邮箱",
+    "adminPassword": "管理员密码",
+    "adminPasswordPlaceholder": "至少 8 个字符",
+    "generatePasswordTitle": "生成密码",
+    "passwordHint": "请将此密码安全地分享给管理员——关闭此对话框后将不再显示。",
+    "verificationCode": "验证码",
+    "codeExpiry": "验证码将在 10 分钟后过期。",
+    "resendCode": "重新发送验证码",
+    "sendCode": "发送验证码",
+    "verifyAndCreate": "验证并创建租户"
+  }
+}

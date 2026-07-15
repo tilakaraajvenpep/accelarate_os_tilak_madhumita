@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Building2, Users, TrendingUp, CheckSquare, ArrowUpRight, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -35,32 +36,34 @@ function StatCard({ label, value, sub, icon: Icon, trend, trendUp }: StatCardPro
 }
 
 const TOP_COMPANIES = [
-  { name: 'Loopify', score: 8.9, stage: 'Series A', status: 'On Track' },
-  { name: 'Veloforge', score: 8.4, stage: 'Seed', status: 'On Track' },
-  { name: 'NestWave', score: 7.8, stage: 'Pre-Seed', status: 'At Risk' },
-  { name: 'Carbonica', score: 7.2, stage: 'Seed', status: 'On Track' },
-  { name: 'Prismly', score: 6.5, stage: 'Idea', status: 'At Risk' },
+  { name: 'Loopify', score: 8.9, stage: 'seriesA', status: 'onTrack' },
+  { name: 'Veloforge', score: 8.4, stage: 'seed', status: 'onTrack' },
+  { name: 'NestWave', score: 7.8, stage: 'preSeed', status: 'atRisk' },
+  { name: 'Carbonica', score: 7.2, stage: 'seed', status: 'onTrack' },
+  { name: 'Prismly', score: 6.5, stage: 'idea', status: 'atRisk' },
 ]
 
 export default function AdminDashboard() {
+  const { t } = useTranslation('dashboardAdmin')
+
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Cohort health and program overview.</p>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Active Companies" value="24" sub="across 3 cohorts" icon={Building2} />
-        <StatCard label="Cohorts" value="3" sub="1 starting soon" icon={Users} />
-        <StatCard label="Avg Readiness" value="7.1 / 10" icon={TrendingUp} trend="+0.4 this month" trendUp />
-        <StatCard label="Completion Rate" value="68%" sub="target 80%" icon={CheckSquare} />
+        <StatCard label={t('stats.activeCompanies')} value="24" sub={t('stats.activeCompaniesSub')} icon={Building2} />
+        <StatCard label={t('stats.cohorts')} value="3" sub={t('stats.cohortsSub')} icon={Users} />
+        <StatCard label={t('stats.avgReadiness')} value="7.1 / 10" icon={TrendingUp} trend={t('stats.avgReadinessTrend')} trendUp />
+        <StatCard label={t('stats.completionRate')} value="68%" sub={t('stats.completionRateSub')} icon={CheckSquare} />
       </div>
 
       {/* Top companies */}
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b">
-          <h2 className="font-semibold">Top Companies by Score</h2>
+          <h2 className="font-semibold">{t('topCompanies.title')}</h2>
         </div>
         <div className="divide-y">
           {TOP_COMPANIES.map((c) => (
@@ -71,13 +74,13 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-sm font-medium">{c.name}</p>
-                  <p className="text-xs text-muted-foreground">{c.stage}</p>
+                  <p className="text-xs text-muted-foreground">{t(`topCompanies.stage.${c.stage}`)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-semibold tabular-nums">{c.score}</span>
-                <Badge variant={c.status === 'On Track' ? 'default' : 'destructive'} className="text-xs">
-                  {c.status}
+                <Badge variant={c.status === 'onTrack' ? 'default' : 'destructive'} className="text-xs">
+                  {t(`topCompanies.status.${c.status}`)}
                 </Badge>
               </div>
             </div>
@@ -87,12 +90,12 @@ export default function AdminDashboard() {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-xl border bg-card p-6">
-          <h2 className="font-semibold mb-3">Recent Activity</h2>
-          <p className="text-sm text-muted-foreground">Activity feed coming soon.</p>
+          <h2 className="font-semibold mb-3">{t('recentActivity.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('recentActivity.empty')}</p>
         </div>
         <div className="rounded-xl border bg-card p-6">
-          <h2 className="font-semibold mb-3">Upcoming Events</h2>
-          <p className="text-sm text-muted-foreground">Calendar integration coming soon.</p>
+          <h2 className="font-semibold mb-3">{t('upcomingEvents.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('upcomingEvents.empty')}</p>
         </div>
       </div>
     </div>

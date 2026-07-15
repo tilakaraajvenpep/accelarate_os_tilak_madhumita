@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Plus, Building2, Dices, Trash2 } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -32,13 +33,13 @@ import {
 } from '@/components/ui/dialog'
 import type { Tenant, OrgType } from '@/types/billing'
 
-const ORG_TYPES: { label: string; value: OrgType }[] = [
-  { label: 'University accelerator', value: 'university' },
-  { label: 'Corporate accelerator', value: 'corporate' },
-  { label: 'VC-backed accelerator', value: 'vc_backed' },
-  { label: 'Government / nonprofit', value: 'government' },
-  { label: 'Independent accelerator', value: 'independent' },
-  { label: 'Other', value: 'other' },
+const ORG_TYPES: { key: string; value: OrgType }[] = [
+  { key: 'university', value: 'university' },
+  { key: 'corporate', value: 'corporate' },
+  { key: 'vcBacked', value: 'vc_backed' },
+  { key: 'government', value: 'government' },
+  { key: 'independent', value: 'independent' },
+  { key: 'other', value: 'other' },
 ]
 
 function slugify(input: string) {
@@ -57,6 +58,7 @@ function generatePassword() {
 }
 
 export default function TenantsAdminPage() {
+  const { t } = useTranslation('superadminTenants')
   const queryClient = useQueryClient()
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -68,16 +70,14 @@ export default function TenantsAdminPage() {
   const deleteMutation = useMutation({
     mutationFn: async (tenantId: number) => (await api.delete(`/api/tenants/${tenantId}`)).data,
     onSuccess: () => {
-      toast.success('Tenant deleted')
+      toast.success(t('toast.deleted'))
       queryClient.invalidateQueries({ queryKey: ['tenants'] })
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to delete tenant')),
+    onError: (err) => toast.error(apiError(err, t('toast.deleteFailed'))),
   })
 
   function handleDelete(tenant: Tenant) {
-    const confirmed = window.confirm(
-      `Permanently delete "${tenant.name}"? This removes the tenant, its subscription/payment history, and its admin accounts (including their logins) — this cannot be undone.`,
-    )
+    const confirmed = window.confirm(t('confirmDelete', { name: tenant.name }))
     if (!confirmed) return
     deleteMutation.mutate(tenant.id)
   }
@@ -86,29 +86,29 @@ export default function TenantsAdminPage() {
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tenants</h1>
+          <h1 className="text-2xl font-bold">{t('page.title')}</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Onboard a new tenant and invite their admin.
+            {t('page.subtitle')}
           </p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="h-4 w-4" /> Create Tenant
+          <Plus className="h-4 w-4" /> {t('page.createButton')}
         </Button>
       </div>
 
       <div className="rounded-xl border bg-card">
         <div className="px-6 py-4 border-b flex items-center gap-2">
           <Building2 className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">All Tenants</h2>
+          <h2 className="font-semibold">{t('table.cardTitle')}</h2>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Org type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead>{t('common:name')}</TableHead>
+              <TableHead>{t('table.slug')}</TableHead>
+              <TableHead>{t('table.orgType')}</TableHead>
+              <TableHead>{t('common:status')}</TableHead>
+              <TableHead>{t('common:createdAt')}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -120,7 +120,7 @@ export default function TenantsAdminPage() {
                 <TableCell>{tenant.orgType ?? '—'}</TableCell>
                 <TableCell>
                   <Badge variant={tenant.suspended ? 'secondary' : 'default'}>
-                    {tenant.suspended ? 'Suspended' : 'Active'}
+                    {tenant.suspended ? t('table.suspended') : t('common:active')}
                   </Badge>
                 </TableCell>
                 <TableCell>{new Date(tenant.createdAt).toLocaleDateString()}</TableCell>
@@ -128,7 +128,7 @@ export default function TenantsAdminPage() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    title="Delete tenant"
+                    title={t('table.deleteButtonTitle')}
                     disabled={deleteMutation.isPending}
                     onClick={() => handleDelete(tenant)}
                   >
@@ -140,7 +140,7 @@ export default function TenantsAdminPage() {
             {!isLoading && tenants.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-6">
-                  No tenants yet — create one to get started.
+                  {t('table.empty')}
                 </TableCell>
               </TableRow>
             )}
@@ -190,6 +190,7 @@ function CreateTenantDialog({
   onOpenChange: (open: boolean) => void
   onCreated: () => void
 }) {
+  const { t } = useTranslation('superadminTenants')
   const [form, setForm] = useState<CreateTenantForm>(EMPTY_FORM)
   const [step, setStep] = useState<DialogStep>('details')
   const [otpCode, setOtpCode] = useState('')
@@ -210,10 +211,10 @@ function CreateTenantDialog({
   const sendCodeMutation = useMutation({
     mutationFn: async () => (await api.post('/api/tenants/send-verification-code', { adminEmail: form.adminEmail, name: form.name })).data,
     onSuccess: () => {
-      toast.success(`Verification code sent to ${form.adminEmail}`)
+      toast.success(t('toast.verificationSent', { email: form.adminEmail }))
       setStep('verify')
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to send verification code')),
+    onError: (err) => toast.error(apiError(err, t('toast.sendCodeFailed'))),
   })
 
   const createMutation = useMutation({
@@ -232,11 +233,11 @@ function CreateTenantDialog({
       ).data
     },
     onSuccess: () => {
-      toast.success(`Tenant "${form.name}" created`)
+      toast.success(t('toast.created', { name: form.name }))
       onCreated()
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, 'Failed to create tenant')),
+    onError: (err) => toast.error(apiError(err, t('toast.createFailed'))),
   })
 
   const detailsValid = !!form.name && !!form.adminEmail && !!form.adminName && form.adminPassword.length >= 8
@@ -245,40 +246,40 @@ function CreateTenantDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create tenant</DialogTitle>
+          <DialogTitle>{t('createDialog.title')}</DialogTitle>
           <DialogDescription>
             {step === 'details'
-              ? "Set the admin's password now — you'll verify their email next, right here."
-              : `Enter the code sent to ${form.adminEmail} to finish creating the tenant.`}
+              ? t('createDialog.descriptionDetails')
+              : t('createDialog.descriptionVerify', { email: form.adminEmail })}
           </DialogDescription>
         </DialogHeader>
 
         {step === 'details' && (
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Organization name</Label>
+              <Label>{t('createDialog.orgName')}</Label>
               <Input value={form.name} onChange={(e) => handleNameChange(e.target.value)} />
             </div>
 
             <div className="space-y-1.5">
-              <Label>Slug</Label>
+              <Label>{t('createDialog.slug')}</Label>
               <Input
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slugTouched: true })}
               />
-              <p className="text-xs text-muted-foreground">Used to identify this tenant in URLs (/t/{form.slug || '…'})</p>
+              <p className="text-xs text-muted-foreground">{t('createDialog.slugHint', { slug: form.slug || '…' })}</p>
             </div>
 
             <div className="space-y-1.5">
-              <Label>Org type</Label>
+              <Label>{t('createDialog.orgType')}</Label>
               <Select value={form.orgType} onValueChange={(v) => setForm({ ...form, orgType: (v as OrgType) ?? '' })}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a type" />
+                  <SelectValue placeholder={t('createDialog.orgTypePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {ORG_TYPES.map((t) => (
-                    <SelectItem key={t.value} value={t.value}>
-                      {t.label}
+                  {ORG_TYPES.map((ot) => (
+                    <SelectItem key={ot.value} value={ot.value}>
+                      {t(`orgTypes.${ot.key}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -286,22 +287,22 @@ function CreateTenantDialog({
             </div>
 
             <div className="space-y-1.5">
-              <Label>Website</Label>
+              <Label>{t('createDialog.website')}</Label>
               <Input
                 type="url"
-                placeholder="https://example.com"
+                placeholder={t('createDialog.websitePlaceholder')}
                 value={form.website}
                 onChange={(e) => setForm({ ...form, website: e.target.value })}
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label>Admin name</Label>
+              <Label>{t('createDialog.adminName')}</Label>
               <Input value={form.adminName} onChange={(e) => setForm({ ...form, adminName: e.target.value })} />
             </div>
 
             <div className="space-y-1.5">
-              <Label>Admin email</Label>
+              <Label>{t('createDialog.adminEmail')}</Label>
               <Input
                 type="email"
                 value={form.adminEmail}
@@ -310,25 +311,25 @@ function CreateTenantDialog({
             </div>
 
             <div className="space-y-1.5">
-              <Label>Admin password</Label>
+              <Label>{t('createDialog.adminPassword')}</Label>
               <div className="flex gap-2">
                 <Input
                   value={form.adminPassword}
                   onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
-                  placeholder="Min. 8 characters"
+                  placeholder={t('createDialog.adminPasswordPlaceholder')}
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
-                  title="Generate a password"
+                  title={t('createDialog.generatePasswordTitle')}
                   onClick={() => setForm({ ...form, adminPassword: generatePassword() })}
                 >
                   <Dices className="h-4 w-4" />
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Share this with the admin securely — it won't be shown again after you close this dialog.
+                {t('createDialog.passwordHint')}
               </p>
             </div>
           </div>
@@ -337,7 +338,7 @@ function CreateTenantDialog({
         {step === 'verify' && (
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Verification code</Label>
+              <Label>{t('createDialog.verificationCode')}</Label>
               <Input
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
@@ -347,7 +348,7 @@ function CreateTenantDialog({
                 className="text-center text-2xl tracking-[0.4em] font-mono"
                 autoFocus
               />
-              <p className="text-xs text-muted-foreground">Code expires in 10 minutes.</p>
+              <p className="text-xs text-muted-foreground">{t('createDialog.codeExpiry')}</p>
             </div>
             <button
               type="button"
@@ -355,7 +356,7 @@ function CreateTenantDialog({
               onClick={() => sendCodeMutation.mutate()}
               disabled={sendCodeMutation.isPending}
             >
-              Resend code
+              {t('createDialog.resendCode')}
             </button>
           </div>
         )}
@@ -364,19 +365,19 @@ function CreateTenantDialog({
           {step === 'details' ? (
             <>
               <Button variant="outline" onClick={() => handleOpenChange(false)}>
-                Cancel
+                {t('common:cancel')}
               </Button>
               <Button onClick={() => sendCodeMutation.mutate()} disabled={sendCodeMutation.isPending || !detailsValid}>
-                Send verification code
+                {t('createDialog.sendCode')}
               </Button>
             </>
           ) : (
             <>
               <Button variant="outline" onClick={() => setStep('details')}>
-                Back
+                {t('common:back')}
               </Button>
               <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending || otpCode.length < 1}>
-                Verify & create tenant
+                {t('createDialog.verifyAndCreate')}
               </Button>
             </>
           )}

@@ -1,0 +1,35 @@
+{
+  "title": "Admin Dashboard",
+  "subtitle": "Cohort health and program overview.",
+  "stats": {
+    "activeCompanies": "Active Companies",
+    "activeCompaniesSub": "across 3 cohorts",
+    "cohorts": "Cohorts",
+    "cohortsSub": "1 starting soon",
+    "avgReadiness": "Avg Readiness",
+    "avgReadinessTrend": "+0.4 this month",
+    "completionRate": "Completion Rate",
+    "completionRateSub": "target 80%"
+  },
+  "topCompanies": {
+    "title": "Top Companies by Score",
+    "stage": {
+      "seriesA": "Series A",
+      "seed": "Seed",
+      "preSeed": "Pre-Seed",
+      "idea": "Idea"
+    },
+    "status": {
+      "onTrack": "On Track",
+      "atRisk": "At Risk"
+    }
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "empty": "Activity feed coming soon."
+  },
+  "upcomingEvents": {
+    "title": "Upcoming Events",
+    "empty": "Calendar integration coming soon."
+  }
+}
