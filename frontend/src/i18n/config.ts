@@ -14,6 +14,8 @@ import enDashboardAdmin from './locales/en/dashboardAdmin.json'
 import enDashboardSuperAdmin from './locales/en/dashboardSuperAdmin.json'
 import enSuperadminTenants from './locales/en/superadminTenants.json'
 import enSuperadminPlans from './locales/en/superadminPlans.json'
+import enSuperadminCoupons from './locales/en/superadminCoupons.json'
+import enSuperadminReports from './locales/en/superadminReports.json'
 import enSuperadminAdmins from './locales/en/superadminAdmins.json'
 import enSuperadminSettings from './locales/en/superadminSettings.json'
 
@@ -29,6 +31,8 @@ import zhDashboardAdmin from './locales/zh/dashboardAdmin.json'
 import zhDashboardSuperAdmin from './locales/zh/dashboardSuperAdmin.json'
 import zhSuperadminTenants from './locales/zh/superadminTenants.json'
 import zhSuperadminPlans from './locales/zh/superadminPlans.json'
+import zhSuperadminCoupons from './locales/zh/superadminCoupons.json'
+import zhSuperadminReports from './locales/zh/superadminReports.json'
 import zhSuperadminAdmins from './locales/zh/superadminAdmins.json'
 import zhSuperadminSettings from './locales/zh/superadminSettings.json'
 
@@ -55,6 +59,8 @@ i18n
         dashboardSuperAdmin: enDashboardSuperAdmin,
         superadminTenants: enSuperadminTenants,
         superadminPlans: enSuperadminPlans,
+        superadminCoupons: enSuperadminCoupons,
+        superadminReports: enSuperadminReports,
         superadminAdmins: enSuperadminAdmins,
         superadminSettings: enSuperadminSettings,
       },
@@ -71,6 +77,8 @@ i18n
         dashboardSuperAdmin: zhDashboardSuperAdmin,
         superadminTenants: zhSuperadminTenants,
         superadminPlans: zhSuperadminPlans,
+        superadminCoupons: zhSuperadminCoupons,
+        superadminReports: zhSuperadminReports,
         superadminAdmins: zhSuperadminAdmins,
         superadminSettings: zhSuperadminSettings,
       },
@@ -92,6 +100,8 @@ i18n
       'dashboardSuperAdmin',
       'superadminTenants',
       'superadminPlans',
+      'superadminCoupons',
+      'superadminReports',
       'superadminAdmins',
       'superadminSettings',
     ],

@@ -1,0 +1,49 @@
+{
+  "page": {
+    "title": "优惠券",
+    "subtitle": "为套餐购买和 AI 额度充值创建折扣码。",
+    "newCouponButton": "新建优惠券"
+  },
+  "table": {
+    "cardTitle": "优惠券",
+    "code": "代码",
+    "discount": "折扣",
+    "appliesTo": "适用于",
+    "empty": "暂无优惠券 — 创建一个以开始使用。"
+  },
+  "toast": {
+    "created": "优惠券已创建",
+    "updated": "优惠券已更新",
+    "saveFailed": "保存优惠券失败",
+    "deleted": "优惠券已删除",
+    "deleteFailed": "删除优惠券失败"
+  },
+  "dialog": {
+    "newTitle": "新建优惠券",
+    "editTitle": "编辑优惠券",
+    "description": "定义折扣内容、适用对象以及使用限制。",
+    "code": "优惠券代码",
+    "codePlaceholder": "例如 LAUNCH20",
+    "appliesTo": "适用于",
+    "appliesToPurchase": "套餐购买",
+    "appliesToRecharge": "额度充值",
+    "type": "折扣类型",
+    "typePercentage": "百分比",
+    "typeFixedAmount": "固定金额",
+    "discountValuePercent": "折扣值 (%)",
+    "discountValueUsd": "折扣值 (美元)",
+    "maxDiscountUsd": "最高折扣金额 (美元)",
+    "minPurchase": "最低购买金额",
+    "perCustomerLimit": "每个租户限制次数",
+    "totalUsageLimit": "总使用次数限制",
+    "startAt": "开始日期和时间",
+    "endAt": "结束日期和时间",
+    "endBeforeStartError": "结束日期和时间必须晚于开始日期和时间。",
+    "formInvalid": "请正确填写所有必填字段。",
+    "createButton": "创建优惠券"
+  },
+  "deleteDialog": {
+    "title": "删除优惠券",
+    "confirmDelete": "确定要永久删除“{{code}}”吗？此操作无法撤销。"
+  }
+}

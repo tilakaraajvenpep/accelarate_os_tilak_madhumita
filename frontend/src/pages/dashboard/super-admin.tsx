@@ -128,7 +128,7 @@ export default function SuperAdminDashboard() {
         <h2 className="font-semibold mb-2">{t('usageBilling.title')}</h2>
         <p className="text-sm text-muted-foreground">
           {t('usageBilling.descriptionPrefix')}{' '}
-          <a href="/app/superadmin/plans" className="underline underline-offset-2">
+          <a href="/superadmin/plans" className="underline underline-offset-2">
             {t('usageBilling.plansLink')}
           </a>{' '}
           {t('usageBilling.descriptionSuffix')}

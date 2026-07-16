@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Plus, Building2, Dices, Trash2 } from 'lucide-react'
+import { Plus, Building2, Dices, Trash2, Zap, Check } from 'lucide-react'
 import { api } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -31,7 +31,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import type { Tenant, OrgType } from '@/types/billing'
+import type { Tenant, OrgType, CouponValidationResult } from '@/types/billing'
 
 const ORG_TYPES: { key: string; value: OrgType }[] = [
   { key: 'university', value: 'university' },
@@ -61,6 +61,7 @@ export default function TenantsAdminPage() {
   const { t } = useTranslation('superadminTenants')
   const queryClient = useQueryClient()
   const [createOpen, setCreateOpen] = useState(false)
+  const [rechargeTenant, setRechargeTenant] = useState<Tenant | null>(null)
 
   const { data: tenants = [], isLoading } = useQuery({
     queryKey: ['tenants'],
@@ -125,15 +126,25 @@ export default function TenantsAdminPage() {
                 </TableCell>
                 <TableCell>{new Date(tenant.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title={t('table.deleteButtonTitle')}
-                    disabled={deleteMutation.isPending}
-                    onClick={() => handleDelete(tenant)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                  </Button>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      title={t('table.rechargeButtonTitle')}
+                      onClick={() => setRechargeTenant(tenant)}
+                    >
+                      <Zap className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      title={t('table.deleteButtonTitle')}
+                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(tenant)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -153,7 +164,174 @@ export default function TenantsAdminPage() {
         onOpenChange={setCreateOpen}
         onCreated={() => queryClient.invalidateQueries({ queryKey: ['tenants'] })}
       />
+
+      <OfflineRechargeDialog
+        tenant={rechargeTenant}
+        onOpenChange={(open) => !open && setRechargeTenant(null)}
+        onRecharged={() => queryClient.invalidateQueries({ queryKey: ['tenants'] })}
+      />
     </div>
+  )
+}
+
+function OfflineRechargeDialog({
+  tenant,
+  onOpenChange,
+  onRecharged,
+}: {
+  tenant: Tenant | null
+  onOpenChange: (open: boolean) => void
+  onRecharged: () => void
+}) {
+  const { t } = useTranslation('superadminTenants')
+  const [credits, setCredits] = useState('')
+  const [amountDollars, setAmountDollars] = useState('')
+  const [note, setNote] = useState('')
+  const [couponCode, setCouponCode] = useState('')
+  const [couponResult, setCouponResult] = useState<CouponValidationResult | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
+
+  const [lastTenantId, setLastTenantId] = useState<number | null>(null)
+  if (tenant && tenant.id !== lastTenantId) {
+    setLastTenantId(tenant.id)
+    setCredits('')
+    setAmountDollars('')
+    setNote('')
+    setCouponCode('')
+    setCouponResult(null)
+    setCouponError(null)
+  }
+
+  const couponMutation = useMutation({
+    mutationFn: async () => {
+      const grossAmountCents = Math.round(parseFloat(amountDollars || '0') * 100)
+      return (
+        await api.post<CouponValidationResult>('/api/coupons/validate', {
+          code: couponCode,
+          appliesTo: 'recharge',
+          grossAmountCents,
+        })
+      ).data
+    },
+    onSuccess: (data) => {
+      setCouponResult(data)
+      setCouponError(null)
+    },
+    onError: (err) => {
+      setCouponResult(null)
+      setCouponError(apiError(err, t('rechargeDialog.couponInvalid')))
+    },
+  })
+
+  const rechargeMutation = useMutation({
+    mutationFn: async () => {
+      if (!tenant) throw new Error('No tenant selected')
+      return (
+        await api.post(`/api/tenants/${tenant.id}/recharges/offline`, {
+          credits: Number(credits),
+          amountCentsReceived: Math.round(parseFloat(amountDollars || '0') * 100),
+          note: note || null,
+          couponCode: couponResult ? couponCode : undefined,
+        })
+      ).data
+    },
+    onSuccess: () => {
+      toast.success(t('rechargeDialog.recorded'))
+      onRecharged()
+      onOpenChange(false)
+    },
+    onError: (err) => toast.error(apiError(err, t('rechargeDialog.recordFailed'))),
+  })
+
+  return (
+    <Dialog open={!!tenant} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t('rechargeDialog.title', { name: tenant?.name })}</DialogTitle>
+          <DialogDescription>{t('rechargeDialog.description')}</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label>{t('rechargeDialog.credits')}</Label>
+            <Input type="number" min="1" step="1" value={credits} onChange={(e) => setCredits(e.target.value)} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>{t('rechargeDialog.couponLabel')}</Label>
+            <div className="flex gap-2">
+              <Input
+                value={couponCode}
+                placeholder={t('rechargeDialog.couponPlaceholder')}
+                className="font-mono"
+                disabled={!!couponResult}
+                onChange={(e) => {
+                  setCouponCode(e.target.value.toUpperCase())
+                  setCouponResult(null)
+                  setCouponError(null)
+                }}
+              />
+              <Button
+                type="button"
+                variant={couponResult ? 'secondary' : 'outline'}
+                disabled={!couponResult && (!couponCode || !amountDollars || couponMutation.isPending)}
+                onClick={() => {
+                  if (couponResult) {
+                    setCouponResult(null)
+                    setCouponCode('')
+                    toast.info(t('rechargeDialog.couponRemoved'))
+                  } else {
+                    couponMutation.mutate()
+                  }
+                }}
+              >
+                {couponResult ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" /> {t('rechargeDialog.couponAppliedButton')}
+                  </>
+                ) : (
+                  t('rechargeDialog.couponApply')
+                )}
+              </Button>
+            </div>
+            {couponResult && (
+              <p className="text-xs text-green-600">
+                {t('rechargeDialog.couponApplied', { amount: `$${(couponResult.discountCents / 100).toFixed(2)}` })}
+              </p>
+            )}
+            {couponError && <p className="text-xs text-destructive">{couponError}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>{t('rechargeDialog.amountReceivedUsd')}</Label>
+            <Input
+              type="number"
+              min="0"
+              step="0.01"
+              value={amountDollars}
+              onChange={(e) => setAmountDollars(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>{t('rechargeDialog.note')}</Label>
+            <Input value={note} onChange={(e) => setNote(e.target.value)} />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {t('common:cancel')}
+          </Button>
+          <Button
+            onClick={() => rechargeMutation.mutate()}
+            disabled={!credits || !amountDollars || rechargeMutation.isPending}
+          >
+            {t('rechargeDialog.recordButton')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -267,7 +445,9 @@ function CreateTenantDialog({
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slugTouched: true })}
               />
-              <p className="text-xs text-muted-foreground">{t('createDialog.slugHint', { slug: form.slug || '…' })}</p>
+              <p className="text-xs text-muted-foreground">
+                {t('createDialog.slugHint', { slug: form.slug || '…', baseDomain: import.meta.env.VITE_BASE_DOMAIN })}
+              </p>
             </div>
 
             <div className="space-y-1.5">

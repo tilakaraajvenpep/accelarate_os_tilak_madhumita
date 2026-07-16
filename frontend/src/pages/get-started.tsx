@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { Loader2, Building2, ChevronRight, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { cn } from '@/lib/utils'
+import { tenantUrl } from '@/lib/host'
+import { encodeHandoff } from '@/lib/session-handoff'
+import type { AuthTokens, AuthUser } from '@/types/auth'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LanguageSwitcher } from '@/components/language-switcher'
 
@@ -47,6 +50,9 @@ export default function GetStartedPage() {
 
   // Verify
   const [code, setCode] = useState('')
+  const [tenantSlug, setTenantSlug] = useState<string | null>(null)
+  const [sessionUser, setSessionUser] = useState<AuthUser | null>(null)
+  const [sessionTokens, setSessionTokens] = useState<AuthTokens | null>(null)
 
   const stepIndex = STEPS.findIndex(s => s.id === step)
 
@@ -80,7 +86,10 @@ export default function GetStartedPage() {
     setLoading(true)
     try {
       await verifyEmail(email, code)
-      await login(email, password)
+      const { user, tokens } = await login(email, password)
+      setTenantSlug(user.tenantSlug)
+      setSessionUser(user)
+      setSessionTokens(tokens)
       setStep('done')
     } catch (err: unknown) {
       toast.error(apiError(err, t('verify.verificationFailed')))
@@ -297,7 +306,14 @@ export default function GetStartedPage() {
             </div>
 
             <button
-              onClick={() => navigate('/app')}
+              onClick={() => {
+                if (tenantSlug && sessionUser && sessionTokens) {
+                  const baseDomain = import.meta.env.VITE_BASE_DOMAIN
+                  window.location.href = tenantUrl(tenantSlug, baseDomain) + encodeHandoff(sessionTokens, sessionUser)
+                } else {
+                  navigate('/login')
+                }
+              }}
               className="w-full h-11 rounded-xl bg-ink text-page font-semibold text-sm hover:bg-ink/90 transition-colors flex items-center justify-center gap-2"
             >
               {t('done.goToDashboard')}

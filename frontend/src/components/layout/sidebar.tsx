@@ -18,6 +18,7 @@ import {
   CreditCard,
   MessageSquare,
   ShieldCheck,
+  Ticket,
   KeyRound,
   ChevronRight,
   type LucideIcon,
@@ -52,11 +53,11 @@ function founderSections(t: TFunction<'sidebar'>): NavSection[] {
   return [
     {
       items: [
-        { href: '/app', icon: Home, title: t('nav.overview') },
-        { href: '/app/pillars', icon: LayoutDashboard, title: t('nav.myPillars') },
-        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
-        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
-        { href: '/app/messages', icon: MessageSquare, title: t('nav.messages') },
+        { href: '/', icon: Home, title: t('nav.overview') },
+        { href: '/pillars', icon: LayoutDashboard, title: t('nav.myPillars') },
+        { href: '/documents', icon: FileText, title: t('nav.documents') },
+        { href: '/calendar', icon: Calendar, title: t('nav.calendar') },
+        { href: '/messages', icon: MessageSquare, title: t('nav.messages') },
       ],
     },
   ]
@@ -65,27 +66,27 @@ function founderSections(t: TFunction<'sidebar'>): NavSection[] {
 function adminSections(t: TFunction<'sidebar'>): NavSection[] {
   return [
     {
-      items: [{ href: '/app', icon: Home, title: t('nav.overview') }],
+      items: [{ href: '/', icon: Home, title: t('nav.overview') }],
     },
     {
       title: t('sections.management'),
       items: [
-        { href: '/app/cohorts', icon: Users, title: t('nav.cohorts') },
-        { href: '/app/companies', icon: Building2, title: t('nav.companies') },
-        { href: '/app/programs', icon: BookOpen, title: t('nav.programs') },
+        { href: '/cohorts', icon: Users, title: t('nav.cohorts') },
+        { href: '/companies', icon: Building2, title: t('nav.companies') },
+        { href: '/programs', icon: BookOpen, title: t('nav.programs') },
       ],
     },
     {
       title: t('sections.tools'),
       items: [
-        { href: '/app/scoring', icon: BarChart2, title: t('nav.scoring') },
-        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
-        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
+        { href: '/scoring', icon: BarChart2, title: t('nav.scoring') },
+        { href: '/documents', icon: FileText, title: t('nav.documents') },
+        { href: '/calendar', icon: Calendar, title: t('nav.calendar') },
       ],
     },
     {
       title: t('nav.settings'),
-      items: [{ href: '/app/admin/email-templates', icon: Mail, title: t('nav.emailTemplates') }],
+      items: [{ href: '/admin/email-templates', icon: Mail, title: t('nav.emailTemplates') }],
     },
   ]
 }
@@ -93,16 +94,17 @@ function adminSections(t: TFunction<'sidebar'>): NavSection[] {
 function superAdminSections(t: TFunction<'sidebar'>): NavSection[] {
   return [
     {
-      items: [{ href: '/app', icon: Globe, title: t('nav.platformOverview') }],
+      items: [{ href: '/', icon: Globe, title: t('nav.platformOverview') }],
     },
     {
       title: t('sections.platform'),
       items: [
-        { href: '/app/superadmin/tenants', icon: Building2, title: t('nav.tenants') },
-        { href: '/app/superadmin/admins', icon: ShieldCheck, title: t('nav.superAdmins') },
-        { href: '/app/superadmin/plans', icon: CreditCard, title: t('nav.plansBilling') },
-        { href: '/app/superadmin/reports', icon: BarChart2, title: t('nav.reports') },
-        { href: '/app/superadmin/settings', icon: Settings, title: t('nav.settings') },
+        { href: '/superadmin/tenants', icon: Building2, title: t('nav.tenants') },
+        { href: '/superadmin/admins', icon: ShieldCheck, title: t('nav.superAdmins') },
+        { href: '/superadmin/plans', icon: CreditCard, title: t('nav.plansBilling') },
+        { href: '/superadmin/coupons', icon: Ticket, title: t('nav.coupons') },
+        { href: '/superadmin/reports', icon: BarChart2, title: t('nav.reports') },
+        { href: '/superadmin/settings', icon: Settings, title: t('nav.settings') },
       ],
     },
   ]
@@ -112,10 +114,10 @@ function mentorSections(t: TFunction<'sidebar'>): NavSection[] {
   return [
     {
       items: [
-        { href: '/app', icon: Home, title: t('nav.overview') },
-        { href: '/app/companies', icon: Building2, title: t('nav.myCompanies') },
-        { href: '/app/calendar', icon: Calendar, title: t('nav.calendar') },
-        { href: '/app/documents', icon: FileText, title: t('nav.documents') },
+        { href: '/', icon: Home, title: t('nav.overview') },
+        { href: '/companies', icon: Building2, title: t('nav.myCompanies') },
+        { href: '/calendar', icon: Calendar, title: t('nav.calendar') },
+        { href: '/documents', icon: FileText, title: t('nav.documents') },
       ],
     },
   ]
@@ -186,7 +188,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
               <NavLink
                 key={item.href}
                 to={item.href}
-                end={item.href === '/app'}
+                end={item.href === '/'}
                 title={collapsed ? item.title : undefined}
                 className={({ isActive }) =>
                   cn(
@@ -244,7 +246,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
               <p className="text-xs text-ink/40 truncate">{user?.email}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-glass-2" />
-            <DropdownMenuItem onClick={() => navigate('/app/settings')} className="focus:bg-glass-2 focus:text-ink">
+            <DropdownMenuItem onClick={() => navigate('/settings')} className="focus:bg-glass-2 focus:text-ink">
               <Settings className="h-4 w-4 mr-2" />
               {t('common:settings')}
             </DropdownMenuItem>

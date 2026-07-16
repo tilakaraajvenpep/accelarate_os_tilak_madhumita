@@ -39,7 +39,9 @@
     "offlinePaymentRecorded": "Offline payment recorded",
     "recordPaymentFailed": "Failed to record payment",
     "checkoutSessionCreated": "Checkout session created",
-    "startCheckoutFailed": "Failed to start checkout"
+    "startCheckoutFailed": "Failed to start checkout",
+    "checkoutCancelled": "Checkout was cancelled",
+    "checkoutConfirmationFailed": "Payment completed, but we couldn't load the confirmation details"
   },
   "planDialog": {
     "editTitle": "Edit plan",
@@ -67,6 +69,13 @@
     "description": "Pick a plan and how this tenant will pay.",
     "planLabel": "Plan",
     "planPlaceholder": "Select a plan",
+    "couponLabel": "Coupon code (optional)",
+    "couponPlaceholder": "e.g. LAUNCH20",
+    "couponApply": "Apply",
+    "couponAppliedButton": "Applied",
+    "couponApplied": "Coupon applied — {{amount}} off",
+    "couponRemoved": "Coupon removed",
+    "couponInvalid": "Invalid coupon",
     "recordOfflinePayment": "Record offline payment",
     "payOnline": "Pay online",
     "onlineBillingNotConfigured": "This plan isn't configured for online billing yet — enable it when editing the plan.",
@@ -79,5 +88,12 @@
   "deleteDialog": {
     "title": "Delete plan",
     "confirmDelete": "Permanently delete \"{{name}}\"? Tenants currently subscribed to it will need to be reassigned first. This cannot be undone."
+  },
+  "checkoutConfirmation": {
+    "title": "Payment successful",
+    "description": "The subscription has been created.",
+    "plan": "Plan",
+    "amount": "Amount",
+    "coupon": "Coupon used"
   }
 }

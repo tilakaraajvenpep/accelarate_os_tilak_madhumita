@@ -27,6 +27,7 @@
     "tenants": "租户",
     "superAdmins": "超级管理员",
     "plansBilling": "套餐与账单",
+    "coupons": "优惠券",
     "reports": "报告",
     "settings": "设置"
   },
@@ -44,7 +45,19 @@
       "perCredit": "每额度",
       "totalLabel": "总计",
       "payOnline": "在线支付",
-      "paymentComingSoon": "在线支付功能即将上线，请稍后再来查看。"
+      "couponPlaceholder": "优惠券代码",
+      "couponApply": "应用",
+      "couponAppliedButton": "已应用",
+      "couponRemoved": "优惠券已移除",
+      "couponApplied": "优惠券已应用 — 减免 {{amount}}",
+      "couponInvalid": "无效的优惠券",
+      "discountLabel": "折扣",
+      "checkoutFailed": "启动结账失败",
+      "checkoutCancelled": "充值已取消",
+      "checkoutConfirmationFailed": "支付已完成，但无法加载确认详情",
+      "confirmationTitle": "支付成功",
+      "confirmationDescription": "您的 AI 额度已充值。",
+      "couponUsed": "使用的优惠券"
     }
   }
 }

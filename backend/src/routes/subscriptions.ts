@@ -1,7 +1,7 @@
 import { Router, Response } from 'express'
 import { z } from 'zod'
 import { requireAuth, loadUser, requireRole, type AuthRequest } from '../middleware/auth.middleware'
-import { assignOfflineSubscription, createOnlineCheckoutSession, cancelSubscription } from '../services/subscriptions.service'
+import { assignOfflineSubscription, createOnlineCheckoutSession, cancelSubscription, getSubscriptionById } from '../services/subscriptions.service'
 import { getTenantAdminEmail } from '../services/tenants.service'
 
 const router = Router({ mergeParams: true })
@@ -11,10 +11,12 @@ const offlineSchema = z.object({
   amountCents: z.number().int().min(0),
   paidThroughDate: z.string(),
   note: z.string().nullable().optional(),
+  couponCode: z.string().optional(),
 })
 
 const checkoutSchema = z.object({
   planId: z.number().int(),
+  couponCode: z.string().optional(),
 })
 
 router.post(
@@ -56,12 +58,30 @@ router.post(
         tenantId,
         planId: parsed.data.planId,
         adminEmail,
-        frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+        adminUrl: process.env.ADMIN_URL || 'http://admin.localhost:5173',
+        couponCode: parsed.data.couponCode,
       })
       res.json(result)
     } catch (err: unknown) {
       res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to create checkout session' })
     }
+  },
+)
+
+router.get(
+  '/:id',
+  requireAuth,
+  loadUser,
+  requireRole('super_admin'),
+  async (req: AuthRequest, res: Response) => {
+    const tenantId = Number(req.params.tenantId)
+    const subscriptionId = Number(req.params.id)
+    const subscription = await getSubscriptionById(tenantId, subscriptionId)
+    if (!subscription) {
+      res.status(404).json({ error: 'Subscription not found' })
+      return
+    }
+    res.json(subscription)
   },
 )
 

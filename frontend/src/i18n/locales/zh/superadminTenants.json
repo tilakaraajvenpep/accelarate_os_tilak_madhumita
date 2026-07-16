@@ -9,6 +9,7 @@
     "orgType": "组织类型",
     "slug": "标识符",
     "suspended": "已暂停",
+    "rechargeButtonTitle": "记录线下充值",
     "deleteButtonTitle": "删除租户",
     "empty": "暂无租户——创建一个以开始使用。"
   },
@@ -35,7 +36,7 @@
     "descriptionVerify": "输入发送至 {{email}} 的验证码以完成租户创建。",
     "orgName": "组织名称",
     "slug": "标识符",
-    "slugHint": "用于在网址中标识此租户 (/t/{{slug}})",
+    "slugHint": "此租户的网址将是 {{slug}}.{{baseDomain}}",
     "orgType": "组织类型",
     "orgTypePlaceholder": "选择类型",
     "website": "网站",
@@ -51,5 +52,22 @@
     "resendCode": "重新发送验证码",
     "sendCode": "发送验证码",
     "verifyAndCreate": "验证并创建租户"
+  },
+  "rechargeDialog": {
+    "title": "记录线下充值 — {{name}}",
+    "description": "手动记录通过 Stripe 之外方式（银行转账、支票等）支付的 AI 额度充值。",
+    "credits": "额度数量",
+    "couponLabel": "优惠券代码（可选）",
+    "couponPlaceholder": "例如 LAUNCH20",
+    "couponApply": "应用",
+    "couponAppliedButton": "已应用",
+    "couponRemoved": "优惠券已移除",
+    "couponApplied": "优惠券已应用 — 减免 {{amount}}",
+    "couponInvalid": "无效的优惠券",
+    "amountReceivedUsd": "已收金额（美元）",
+    "note": "备注（采购单号 / 支票号等）",
+    "recordButton": "记录充值",
+    "recorded": "线下充值已记录",
+    "recordFailed": "记录充值失败"
   }
 }

@@ -6,6 +6,8 @@ import { Loader2, ScanLine, Map, Rocket, TrendingUp, CheckCircle2 } from 'lucide
 import { useAuth } from '@/context/auth-context'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
+import { classifyHost, adminUrl, tenantUrl } from '@/lib/host'
+import { encodeHandoff } from '@/lib/session-handoff'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LanguageSwitcher } from '@/components/language-switcher'
 
@@ -25,7 +27,21 @@ export default function LoginPage() {
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault(); setLoading(true)
-    try { await login(siEmail, siPassword); navigate('/app') }
+    try {
+      const { user, tokens } = await login(siEmail, siPassword)
+      const baseDomain = import.meta.env.VITE_BASE_DOMAIN
+      const host = classifyHost(window.location.hostname, baseDomain)
+
+      if (user.role === 'super_admin') {
+        if (host.kind === 'admin') navigate('/')
+        else window.location.href = adminUrl(baseDomain) + encodeHandoff(tokens, user)
+      } else if (user.tenantSlug) {
+        if (host.kind === 'tenant' && host.slug === user.tenantSlug) navigate('/')
+        else window.location.href = tenantUrl(user.tenantSlug, baseDomain) + encodeHandoff(tokens, user)
+      } else {
+        toast.error(t('signin.errorFallback'))
+      }
+    }
     catch (err) { toast.error(apiError(err, t('signin.errorFallback'))) }
     finally { setLoading(false) }
   }

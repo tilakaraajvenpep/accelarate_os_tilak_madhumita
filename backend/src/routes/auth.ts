@@ -12,6 +12,7 @@ import {
 } from '../services/auth.service'
 import { requireAuth, type AuthRequest } from '../middleware/auth.middleware'
 import { upsertUser } from '../services/users.service'
+import { getTenantSlugById } from '../services/tenants.service'
 import { generateUniqueSlug } from '../utils/slug'
 import { db } from '../db/client'
 import { tenants, users } from '../models'
@@ -53,9 +54,11 @@ router.post('/register', async (req: Request, res: Response) => {
     // Onboarding wizard sends organization fields — create the tenant + its
     // admin user row right away instead of waiting for first login, so the
     // org data collected in "Start your program" step 1 isn't discarded.
+    let tenantSlug: string | null = null
     if (parsed.data.organizationName && cognitoSub) {
       await db.transaction(async (tx) => {
         const slug = await generateUniqueSlug(parsed.data.organizationName!)
+        tenantSlug = slug
         const [tenant] = await tx
           .insert(tenants)
           .values({
@@ -76,7 +79,10 @@ router.post('/register', async (req: Request, res: Response) => {
       })
     }
 
-    res.json({ message: 'Registered. Check your email for a verification code.' })
+    res.json({
+      message: 'Registered. Check your email for a verification code.',
+      tenantSlug,
+    })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Registration failed'
     res.status(400).json({ error: msg })
@@ -142,6 +148,8 @@ router.post('/login', async (req: Request, res: Response) => {
       return
     }
 
+    const tenantSlug = user.tenantId ? await getTenantSlugById(user.tenantId) : null
+
     res.json({
       accessToken: t.AccessToken,
       idToken: t.IdToken,
@@ -153,6 +161,7 @@ router.post('/login', async (req: Request, res: Response) => {
         name: user.name,
         role: user.role,
         tenantId: user.tenantId,
+        tenantSlug,
       },
     })
   } catch (err: unknown) {

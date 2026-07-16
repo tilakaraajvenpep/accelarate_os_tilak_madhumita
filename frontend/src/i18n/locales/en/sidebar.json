@@ -27,6 +27,7 @@
     "tenants": "Tenants",
     "superAdmins": "Super Admins",
     "plansBilling": "Plans & Billing",
+    "coupons": "Coupons",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -44,7 +45,19 @@
       "perCredit": "per credit",
       "totalLabel": "Total",
       "payOnline": "Pay online",
-      "paymentComingSoon": "Online payments are coming soon — check back later."
+      "couponPlaceholder": "Coupon code",
+      "couponApply": "Apply",
+      "couponAppliedButton": "Applied",
+      "couponRemoved": "Coupon removed",
+      "couponApplied": "Coupon applied — {{amount}} off",
+      "couponInvalid": "Invalid coupon",
+      "discountLabel": "Discount",
+      "checkoutFailed": "Failed to start checkout",
+      "checkoutCancelled": "Recharge was cancelled",
+      "checkoutConfirmationFailed": "Payment completed, but we couldn't load the confirmation details",
+      "confirmationTitle": "Payment successful",
+      "confirmationDescription": "Your AI credits have been added.",
+      "couponUsed": "Coupon used"
     }
   }
 }

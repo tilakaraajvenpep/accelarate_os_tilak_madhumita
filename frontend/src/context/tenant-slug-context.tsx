@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react'
-import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
+import { classifyHost } from '@/lib/host'
 
 interface TenantSummary {
   id: number
@@ -17,16 +17,10 @@ interface TenantSlugContextValue {
 
 const TenantSlugContext = createContext<TenantSlugContextValue | null>(null)
 
-/**
- * Resolves the current tenant from the URL. Today this only reads the `:slug`
- * route param (path-based routing, e.g. /t/acme/...). There's no DNS/TLS
- * infra set up yet for real subdomains — when that's ready, swap the `slug`
- * resolution below for a `window.location.hostname` parse; nothing that
- * consumes `useTenantSlug()` needs to change.
- */
+/** Resolves the current tenant from the subdomain (e.g. acme.example.com). */
 export function TenantSlugProvider({ children }: { children: ReactNode }) {
-  const { slug: routeSlug } = useParams<{ slug: string }>()
-  const slug = routeSlug ?? null
+  const host = classifyHost(window.location.hostname, import.meta.env.VITE_BASE_DOMAIN)
+  const slug = host.kind === 'tenant' ? host.slug : null
 
   const { data: tenant = null, isLoading } = useQuery({
     queryKey: ['tenant-by-slug', slug],

@@ -1,0 +1,49 @@
+{
+  "page": {
+    "title": "Coupons",
+    "subtitle": "Create discount codes for plan purchases and AI credit recharges.",
+    "newCouponButton": "New Coupon"
+  },
+  "table": {
+    "cardTitle": "Coupons",
+    "code": "Code",
+    "discount": "Discount",
+    "appliesTo": "Applies to",
+    "empty": "No coupons yet — create one to get started."
+  },
+  "toast": {
+    "created": "Coupon created",
+    "updated": "Coupon updated",
+    "saveFailed": "Failed to save coupon",
+    "deleted": "Coupon deleted",
+    "deleteFailed": "Failed to delete coupon"
+  },
+  "dialog": {
+    "newTitle": "New coupon",
+    "editTitle": "Edit coupon",
+    "description": "Define the discount, who it applies to, and how it can be used.",
+    "code": "Coupon code",
+    "codePlaceholder": "e.g. LAUNCH20",
+    "appliesTo": "Applies to",
+    "appliesToPurchase": "Plan purchases",
+    "appliesToRecharge": "Credit recharges",
+    "type": "Discount type",
+    "typePercentage": "Percentage",
+    "typeFixedAmount": "Fixed amount",
+    "discountValuePercent": "Discount value (%)",
+    "discountValueUsd": "Discount value (USD)",
+    "maxDiscountUsd": "Maximum discount (USD)",
+    "minPurchase": "Minimum purchase amount",
+    "perCustomerLimit": "Limit per tenant",
+    "totalUsageLimit": "Total usage limit",
+    "startAt": "Start date & time",
+    "endAt": "End date & time",
+    "endBeforeStartError": "End date & time must be after the start date & time.",
+    "formInvalid": "Please fill in all required fields correctly.",
+    "createButton": "Create coupon"
+  },
+  "deleteDialog": {
+    "title": "Delete coupon",
+    "confirmDelete": "Permanently delete \"{{code}}\"? This cannot be undone."
+  }
+}

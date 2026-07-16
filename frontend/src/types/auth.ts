@@ -6,6 +6,7 @@ export interface AuthUser {
   name: string | null
   role: UserRole
   tenantId: number | null
+  tenantSlug: string | null
 }
 
 export interface AuthTokens {
@@ -17,4 +18,9 @@ export interface AuthTokens {
 
 export interface LoginResponse extends AuthTokens {
   user: AuthUser
+}
+
+export interface RegisterResponse {
+  message: string
+  tenantSlug: string | null
 }

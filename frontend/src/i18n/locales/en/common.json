@@ -6,6 +6,8 @@
   "delete": "Delete",
   "edit": "Edit",
   "back": "Back",
+  "previous": "Previous",
+  "next": "Next",
   "confirm": "Confirm",
   "close": "Close",
   "loading": "Loading…",

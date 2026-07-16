@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { api } from '@/lib/api'
-import type { AuthUser, AuthTokens, LoginResponse } from '@/types/auth'
+import { consumeHandoffFromLocation } from '@/lib/session-handoff'
+import type { AuthUser, AuthTokens, LoginResponse, RegisterResponse } from '@/types/auth'
 
 interface RegisterOrgFields {
   organizationName?: string
@@ -11,9 +12,9 @@ interface RegisterOrgFields {
 interface AuthContextValue {
   user: AuthUser | null
   loading: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<{ user: AuthUser; tokens: AuthTokens }>
   logout: () => Promise<void>
-  register: (email: string, password: string, name: string, org?: RegisterOrgFields) => Promise<void>
+  register: (email: string, password: string, name: string, org?: RegisterOrgFields) => Promise<RegisterResponse>
   verifyEmail: (email: string, code: string) => Promise<void>
 }
 
@@ -51,6 +52,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const handoff = consumeHandoffFromLocation()
+    if (handoff) {
+      storeSession(handoff.tokens, handoff.user)
+      setUser(handoff.user)
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      setLoading(false)
+      return
+    }
+
     const tokens = getStoredTokens()
     const storedUser = localStorage.getItem(USER_KEY)
     if (tokens?.idToken && storedUser && isTokenFresh(tokens.idToken)) {
@@ -66,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { user: dbUser, ...tokens } = data
     storeSession(tokens, dbUser)
     setUser(dbUser)
+    return { user: dbUser, tokens }
   }
 
   async function logout() {
@@ -78,7 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function register(email: string, password: string, name: string, org?: RegisterOrgFields) {
-    await api.post('/auth/register', { email, password, name, ...org })
+    const { data } = await api.post<RegisterResponse>('/auth/register', { email, password, name, ...org })
+    return data
   }
 
   async function verifyEmail(email: string, code: string) {

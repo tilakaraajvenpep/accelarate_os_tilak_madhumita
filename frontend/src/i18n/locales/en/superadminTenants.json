@@ -9,6 +9,7 @@
     "orgType": "Org type",
     "slug": "Slug",
     "suspended": "Suspended",
+    "rechargeButtonTitle": "Record offline recharge",
     "deleteButtonTitle": "Delete tenant",
     "empty": "No tenants yet — create one to get started."
   },
@@ -35,7 +36,7 @@
     "descriptionVerify": "Enter the code sent to {{email}} to finish creating the tenant.",
     "orgName": "Organization name",
     "slug": "Slug",
-    "slugHint": "Used to identify this tenant in URLs (/t/{{slug}})",
+    "slugHint": "This tenant's URL will be {{slug}}.{{baseDomain}}",
     "orgType": "Org type",
     "orgTypePlaceholder": "Select a type",
     "website": "Website",
@@ -51,5 +52,22 @@
     "resendCode": "Resend code",
     "sendCode": "Send verification code",
     "verifyAndCreate": "Verify & create tenant"
+  },
+  "rechargeDialog": {
+    "title": "Record offline recharge — {{name}}",
+    "description": "Manually record an AI credit top-up paid outside Stripe (bank transfer, check, etc.).",
+    "credits": "Credits",
+    "couponLabel": "Coupon code (optional)",
+    "couponPlaceholder": "e.g. LAUNCH20",
+    "couponApply": "Apply",
+    "couponAppliedButton": "Applied",
+    "couponRemoved": "Coupon removed",
+    "couponApplied": "Coupon applied — {{amount}} off",
+    "couponInvalid": "Invalid coupon",
+    "amountReceivedUsd": "Amount received (USD)",
+    "note": "Note (PO / check number, etc.)",
+    "recordButton": "Record recharge",
+    "recorded": "Offline recharge recorded",
+    "recordFailed": "Failed to record recharge"
   }
 }

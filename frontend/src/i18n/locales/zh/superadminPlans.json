@@ -39,7 +39,9 @@
     "offlinePaymentRecorded": "线下付款已记录",
     "recordPaymentFailed": "记录付款失败",
     "checkoutSessionCreated": "结账会话已创建",
-    "startCheckoutFailed": "启动结账失败"
+    "startCheckoutFailed": "启动结账失败",
+    "checkoutCancelled": "结账已取消",
+    "checkoutConfirmationFailed": "支付已完成，但无法加载确认详情"
   },
   "planDialog": {
     "editTitle": "编辑套餐",
@@ -67,6 +69,13 @@
     "description": "选择一个套餐以及此租户的付款方式。",
     "planLabel": "套餐",
     "planPlaceholder": "选择一个套餐",
+    "couponLabel": "优惠券代码（可选）",
+    "couponPlaceholder": "例如 LAUNCH20",
+    "couponApply": "应用",
+    "couponAppliedButton": "已应用",
+    "couponApplied": "优惠券已应用 — 减免 {{amount}}",
+    "couponRemoved": "优惠券已移除",
+    "couponInvalid": "无效的优惠券",
     "recordOfflinePayment": "记录线下付款",
     "payOnline": "在线支付",
     "onlineBillingNotConfigured": "此套餐尚未配置在线账单——请在编辑套餐时启用该功能。",
@@ -79,5 +88,12 @@
   "deleteDialog": {
     "title": "删除套餐",
     "confirmDelete": "确定要永久删除“{{name}}”吗？当前订阅此套餐的租户需要先重新分配套餐。此操作无法撤销。"
+  },
+  "checkoutConfirmation": {
+    "title": "支付成功",
+    "description": "订阅已创建。",
+    "plan": "套餐",
+    "amount": "金额",
+    "coupon": "使用的优惠券"
   }
 }

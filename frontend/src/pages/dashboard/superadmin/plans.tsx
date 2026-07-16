@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Plus, Pencil, CreditCard, Building2, Trash2 } from 'lucide-react'
+import { Plus, Pencil, CreditCard, Building2, Trash2, Check } from 'lucide-react'
 import { api } from '@/lib/api'
-import { cn } from '@/lib/utils'
+import { cn, openPicker } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -34,7 +34,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import type { Plan, Tenant, CheckoutSessionResult } from '@/types/billing'
+import type { Plan, Tenant, CheckoutSessionResult, CouponValidationResult, SubscriptionConfirmation } from '@/types/billing'
 
 function formatCents(cents: number) {
   return `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
@@ -58,6 +58,29 @@ export default function PlansBillingPage() {
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null)
   const [assignTenant, setAssignTenant] = useState<Tenant | null>(null)
   const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null)
+  const [checkoutConfirmation, setCheckoutConfirmation] = useState<SubscriptionConfirmation | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const checkout = params.get('checkout')
+    if (!checkout) return
+
+    const tenantId = params.get('tenantId')
+    const subscriptionId = params.get('subscriptionId')
+    window.history.replaceState(null, '', window.location.pathname)
+
+    if (checkout === 'cancelled') {
+      toast.error(t('toast.checkoutCancelled'))
+      return
+    }
+    if (checkout === 'success' && tenantId && subscriptionId) {
+      api
+        .get<SubscriptionConfirmation>(`/api/tenants/${tenantId}/subscriptions/${subscriptionId}`)
+        .then(({ data }) => setCheckoutConfirmation(data))
+        .catch(() => toast.error(t('toast.checkoutConfirmationFailed')))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { data: plans = [], isLoading: plansLoading } = useQuery({
     queryKey: ['plans'],
@@ -277,6 +300,44 @@ export default function PlansBillingPage() {
         onConfirm={() => deletingPlan && deletePlanMutation.mutate(deletingPlan.id)}
         pending={deletePlanMutation.isPending}
       />
+
+      <Dialog open={!!checkoutConfirmation} onOpenChange={(open) => !open && setCheckoutConfirmation(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t('checkoutConfirmation.title')}</DialogTitle>
+            <DialogDescription>{t('checkoutConfirmation.description')}</DialogDescription>
+          </DialogHeader>
+          {checkoutConfirmation && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <span className="text-sm text-muted-foreground">{t('checkoutConfirmation.plan')}</span>
+                <span className="text-sm font-semibold">{checkoutConfirmation.planName}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <span className="text-sm text-muted-foreground">{t('checkoutConfirmation.amount')}</span>
+                <span className="text-sm font-semibold">
+                  {formatCents(checkoutConfirmation.priceMonthlyCents - (checkoutConfirmation.discountAmountCents ?? 0))}/mo
+                </span>
+              </div>
+              {checkoutConfirmation.couponCode && (
+                <div className="flex items-center justify-between rounded-lg border p-3">
+                  <span className="text-sm text-muted-foreground">{t('checkoutConfirmation.coupon')}</span>
+                  <span className="text-sm font-mono font-semibold">{checkoutConfirmation.couponCode}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <span className="text-sm text-muted-foreground">{t('common:status')}</span>
+                <Badge variant={checkoutConfirmation.status === 'active' ? 'default' : 'secondary'}>
+                  {checkoutConfirmation.status}
+                </Badge>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setCheckoutConfirmation(null)}>{t('common:close')}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
@@ -551,8 +612,35 @@ function AssignSubscriptionDialog({
   const [amountDollars, setAmountDollars] = useState('')
   const [paidThroughDate, setPaidThroughDate] = useState('')
   const [note, setNote] = useState('')
+  const [couponCode, setCouponCode] = useState('')
+  const [couponResult, setCouponResult] = useState<CouponValidationResult | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
 
   const selectedPlan = plans.find((p) => p.id === Number(planId))
+
+  const couponMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedPlan) throw new Error('Select a plan first')
+      return (
+        await api.post<CouponValidationResult>('/api/coupons/validate', {
+          code: couponCode,
+          appliesTo: 'purchase',
+          grossAmountCents: selectedPlan.priceMonthlyCents,
+        })
+      ).data
+    },
+    onSuccess: (data) => {
+      setCouponResult(data)
+      setCouponError(null)
+      if (mode === 'offline' && selectedPlan) {
+        setAmountDollars(((selectedPlan.priceMonthlyCents - data.discountCents) / 100).toFixed(2))
+      }
+    },
+    onError: (err) => {
+      setCouponResult(null)
+      setCouponError(apiError(err, t('assignDialog.couponInvalid')))
+    },
+  })
 
   const offlineMutation = useMutation({
     mutationFn: async () => {
@@ -563,6 +651,7 @@ function AssignSubscriptionDialog({
           amountCents: Math.round(parseFloat(amountDollars || '0') * 100),
           paidThroughDate,
           note: note || null,
+          couponCode: couponResult ? couponCode : undefined,
         })
       ).data
     },
@@ -580,6 +669,7 @@ function AssignSubscriptionDialog({
       return (
         await api.post<CheckoutSessionResult>(`/api/tenants/${tenant.id}/subscriptions/checkout`, {
           planId: Number(planId),
+          couponCode: couponResult ? couponCode : undefined,
         })
       ).data
     },
@@ -627,6 +717,51 @@ function AssignSubscriptionDialog({
             </Select>
           </div>
 
+          <div className="space-y-1.5">
+            <Label>{t('assignDialog.couponLabel')}</Label>
+            <div className="flex gap-2">
+              <Input
+                value={couponCode}
+                placeholder={t('assignDialog.couponPlaceholder')}
+                className="font-mono"
+                disabled={!!couponResult}
+                onChange={(e) => {
+                  setCouponCode(e.target.value.toUpperCase())
+                  setCouponResult(null)
+                  setCouponError(null)
+                }}
+              />
+              <Button
+                type="button"
+                variant={couponResult ? 'secondary' : 'outline'}
+                disabled={!couponResult && (!couponCode || !selectedPlan || couponMutation.isPending)}
+                onClick={() => {
+                  if (couponResult) {
+                    setCouponResult(null)
+                    setCouponCode('')
+                    toast.info(t('assignDialog.couponRemoved'))
+                  } else {
+                    couponMutation.mutate()
+                  }
+                }}
+              >
+                {couponResult ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" /> {t('assignDialog.couponAppliedButton')}
+                  </>
+                ) : (
+                  t('assignDialog.couponApply')
+                )}
+              </Button>
+            </div>
+            {couponResult && (
+              <p className="text-xs text-green-600">
+                {t('assignDialog.couponApplied', { amount: formatCents(couponResult.discountCents) })}
+              </p>
+            )}
+            {couponError && <p className="text-xs text-destructive">{couponError}</p>}
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             <Button variant={mode === 'offline' ? 'default' : 'outline'} onClick={() => setMode('offline')}>
               {t('assignDialog.recordOfflinePayment')}
@@ -663,6 +798,8 @@ function AssignSubscriptionDialog({
                   type="date"
                   value={paidThroughDate}
                   onChange={(e) => setPaidThroughDate(e.target.value)}
+                  onClick={openPicker}
+                  onFocus={openPicker}
                 />
               </div>
               <div className="space-y-1.5">

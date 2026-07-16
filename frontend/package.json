@@ -29,6 +29,7 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^17.0.9",
     "react-router-dom": "^6.28.0",
+    "recharts": "^3.9.2",
     "shadcn": "^4.11.0",
     "sonner": "^1.7.2",
     "tailwind-merge": "^2.6.1",

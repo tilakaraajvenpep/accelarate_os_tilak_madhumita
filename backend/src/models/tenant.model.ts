@@ -12,6 +12,7 @@ export const orgTypeEnum = pgEnum('org_type', [
 export const tenants = pgTable('tenants', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
+  // Doubles as the DNS subdomain label ({slug}.example.com) — see utils/slug.ts.
   slug: text('slug').notNull().unique(),
   orgType: orgTypeEnum('org_type'),
   website: text('website'),

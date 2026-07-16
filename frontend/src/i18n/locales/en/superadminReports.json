@@ -1,0 +1,46 @@
+{
+  "page": {
+    "title": "Reports",
+    "subtitle": "Revenue trends, subscription health, tenant growth, and coupon performance across the platform."
+  },
+  "kpi": {
+    "subscriptionRevenue": "Subscription revenue",
+    "creditRevenue": "Credit revenue",
+    "activeSubscriptions": "Active subscriptions",
+    "totalDiscountGiven": "Total discount given",
+    "thisMonth": "This month",
+    "allTime": "All time"
+  },
+  "charts": {
+    "subscriptionRevenue": "Subscription revenue by month",
+    "creditRevenue": "AI credit revenue by month",
+    "subscriptionStatus": "Subscriptions by status",
+    "planPopularity": "Plan popularity",
+    "newTenants": "New tenants per month",
+    "cumulativeTenants": "Cumulative tenants"
+  },
+  "common": {
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "couponsTable": {
+    "title": "Coupon performance",
+    "code": "Code",
+    "discount": "Discount",
+    "appliesTo": "Applies to",
+    "redemptions": "Redemptions",
+    "discountGiven": "Discount given",
+    "empty": "No coupons yet."
+  },
+  "transactionsTable": {
+    "title": "Transactions",
+    "date": "Date",
+    "tenant": "Tenant",
+    "type": "Type",
+    "typeSubscription": "Subscription",
+    "typeRecharge": "Recharge",
+    "method": "Method",
+    "amount": "Amount",
+    "empty": "No transactions yet."
+  }
+}

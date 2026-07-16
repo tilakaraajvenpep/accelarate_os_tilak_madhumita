@@ -231,3 +231,8 @@ export async function getTenantBySlug(slug: string) {
   return tenant ?? null
 }
 
+export async function getTenantSlugById(tenantId: number): Promise<string | null> {
+  const [tenant] = await db.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+  return tenant?.slug ?? null
+}
+
