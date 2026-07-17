@@ -61,6 +61,19 @@ export interface CheckoutSessionResult {
   subscriptionId: number
 }
 
+/** A plan as shown to a tenant admin choosing what to subscribe to (signup payment step, billing settings). */
+export interface SelfServePlan {
+  id: number
+  name: string
+  description: string | null
+  priceMonthlyCents: number
+  aiCredits: number
+  cohortsLimit: number | null
+  foundersLimit: number | null
+  storageLimitGb: number | null
+  onlineBillingEnabled: boolean
+}
+
 export interface TenantDashboardPlan {
   id: number
   name: string

@@ -107,7 +107,8 @@ export async function createOnlineCheckoutSession(params: {
   tenantId: number
   planId: number
   adminEmail: string
-  adminUrl: string
+  successUrl: string
+  cancelUrl: string
   couponCode?: string
 }) {
   const [tenant] = await db.select().from(tenants).where(eq(tenants.id, params.tenantId)).limit(1)
@@ -156,11 +157,13 @@ export async function createOnlineCheckoutSession(params: {
     await db.update(coupons).set({ stripeCouponId }).where(eq(coupons.id, coupon.id))
   }
 
+  const successUrlWithId = `${params.successUrl}${params.successUrl.includes('?') ? '&' : '?'}subscriptionId=${subscription.id}`
+
   const session = await createCheckoutSession({
     customerId,
     lineItem: { priceId: plan.stripePriceId },
-    successUrl: `${params.adminUrl}/superadmin/plans?checkout=success&tenantId=${params.tenantId}&subscriptionId=${subscription.id}`,
-    cancelUrl: `${params.adminUrl}/superadmin/plans?checkout=cancelled`,
+    successUrl: successUrlWithId,
+    cancelUrl: params.cancelUrl,
     metadata: { subscriptionId: String(subscription.id) },
     discounts: stripeCouponId ? [{ coupon: stripeCouponId }] : undefined,
   })

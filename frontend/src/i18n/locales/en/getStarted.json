@@ -6,6 +6,7 @@
     "organization": "Your organization",
     "account": "Create account",
     "verify": "Verify email",
+    "payment": "Payment",
     "done": "All set"
   },
   "orgTypes": {
@@ -51,6 +52,28 @@
     "verifyAndContinue": "Verify & continue",
     "back": "← Back",
     "verificationFailed": "Verification failed"
+  },
+  "payment": {
+    "title": "Choose your plan",
+    "subtitle": "Pick the plan that fits your program, apply a coupon if you have one, then pay to activate your workspace.",
+    "planLabel": "Plan",
+    "planPlaceholder": "Select a plan…",
+    "perMonth": "/mo",
+    "contactRequired": "contact us",
+    "contactRequiredMessage": "This plan isn't set up for online payment yet — contact us and we'll get your workspace activated.",
+    "couponLabel": "Have a coupon?",
+    "couponPlaceholder": "COUPON CODE",
+    "couponApply": "Apply",
+    "couponAppliedButton": "Applied",
+    "couponApplied": "Coupon applied — {{amount}} off",
+    "couponInvalid": "Invalid or expired coupon",
+    "totalLabel": "Total due today",
+    "payButton": "Pay & activate workspace",
+    "checkoutFailed": "Couldn't start checkout — please try again",
+    "checkoutCancelled": "Payment was cancelled — you can try again anytime",
+    "confirming": "Confirming your payment…",
+    "confirmFailed": "We couldn't confirm your payment — please contact support if you were charged",
+    "noPlansAvailable": "No plans are available to purchase yet — you can add one from your dashboard later"
   },
   "done": {
     "title": "Your workspace is ready!",

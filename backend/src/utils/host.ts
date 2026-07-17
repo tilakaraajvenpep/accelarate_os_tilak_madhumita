@@ -32,3 +32,11 @@ export function tenantUrl(slug: string, baseDomain: string): string {
   const port = isDev ? ':5173' : ''
   return `${protocol}://${slug}.${baseDomain}${port}`
 }
+
+/** Mirrors frontend/src/lib/host.ts's apexUrl — where the marketing site / signup wizard lives. */
+export function apexUrl(baseDomain: string): string {
+  const isDev = baseDomain.toLowerCase() === 'localhost'
+  const protocol = isDev ? 'http' : 'https'
+  const port = isDev ? ':5173' : ''
+  return `${protocol}://${baseDomain}${port}`
+}

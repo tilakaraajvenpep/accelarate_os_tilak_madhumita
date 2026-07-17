@@ -1,0 +1,38 @@
+{
+  "invalid": {
+    "title": "该邀请链接无效",
+    "subtitle": "链接可能已过期或已被使用。请联系您的孵化器管理员重新发送邀请。"
+  },
+  "password": {
+    "title": "设置您的密码",
+    "subtitlePrefix": "为以下邮箱创建密码",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 8 个字符",
+    "confirmLabel": "确认密码",
+    "confirmPlaceholder": "请再次输入密码",
+    "continueButton": "继续",
+    "tooShort": "密码至少需要 8 个字符",
+    "mismatch": "两次输入的密码不一致",
+    "failed": "设置密码失败"
+  },
+  "company": {
+    "title": "介绍一下您的企业",
+    "subtitle": "这将帮助您的孵化器团队更好地了解您。",
+    "nameLabel": "企业名称",
+    "namePlaceholder": "例如：Loopify",
+    "locationLabel": "所在地",
+    "locationPlaceholder": "例如：旧金山",
+    "establishedYearLabel": "成立年份",
+    "establishedYearPlaceholder": "例如：2023",
+    "founderNameLabel": "创始人姓名",
+    "founderNamePlaceholder": "王小明",
+    "founderNameHelp": "请仅填写一位创始人的姓名 — 每个企业只能登记一位创始人。",
+    "finishButton": "完成设置",
+    "failed": "保存企业详情失败"
+  },
+  "done": {
+    "title": "设置完成！",
+    "subtitle": "您的企业资料已创建完成。",
+    "goToDashboard": "前往您的控制台 →"
+  }
+}

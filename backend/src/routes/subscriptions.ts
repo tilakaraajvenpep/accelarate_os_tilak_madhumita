@@ -54,11 +54,13 @@ router.post(
     }
     try {
       const adminEmail = (await getTenantAdminEmail(tenantId)) ?? req.dbUser!.email
+      const adminUrl = process.env.ADMIN_URL || 'http://admin.localhost:5173'
       const result = await createOnlineCheckoutSession({
         tenantId,
         planId: parsed.data.planId,
         adminEmail,
-        adminUrl: process.env.ADMIN_URL || 'http://admin.localhost:5173',
+        successUrl: `${adminUrl}/superadmin/plans?checkout=success&tenantId=${tenantId}`,
+        cancelUrl: `${adminUrl}/superadmin/plans?checkout=cancelled`,
         couponCode: parsed.data.couponCode,
       })
       res.json(result)

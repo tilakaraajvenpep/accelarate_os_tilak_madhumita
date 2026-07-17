@@ -7,6 +7,11 @@ export async function listPlans() {
   return db.select().from(plans).orderBy(plans.createdAt)
 }
 
+/** Every active plan the super admin has published — shown to a tenant admin picking what to subscribe to. */
+export async function listSelfServePlans() {
+  return db.select().from(plans).where(eq(plans.active, true)).orderBy(plans.priceMonthlyCents)
+}
+
 export async function getPlanById(id: number) {
   const [plan] = await db.select().from(plans).where(eq(plans.id, id)).limit(1)
   return plan ?? null

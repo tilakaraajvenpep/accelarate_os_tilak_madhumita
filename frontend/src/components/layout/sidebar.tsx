@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Users,
   Building2,
-  BookOpen,
   BarChart2,
   FileText,
   Calendar,
@@ -21,6 +20,8 @@ import {
   Ticket,
   KeyRound,
   ChevronRight,
+  ChevronDown,
+  Wrench,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -38,10 +39,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { UserRole } from '@/types/auth'
 
-type NavItem = {
+type NavChild = {
   href: string
+  title: string
+}
+
+type NavItem = {
+  href?: string
   icon: LucideIcon
   title: string
+  children?: NavChild[]
 }
 
 type NavSection = {
@@ -73,7 +80,14 @@ function adminSections(t: TFunction<'sidebar'>): NavSection[] {
       items: [
         { href: '/cohorts', icon: Users, title: t('nav.cohorts') },
         { href: '/companies', icon: Building2, title: t('nav.companies') },
-        { href: '/programs', icon: BookOpen, title: t('nav.programs') },
+        {
+          icon: Wrench,
+          title: t('nav.setup'),
+          children: [
+            { href: '/setup/programs', title: t('nav.programs') },
+            { href: '/setup/form', title: t('nav.formBuilder') },
+          ],
+        },
       ],
     },
     {
@@ -137,6 +151,83 @@ function initials(name?: string | null, email?: string) {
   return (email?.[0] ?? 'U').toUpperCase()
 }
 
+function NavItemRow({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [manuallyToggled, setManuallyToggled] = useState<boolean | null>(null)
+
+  if (!item.children) {
+    return (
+      <NavLink
+        to={item.href!}
+        end={item.href === '/'}
+        title={collapsed ? item.title : undefined}
+        className={({ isActive }) =>
+          cn(
+            'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+            collapsed && 'justify-center',
+            isActive
+              ? 'bg-glass-2 text-ink border border-glass-border'
+              : 'text-ink/40 hover:bg-glass-2 hover:text-ink/70',
+          )
+        }
+      >
+        <item.icon className="h-4 w-4 flex-shrink-0" />
+        {!collapsed && <span>{item.title}</span>}
+      </NavLink>
+    )
+  }
+
+  const childActive = item.children.some((c) => location.pathname === c.href || location.pathname.startsWith(`${c.href}/`))
+  const open = manuallyToggled ?? childActive
+
+  return (
+    <div>
+      <button
+        type="button"
+        title={collapsed ? item.title : undefined}
+        onClick={() => {
+          if (collapsed) { navigate(item.children![0].href); return }
+          setManuallyToggled(!open)
+        }}
+        className={cn(
+          'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+          collapsed && 'justify-center',
+          childActive ? 'text-ink' : 'text-ink/40 hover:bg-glass-2 hover:text-ink/70',
+        )}
+      >
+        <item.icon className="h-4 w-4 flex-shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="flex-1 text-left">{item.title}</span>
+            <ChevronDown className={cn('h-3.5 w-3.5 flex-shrink-0 transition-transform duration-150', open && 'rotate-180')} />
+          </>
+        )}
+      </button>
+      {!collapsed && open && (
+        <div className="ml-4 pl-3 border-l border-glass-border space-y-0.5 mt-0.5">
+          {item.children.map((child) => (
+            <NavLink
+              key={child.href}
+              to={child.href}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150',
+                  isActive
+                    ? 'bg-glass-2 text-ink border border-glass-border'
+                    : 'text-ink/40 hover:bg-glass-2 hover:text-ink/70',
+                )
+              }
+            >
+              {child.title}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 interface SidebarProps {
   collapsed: boolean
 }
@@ -185,24 +276,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
               </p>
             )}
             {section.items.map((item) => (
-              <NavLink
-                key={item.href}
-                to={item.href}
-                end={item.href === '/'}
-                title={collapsed ? item.title : undefined}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
-                    collapsed && 'justify-center',
-                    isActive
-                      ? 'bg-glass-2 text-ink border border-glass-border'
-                      : 'text-ink/40 hover:bg-glass-2 hover:text-ink/70',
-                  )
-                }
-              >
-                <item.icon className="h-4 w-4 flex-shrink-0" />
-                {!collapsed && <span>{item.title}</span>}
-              </NavLink>
+              <NavItemRow key={item.title} item={item} collapsed={collapsed} />
             ))}
           </div>
         ))}

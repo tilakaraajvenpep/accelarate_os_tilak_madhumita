@@ -18,6 +18,8 @@ import enSuperadminCoupons from './locales/en/superadminCoupons.json'
 import enSuperadminReports from './locales/en/superadminReports.json'
 import enSuperadminAdmins from './locales/en/superadminAdmins.json'
 import enSuperadminSettings from './locales/en/superadminSettings.json'
+import enCompanies from './locales/en/companies.json'
+import enAcceptInvite from './locales/en/acceptInvite.json'
 
 import zhCommon from './locales/zh/common.json'
 import zhHeader from './locales/zh/header.json'
@@ -35,6 +37,8 @@ import zhSuperadminCoupons from './locales/zh/superadminCoupons.json'
 import zhSuperadminReports from './locales/zh/superadminReports.json'
 import zhSuperadminAdmins from './locales/zh/superadminAdmins.json'
 import zhSuperadminSettings from './locales/zh/superadminSettings.json'
+import zhCompanies from './locales/zh/companies.json'
+import zhAcceptInvite from './locales/zh/acceptInvite.json'
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -63,6 +67,8 @@ i18n
         superadminReports: enSuperadminReports,
         superadminAdmins: enSuperadminAdmins,
         superadminSettings: enSuperadminSettings,
+        companies: enCompanies,
+        acceptInvite: enAcceptInvite,
       },
       zh: {
         common: zhCommon,
@@ -81,6 +87,8 @@ i18n
         superadminReports: zhSuperadminReports,
         superadminAdmins: zhSuperadminAdmins,
         superadminSettings: zhSuperadminSettings,
+        companies: zhCompanies,
+        acceptInvite: zhAcceptInvite,
       },
     },
     fallbackLng: 'en',
@@ -104,6 +112,8 @@ i18n
       'superadminReports',
       'superadminAdmins',
       'superadminSettings',
+      'companies',
+      'acceptInvite',
     ],
     interpolation: { escapeValue: false },
     detection: {

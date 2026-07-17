@@ -58,6 +58,30 @@ export async function sendSuperAdminOtpEmail(params: { to: string; code: string 
   )
 }
 
+export async function sendCompanyInviteEmail(params: { to: string; name: string; tenantName: string; inviteUrl: string }) {
+  const from = process.env.AWS_SES_FROM_EMAIL
+  if (!from) throw new Error('AWS_SES_FROM_EMAIL is not set')
+
+  const ses = getClient()
+  const subject = `You're invited to join ${params.tenantName} on AOS`
+  const text = `Hi ${params.name},\n\n${params.tenantName} has invited you to set up your company profile on AccelerateOS.\n\nGet started here:\n${params.inviteUrl}\n\nThis link expires in 7 days.`
+  const html = `<p>Hi ${params.name},</p><p><strong>${params.tenantName}</strong> has invited you to set up your company profile on AccelerateOS.</p><p><a href="${params.inviteUrl}">Click here to get started</a></p><p>This link expires in 7 days.</p>`
+
+  await ses.send(
+    new SendEmailCommand({
+      Source: from,
+      Destination: { ToAddresses: [params.to] },
+      Message: {
+        Subject: { Data: subject },
+        Body: {
+          Text: { Data: text },
+          Html: { Data: html },
+        },
+      },
+    }),
+  )
+}
+
 export async function sendSuperAdminEmailChangedNotice(params: { to: string; tempPassword: string }) {
   const from = process.env.AWS_SES_FROM_EMAIL
   if (!from) throw new Error('AWS_SES_FROM_EMAIL is not set')

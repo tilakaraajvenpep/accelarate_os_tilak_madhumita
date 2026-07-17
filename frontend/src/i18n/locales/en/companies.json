@@ -1,0 +1,32 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Companies",
+    "subtitle": "Invite founders to set up their company profile.",
+    "createButton": "Create Company"
+  },
+  "table": {
+    "cardTitle": "All Companies",
+    "company": "Company",
+    "founder": "Founder",
+    "email": "Email",
+    "pendingCompanyName": "Pending setup",
+    "empty": "No companies yet — invite your first founder to get started."
+  },
+  "status": {
+    "active": "Active",
+    "invited": "Invited",
+    "expired": "Expired"
+  },
+  "dialog": {
+    "title": "Create Company",
+    "description": "Send an invite so the founder can set their password and fill in their company details.",
+    "nameLabel": "Founder name",
+    "namePlaceholder": "Jane Smith",
+    "emailLabel": "Email",
+    "emailPlaceholder": "jane@startup.com",
+    "sendInviteButton": "Send Invite",
+    "inviteSent": "Invite sent",
+    "inviteFailed": "Failed to send invite"
+  }
+}

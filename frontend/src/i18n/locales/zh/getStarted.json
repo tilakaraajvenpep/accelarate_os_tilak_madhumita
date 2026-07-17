@@ -6,6 +6,7 @@
     "organization": "您的组织",
     "account": "创建账号",
     "verify": "验证邮箱",
+    "payment": "支付",
     "done": "完成"
   },
   "orgTypes": {
@@ -51,6 +52,28 @@
     "verifyAndContinue": "验证并继续",
     "back": "← 返回",
     "verificationFailed": "验证失败"
+  },
+  "payment": {
+    "title": "选择您的套餐",
+    "subtitle": "选择适合您项目的套餐，如有优惠券可以使用，然后付款以激活您的工作区。",
+    "planLabel": "套餐",
+    "planPlaceholder": "请选择套餐…",
+    "perMonth": "/月",
+    "contactRequired": "请联系我们",
+    "contactRequiredMessage": "该套餐尚未开通在线支付 — 请联系我们为您激活工作区。",
+    "couponLabel": "有优惠券吗？",
+    "couponPlaceholder": "优惠券代码",
+    "couponApply": "应用",
+    "couponAppliedButton": "已应用",
+    "couponApplied": "优惠券已应用 — 减免 {{amount}}",
+    "couponInvalid": "优惠券无效或已过期",
+    "totalLabel": "今日应付总额",
+    "payButton": "付款并激活工作区",
+    "checkoutFailed": "无法启动结账流程 — 请重试",
+    "checkoutCancelled": "支付已取消 — 您可以随时重试",
+    "confirming": "正在确认您的付款…",
+    "confirmFailed": "我们无法确认您的付款 — 如已扣款请联系支持",
+    "noPlansAvailable": "暂无可购买的套餐 — 您稍后可以在控制台中添加"
   },
   "done": {
     "title": "您的工作区已准备就绪！",

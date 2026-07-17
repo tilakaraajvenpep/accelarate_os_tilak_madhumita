@@ -3,26 +3,13 @@
   "subtitle": "批次健康状况与项目概览。",
   "stats": {
     "activeCompanies": "活跃企业",
-    "activeCompaniesSub": "分布于 3 个批次",
     "cohorts": "批次",
-    "cohortsSub": "1 个即将启动",
     "avgReadiness": "平均准备度",
-    "avgReadinessTrend": "本月 +0.4",
-    "completionRate": "完成率",
-    "completionRateSub": "目标 80%"
+    "completionRate": "完成率"
   },
   "topCompanies": {
     "title": "评分最高企业",
-    "stage": {
-      "seriesA": "A 轮",
-      "seed": "种子轮",
-      "preSeed": "天使轮",
-      "idea": "创意阶段"
-    },
-    "status": {
-      "onTrack": "进展顺利",
-      "atRisk": "存在风险"
-    }
+    "empty": "企业追踪功能即将上线。"
   },
   "recentActivity": {
     "title": "近期动态",

@@ -1,0 +1,38 @@
+{
+  "invalid": {
+    "title": "This invite link isn't valid",
+    "subtitle": "It may have expired or already been used. Ask your accelerator admin to send a new invite."
+  },
+  "password": {
+    "title": "Set your password",
+    "subtitlePrefix": "Create a password for",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "confirmLabel": "Confirm password",
+    "confirmPlaceholder": "Re-enter your password",
+    "continueButton": "Continue",
+    "tooShort": "Password must be at least 8 characters",
+    "mismatch": "Passwords don't match",
+    "failed": "Failed to set password"
+  },
+  "company": {
+    "title": "Tell us about your company",
+    "subtitle": "This helps your accelerator team get to know you.",
+    "nameLabel": "Company name",
+    "namePlaceholder": "e.g. Loopify",
+    "locationLabel": "Location",
+    "locationPlaceholder": "e.g. San Francisco, CA",
+    "establishedYearLabel": "Established year",
+    "establishedYearPlaceholder": "e.g. 2023",
+    "founderNameLabel": "Founder name",
+    "founderNamePlaceholder": "Jane Smith",
+    "founderNameHelp": "Enter a single founder's name — only one founder can be listed per company.",
+    "finishButton": "Finish setup",
+    "failed": "Failed to save company details"
+  },
+  "done": {
+    "title": "You're all set!",
+    "subtitle": "Your company profile has been created.",
+    "goToDashboard": "Go to your dashboard →"
+  }
+}

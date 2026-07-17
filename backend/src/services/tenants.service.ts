@@ -1,6 +1,6 @@
 import { eq, and, inArray, desc, count } from 'drizzle-orm'
 import { db } from '../db/client'
-import { tenants, subscriptions, plans, users, tenantInvites, payments, emailOtps } from '../models'
+import { tenants, subscriptions, plans, users, tenantInvites, payments, emailOtps, companies } from '../models'
 import { generateUniqueSlug } from '../utils/slug'
 import { sendVerificationEmail } from './ses.service'
 import {
@@ -173,6 +173,7 @@ export async function deleteTenant(tenantId: number) {
     }
     await tx.delete(subscriptions).where(eq(subscriptions.tenantId, tenantId))
     await tx.delete(tenantInvites).where(eq(tenantInvites.tenantId, tenantId))
+    await tx.delete(companies).where(eq(companies.tenantId, tenantId))
     await tx.delete(users).where(eq(users.tenantId, tenantId))
     const [deleted] = await tx.delete(tenants).where(eq(tenants.id, tenantId)).returning()
     if (!deleted) throw new Error('Tenant not found')

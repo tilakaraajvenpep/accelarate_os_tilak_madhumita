@@ -3,26 +3,13 @@
   "subtitle": "Cohort health and program overview.",
   "stats": {
     "activeCompanies": "Active Companies",
-    "activeCompaniesSub": "across 3 cohorts",
     "cohorts": "Cohorts",
-    "cohortsSub": "1 starting soon",
     "avgReadiness": "Avg Readiness",
-    "avgReadinessTrend": "+0.4 this month",
-    "completionRate": "Completion Rate",
-    "completionRateSub": "target 80%"
+    "completionRate": "Completion Rate"
   },
   "topCompanies": {
     "title": "Top Companies by Score",
-    "stage": {
-      "seriesA": "Series A",
-      "seed": "Seed",
-      "preSeed": "Pre-Seed",
-      "idea": "Idea"
-    },
-    "status": {
-      "onTrack": "On Track",
-      "atRisk": "At Risk"
-    }
+    "empty": "Company tracking coming soon."
   },
   "recentActivity": {
     "title": "Recent Activity",

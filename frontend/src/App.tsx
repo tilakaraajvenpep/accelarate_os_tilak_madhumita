@@ -8,7 +8,9 @@ import { AppShell } from '@/components/layout/app-shell'
 import LandingPage from '@/pages/landing'
 import LoginPage from '@/pages/login'
 import GetStartedPage from '@/pages/get-started'
+import AcceptInvitePage from '@/pages/accept-invite'
 import DashboardPage from '@/pages/dashboard'
+import CompaniesPage from '@/pages/dashboard/companies'
 import PlansBillingPage from '@/pages/dashboard/superadmin/plans'
 import CouponsPage from '@/pages/dashboard/superadmin/coupons'
 import ReportsPage from '@/pages/dashboard/superadmin/reports'
@@ -67,8 +69,10 @@ function TenantRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/accept-invite" element={<AcceptInvitePage />} />
       <Route path="/" element={<TenantScopedApp />}>
         <Route index element={<DashboardPage />} />
+        <Route path="companies" element={<CompaniesPage />} />
         <Route path="*" element={<ComingSoon />} />
       </Route>
     </Routes>

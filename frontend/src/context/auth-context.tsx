@@ -16,6 +16,7 @@ interface AuthContextValue {
   logout: () => Promise<void>
   register: (email: string, password: string, name: string, org?: RegisterOrgFields) => Promise<RegisterResponse>
   verifyEmail: (email: string, code: string) => Promise<void>
+  adoptSession: (tokens: AuthTokens, user: AuthUser) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -23,7 +24,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 const TOKENS_KEY = 'aos_tokens'
 const USER_KEY = 'aos_user'
 
-function getStoredTokens(): AuthTokens | null {
+export function getStoredTokens(): AuthTokens | null {
   try { return JSON.parse(localStorage.getItem(TOKENS_KEY) ?? 'null') } catch { return null }
 }
 
@@ -97,8 +98,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await api.post('/auth/verify-email', { email, code })
   }
 
+  /** Adopts a session whose tokens were minted server-side (e.g. invite acceptance) without a separate login call. */
+  function adoptSession(tokens: AuthTokens, adoptedUser: AuthUser) {
+    storeSession(tokens, adoptedUser)
+    setUser(adoptedUser)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register, verifyEmail }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register, verifyEmail, adoptSession }}>
       {children}
     </AuthContext.Provider>
   )

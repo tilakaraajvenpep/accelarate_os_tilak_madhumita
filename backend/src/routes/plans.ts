@@ -1,7 +1,7 @@
 import { Router, Response } from 'express'
 import { z } from 'zod'
 import { requireAuth, loadUser, requireRole, type AuthRequest } from '../middleware/auth.middleware'
-import { listPlans, createPlan, updatePlan, deletePlan } from '../services/plans.service'
+import { listPlans, listSelfServePlans, createPlan, updatePlan, deletePlan } from '../services/plans.service'
 
 const router = Router()
 
@@ -24,6 +24,24 @@ const updatePlanSchema = planSchema.partial().extend({
 router.get('/', requireAuth, loadUser, requireRole('super_admin'), async (_req: AuthRequest, res: Response) => {
   const plans = await listPlans()
   res.json(plans)
+})
+
+// Self-serve plan picker for the signup wizard's payment step — any admin can see what's available to buy.
+router.get('/active', requireAuth, loadUser, requireRole('admin', 'super_admin'), async (_req: AuthRequest, res: Response) => {
+  const plans = await listSelfServePlans()
+  res.json(
+    plans.map((plan) => ({
+      id: plan.id,
+      name: plan.name,
+      description: plan.description,
+      priceMonthlyCents: plan.priceMonthlyCents,
+      aiCredits: plan.aiCredits,
+      cohortsLimit: plan.cohortsLimit,
+      foundersLimit: plan.foundersLimit,
+      storageLimitGb: plan.storageLimitGb,
+      onlineBillingEnabled: !!plan.stripePriceId,
+    })),
+  )
 })
 
 router.post('/', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {

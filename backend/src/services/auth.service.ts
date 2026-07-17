@@ -12,6 +12,7 @@ import {
   AdminSetUserPasswordCommand,
   AdminGetUserCommand,
   AdminDeleteUserCommand,
+  AdminUpdateUserAttributesCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider'
 import crypto from 'crypto'
@@ -167,6 +168,17 @@ export async function cognitoAdminGetSub(email: string): Promise<string> {
   const sub = details.UserAttributes?.find((a) => a.Name === 'sub')?.Value
   if (!sub) throw new Error('Could not resolve Cognito sub for the user')
   return sub
+}
+
+/** Keeps Cognito's name attribute in sync so a later login doesn't re-sync the DB name back to a stale value (see users.service.ts upsertUser). */
+export async function cognitoAdminUpdateName(email: string, name: string) {
+  return getClient().send(
+    new AdminUpdateUserAttributesCommand({
+      UserPoolId: USER_POOL_ID,
+      Username: email,
+      UserAttributes: [{ Name: 'name', Value: name }],
+    }),
+  )
 }
 
 export async function cognitoAdminDeleteUser(email: string) {
