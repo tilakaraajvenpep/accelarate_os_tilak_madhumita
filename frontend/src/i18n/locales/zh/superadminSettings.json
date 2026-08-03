@@ -1,0 +1,76 @@
+{
+  "page": {
+    "title": "设置",
+    "subtitle": "平台级配置。"
+  },
+  "aiKeys": {
+    "section": {
+      "title": "AI 提供商密钥",
+      "subtitle": "配置平台中所使用的 AI 模型的 API 密钥。",
+      "addButton": "添加 AI 密钥",
+      "searchPlaceholder": "按提供商搜索…",
+      "emptyNone": "尚未配置任何 AI 密钥。",
+      "emptyNoMatch": "没有与搜索条件匹配的密钥。",
+      "toast": {
+        "enabled": "AI 密钥已启用",
+        "disabled": "AI 密钥已停用",
+        "updateFailed": "更新密钥失败",
+        "deleted": "AI 密钥已删除",
+        "deleteFailed": "删除 AI 密钥失败"
+      }
+    },
+    "formDialog": {
+      "editTitle": "编辑 AI 密钥",
+      "addTitle": "添加 AI 密钥",
+      "editDescription": "替换 API 密钥。",
+      "addDescription": "选择提供商，然后提供 API 密钥。",
+      "apiKeyLabel": "API 密钥",
+      "apiKeyPlaceholderEdit": "留空以保留当前密钥",
+      "toast": {
+        "updated": "AI 密钥已更新",
+        "created": "AI 密钥已创建",
+        "updateFailed": "更新 AI 密钥失败",
+        "createFailed": "创建 AI 密钥失败"
+      }
+    },
+    "deleteDialog": {
+      "title": "删除 AI 密钥",
+      "confirmDelete": "永久删除 {{provider}} 密钥?此操作无法撤销。"
+    }
+  },
+  "aiCreditRate": {
+    "title": "AI 额度单价",
+    "subtitle": "设置每个 AI 额度的价格，租户充值时将看到该价格。",
+    "rateLabel": "每额度价格（美元）",
+    "rateHint": "租户充值时，将按此价格计算其套餐额度的费用。",
+    "tokenRateLabel": "每 1,000 个 AI 令牌消耗的额度",
+    "tokenRateHint": "将实际 OpenAI 用量（AI 聊天和答案评分）换算为从租户余额中扣除的额度。每次 AI 调用至少扣除 1 个额度。",
+    "toast": {
+      "updated": "AI 额度单价已更新",
+      "updateFailed": "更新 AI 额度单价失败"
+    }
+  },
+  "tenantOnboardingForm": {
+    "title": "租户引导表单",
+    "subtitle": "选择一个租户作为公开的 /get-started 页面「组织详情」步骤（在任何租户创建之前）的表单来源。该租户自己的「表单 > 映射」标签页（类型为「租户管理员引导」）提供实际的表单内容。选择「无」则使用默认的名称/类型/网站字段。",
+    "sourceTenantLabel": "来源租户",
+    "sourceTenantHint": "所选租户的管理员在「表单 > 映射」中管理实际的表单内容。",
+    "none": "无（使用默认字段）",
+    "toast": {
+      "saved": "引导来源租户已保存",
+      "saveFailed": "保存引导来源租户失败"
+    }
+  },
+  "tenantEmailService": {
+    "title": "租户邮件服务",
+    "subtitle": "显示租户列表,并可单独启用或停用其邮件服务。",
+    "searchPlaceholder": "搜索租户…",
+    "emptyNone": "暂无租户。",
+    "emptyNoMatch": "没有与搜索条件匹配的租户。",
+    "toast": {
+      "enabled": "邮件服务已启用",
+      "disabled": "邮件服务已停用",
+      "updateFailed": "更新租户失败"
+    }
+  }
+}

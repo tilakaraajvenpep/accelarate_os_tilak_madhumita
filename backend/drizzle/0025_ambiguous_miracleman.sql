@@ -1,0 +1,2 @@
+ALTER TABLE "form_questions" ADD COLUMN "points" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "platform_settings" ADD COLUMN "ai_form_generation_cost_credits" integer DEFAULT 5 NOT NULL;

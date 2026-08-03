@@ -1,0 +1,314 @@
+{
+  "status": {
+    "active": "已激活",
+    "inactive": "未激活"
+  },
+  "programs": {
+    "page": {
+      "title": "项目",
+      "subtitle": "创建您机构运营的项目。",
+      "createButton": "创建项目"
+    },
+    "table": {
+      "cardTitle": "所有项目",
+      "name": "名称",
+      "description": "描述",
+      "status": "状态",
+      "assignedToCohort": "已分配阶段组",
+      "createdAt": "创建时间",
+      "empty": "暂无项目 — 创建您的第一个项目开始吧。",
+      "noMatch": "没有与搜索条件或筛选条件匹配的项目。",
+      "searchPlaceholder": "搜索项目…",
+      "reorderDisabledHint": "清除搜索和筛选条件，并显示全部行，才能拖动排序"
+    },
+    "dialog": {
+      "createTitle": "创建项目",
+      "editTitle": "编辑项目",
+      "description": "项目是您机构运营的顶层项目。",
+      "nameLabel": "项目名称",
+      "namePlaceholder": "例如：12 周加速器训练营",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "该项目是关于什么的？",
+      "createButton": "创建项目"
+    },
+    "deleteDialog": {
+      "title": "删除项目",
+      "confirm": "确定要删除“{{name}}”吗？"
+    },
+    "toast": {
+      "created": "项目已创建",
+      "updated": "项目已更新",
+      "deleted": "项目已删除",
+      "saveFailed": "保存项目失败",
+      "deleteFailed": "删除项目失败",
+      "reorderFailed": "保存新顺序失败"
+    },
+    "assignToCohort": {
+      "button": "分配到阶段组",
+      "dialogTitle": "将“{{name}}”安排到阶段组",
+      "dialogTitleForCohort": "为“{{name}}”安排一个项目",
+      "dialogDescription": "选择一个项目和阶段组，然后设置一个统一的开始日期 — 无需为每个支柱和板块单独设置。",
+      "programLabel": "项目",
+      "programPlaceholder": "选择项目…",
+      "cohortLabel": "阶段组",
+      "cohortPlaceholder": "选择阶段组…",
+      "noCohorts": "暂无阶段组 — 请先在“阶段组”中创建一个。",
+      "startDateLabel": "开始日期",
+      "startDateHint": "将应用于下方每个已启用日历的支柱和板块，除非您单独覆盖某一项。",
+      "datesLabel": "按支柱/板块单独设置（可选）",
+      "noCalendarItems": "该项目没有启用日历的支柱或板块，因此无需设置日期——您仍然可以将其分配给该批次。",
+      "mentorPlaceholder": "分配导师（可选）",
+      "submitButton": "分配",
+      "toast": {
+        "assigned": "项目已分配到阶段组日历",
+        "assignFailed": "分配项目到阶段组失败"
+      }
+    },
+    "duplicateDialog": {
+      "defaultName": "{{name}} 副本",
+      "title": "复制“{{name}}”",
+      "description": "创建一个新项目，并复制其所有支柱和板块。",
+      "submitButton": "复制",
+      "toast": {
+        "duplicated": "项目已复制",
+        "duplicateFailed": "复制项目失败"
+      }
+    }
+  },
+  "programDetail": {
+    "back": "返回项目",
+    "notFound": "未找到该项目。",
+    "viewInfoButton": "查看信息",
+    "assignedToCohortBadge": "已分配到阶段组：{{cohorts}}",
+    "assignedToCohortHint": "该项目已分配到某个阶段组——请先从所有阶段组中释放它，才能编辑其详情、支柱或板块。",
+    "entityLabels": {
+      "program": "项目",
+      "pillar": "支柱",
+      "section": "板块"
+    },
+    "assignedBlockDialog": {
+      "title": "无法删除——已分配到阶段组",
+      "description": "该{{entity}}已分配到 {{cohorts}}。请先从该阶段组中释放它（可通过项目上的日历图标，或在阶段组页面操作），然后才能删除。",
+      "closeButton": "知道了"
+    },
+    "pillarsTitle": "支柱",
+    "noPillars": "该项目暂无支柱。",
+    "createPillarButton": "创建支柱",
+    "createPillarTitle": "创建支柱",
+    "editPillarTitle": "编辑支柱",
+    "deletePillarTitle": "删除支柱",
+    "deletePillarConfirm": "确定要删除“{{title}}”吗？这也会移除其所有板块。",
+    "pillarCreated": "支柱已创建",
+    "pillarUpdated": "支柱已更新",
+    "pillarDeleted": "支柱已删除",
+    "pillarSaveFailed": "保存支柱失败",
+    "pillarDeleteFailed": "删除支柱失败",
+    "sectionsTitle": "板块",
+    "noSections": "该支柱暂无板块。",
+    "createSectionButton": "创建板块",
+    "createSectionTitle": "创建板块",
+    "editSectionTitle": "编辑板块",
+    "deleteSectionTitle": "删除板块",
+    "deleteSectionConfirm": "确定要删除“{{title}}”吗？",
+    "sectionCreated": "板块已创建",
+    "sectionUpdated": "板块已更新",
+    "sectionDeleted": "板块已删除",
+    "sectionSaveFailed": "保存板块失败",
+    "sectionDeleteFailed": "删除板块失败",
+    "reorderFailed": "保存新顺序失败",
+    "reorderPillarsFailed": "保存新顺序失败",
+    "executionModeLabel": "执行方式",
+    "sequentialOption": "顺序执行",
+    "parallelOption": "与上一个并行",
+    "executionModeFirstPillarHint": "第一个支柱始终最先执行——它之前没有支柱，无所谓顺序或并行。",
+    "parallelBadge": "并行",
+    "parallelGroupConnectorLabel": "与上方支柱并行执行",
+    "parallelToggleFailed": "更新并行执行设置失败",
+    "assignFormButton": "分配表单",
+    "assignFormTitle": "为“{{title}}”分配表单",
+    "assignFormDescription": "选择创始人在此板块需要填写的表单 — 可以选择多个。",
+    "formLabel": "表单",
+    "noFormsAvailable": "暂无表单 — 请先在“设置 > 表单”（模板库）中创建一个。",
+    "formAssigned": "表单已更新",
+    "formAssignFailed": "分配表单失败",
+    "fillPolicy": {
+      "first_claim": "任意团队成员（谁先填写谁锁定，其他人将无法填写）",
+      "primary_founder": "仅限主创始人"
+    }
+  },
+  "pillarDetail": {
+    "dragHint": "拖动以重新排序"
+  },
+  "pillars": {
+    "dialog": {
+      "titleLabel": "支柱标题",
+      "titlePlaceholder": "例如：产品与技术",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "该支柱涵盖哪些内容？",
+      "programObjectiveLabel": "项目目标",
+      "programObjectivePlaceholder": "该项目希望达成什么目标？",
+      "phaseCoverageLabel": "本阶段涵盖内容",
+      "phaseCoveragePlaceholder": "概述本阶段的范围",
+      "expectedOutcomesLabel": "预期成果",
+      "expectedOutcomesPlaceholder": "创始人在本阶段结束时应达成什么？",
+      "founderExpectationLabel": "对创始人的期望",
+      "founderExpectationPlaceholder": "本阶段对创始人有什么期望？",
+      "showInCalendarLabel": "在阶段组日历中显示该支柱",
+      "showInCalendarHelp": "可选 — 勾选后，该支柱可被安排到某个阶段组日历的指定日期上。",
+      "purposeLabel": "用途",
+      "learningOption": "学习",
+      "assessmentOption": "考核",
+      "passThresholdLabel": "及格阈值（%，可选）",
+      "passThresholdHint": "创始人所在公司在该支柱已提交表单上的综合得分需达到此阈值才算通过。留空则不设置分数门槛——支柱在表单提交后即算完成。",
+      "attendanceLabel": "参与要求",
+      "mandatoryOption": "必须完成",
+      "skippableOption": "可跳过",
+      "attendanceHint": "可跳过的支柱不会影响项目的整体完成状态，即使创始人从未完成它。",
+      "insertAfterLabel": "位置",
+      "insertAtEndOption": "放在最后",
+      "assessmentBadge": "考核 · 及格线 ≥{{threshold}}%",
+      "assessmentBadgeNoThreshold": "考核",
+      "skippableBadge": "可跳过",
+      "checklistLabel": "要求创始人填写准备情况检查表",
+      "checklistHelp": "创始人将在此支柱的表单旁看到并填写这些问题。",
+      "checklistQuestionPlaceholder": "给创始人的问题",
+      "checklistTextOption": "文字回答",
+      "checklistCheckboxOption": "勾选框",
+      "checklistAddQuestionButton": "添加问题"
+    }
+  },
+  "sections": {
+    "dialog": {
+      "titleLabel": "板块标题",
+      "titlePlaceholder": "例如：客户探索",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "该板块涵盖哪些内容？",
+      "showInCalendarLabel": "在阶段组日历中显示该板块",
+      "showInCalendarHelp": "可选 — 勾选后，该板块可被安排到某个阶段组日历的指定日期上。"
+    }
+  },
+  "founderPrograms": {
+    "title": "我的课程",
+    "subtitle": "已安排给您所在阶段组的项目。",
+    "empty": "您所在的阶段组暂未分配任何项目。",
+    "noPillars": "该项目暂无可查看的支柱。",
+    "completedBadge": "已完成",
+    "lockedBadge": "已锁定",
+    "lockedPillarMessage": "该支柱目前已被管理员锁定，请稍后再查看。",
+    "sequenceLockedPillarMessage": "请先完成上面的支柱以解锁此支柱。",
+    "markDoneButton": "标记为已完成",
+    "markDoneSuccess": "板块已标记为完成",
+    "markDoneFailed": "标记板块为已完成失败",
+    "viewSubmissionButton": "查看已提交的回答",
+    "draftSavedBadge": "草稿已保存",
+    "pillarBadge": "支柱 {{n}}",
+    "completionStatus": "完成状态",
+    "sectionLabel": "板块 {{letter}}",
+    "passedBadge": "通过 · {{score}}%",
+    "scoreBelowThresholdBadge": "未通过 · {{score}}%（需达到 {{threshold}}%）",
+    "cohortForms": {
+      "title": "阶段组表单",
+      "subtitle": "租户管理员已附加到您所在阶段组的表单——每个表单只能由您团队中的一位创始人填写。",
+      "fillButton": "填写表单",
+      "viewButton": "查看答案",
+      "viewOnlyDescription": "该表单已由您团队的一位成员提交——您可以在下方查看答案。",
+      "lockedByName": "正在由 {{name}} 填写",
+      "lockedGeneric": "正在由您团队的其他成员填写"
+    },
+    "form": {
+      "description": "请填写以下内容，然后提交。",
+      "viewDescription": "已提交答案的只读视图。",
+      "alreadySubmitted": "您已提交过此表单 — 再次保存将更新您的答案。",
+      "saveDraftButton": "保存草稿",
+      "submitButton": "提交",
+      "documentLabel": "附加文档（可选）",
+      "documentHint": "最大 8MB。提交后将与您的答案一起显示。",
+      "documentTooLarge": "文件过大 — 限制为 8MB",
+      "noDocument": "未附加任何文档。",
+      "toast": {
+        "saved": "草稿已保存",
+        "submitted": "表单已提交",
+        "saveFailed": "保存表单失败"
+      }
+    },
+    "materials": {
+      "title": "资料",
+      "uploadButton": "上传",
+      "viewButton": "查看",
+      "empty": "暂未上传任何资料。",
+      "uploadedBy": "由 {{name}} 上传",
+      "uploadFailed": "上传资料失败",
+      "deleteFailed": "删除资料失败"
+    },
+    "takeaways": {
+      "title": "关键收获",
+      "placeholder": "您的团队从该支柱中获得了哪些收获？",
+      "saveButton": "保存",
+      "saved": "关键收获已保存",
+      "saveFailed": "保存关键收获失败"
+    },
+    "discussion": {
+      "title": "讨论",
+      "empty": "暂无评论。开始讨论该支柱吧。",
+      "founderBadge": "创始人",
+      "coFounderBadge": "联合创始人",
+      "mentorBadge": "导师",
+      "placeholder": "写一条评论…",
+      "postButton": "发布",
+      "postFailed": "发布评论失败"
+    },
+    "checklist": {
+      "title": "准备情况检查表",
+      "submitButton": "提交",
+      "saved": "检查表已保存",
+      "saveFailed": "保存检查表失败"
+    },
+    "table": {
+      "submittedOn": "提交时间",
+      "aiScore": "AI 评分",
+      "aiScoreBadge": "{{score}}%",
+      "attemptLink": "第 {{n}} 次尝试",
+      "notStarted": "尚未开始",
+      "fillTitle": "填写表单",
+      "viewTitle": "查看已提交的回答",
+      "viewButton": "查看",
+      "editButton": "编辑",
+      "branchButton": "新尝试",
+      "branchTitle": "重新提交 — 开始新的尝试",
+      "downloadTitle": "下载附加文档",
+      "branchFailed": "重新提交失败"
+    }
+  },
+  "mentorPrograms": {
+    "title": "填写项目表单",
+    "subtitle": "选择您指导的公司，查看并填写其已分配的项目表单。",
+    "cohortLabel": "阶段组",
+    "cohortPlaceholder": "选择阶段组",
+    "companyLabel": "公司",
+    "companyPlaceholder": "选择公司",
+    "pendingSetup": "待设置",
+    "selectCohortEmpty": "请选择一个阶段组以开始。",
+    "selectCompanyEmpty": "请选择一家公司以查看其已分配的项目。",
+    "noPrograms": "该公司所在的阶段组暂未分配任何项目。",
+    "lockedPillarMessage": "该支柱目前已锁定，请稍后再查看。",
+    "sequenceLockedPillarMessage": "前面的支柱尚未完成。",
+    "passedBadge": "已通过 {{score}}%",
+    "scoreBelowThresholdBadge": "得分 {{score}}% · 需达到 {{threshold}}%",
+    "takeawaysTitle": "创始人的关键收获"
+  },
+  "feedback": {
+    "titleFallback": "反馈",
+    "mandatoryDescription": "该反馈为必填项，完成前无法跳过。",
+    "optionalDescription": "我们非常期待您的反馈。",
+    "loading": "加载中…",
+    "skipButton": "暂时跳过",
+    "alreadySubmittedNote": "您的公司已提交此反馈。",
+    "noPermissionNote": "您没有权限填写此表单——只有指定的创始人或导师可以填写。",
+    "toast": {
+      "submitted": "反馈已提交——谢谢！",
+      "draftSaved": "草稿已保存",
+      "saveFailed": "保存反馈失败",
+      "skipFailed": "跳过失败"
+    }
+  }
+}

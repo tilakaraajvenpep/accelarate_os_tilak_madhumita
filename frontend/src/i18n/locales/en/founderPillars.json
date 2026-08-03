@@ -1,0 +1,42 @@
+{
+  "list": {
+    "title": "My Pillars",
+    "subtitle": "Complete each pillar's assessments to unlock the next one.",
+    "empty": "No pillars have been set up for your program yet.",
+    "pillarLabel": "Pillar {{number}}",
+    "percentComplete": "{{percent}}% complete"
+  },
+  "detail": {
+    "title": "Pillar {{number}}",
+    "empty": "No assessments have been assigned to this pillar yet.",
+    "sectionLabel": "Section {{sectionId}}",
+    "assessmentsLabel": "Assessments",
+    "mentorAdminOnlyBadge": "Mentor/Admin only",
+    "table": {
+      "assessment": "Assessment",
+      "status": "Status"
+    },
+    "status": {
+      "notStarted": "Not started",
+      "draft": "Draft",
+      "submitted": "Submitted"
+    },
+    "branchOutTooltip": "Branch out",
+    "exportExcelTooltip": "Export Excel",
+    "openButton": "Open",
+    "startButton": "Start",
+    "branchDialog": {
+      "title": "Branch out \"{{title}}\"",
+      "description": "Create a new, independent entry seeded from this one.",
+      "namePlaceholder": "Entry name (e.g. Q2 update)"
+    },
+    "toast": {
+      "responseSubmitted": "Response submitted",
+      "draftSaved": "Draft saved",
+      "saveFailed": "Failed to save response",
+      "entryCreated": "New entry created",
+      "branchFailed": "Failed to branch out",
+      "exportFailed": "Failed to export"
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "notAvailable": "此页面不适用于您的角色。",
+  "page": {
+    "title": "阶段组",
+    "subtitle": "创建阶段组，然后邀请创始人及其公司加入。",
+    "createButton": "创建阶段组"
+  },
+  "table": {
+    "cardTitle": "所有阶段组",
+    "name": "名称",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "programs": "项目",
+    "companies": "公司数量",
+    "empty": "暂无阶段组 — 创建您的第一个阶段组开始吧。"
+  },
+  "dialog": {
+    "createTitle": "创建阶段组",
+    "editTitle": "编辑阶段组",
+    "description": "阶段组用于将一起参与项目的创始人和公司归为一组。",
+    "nameLabel": "阶段组名称",
+    "namePlaceholder": "例如：2026 年春季批次",
+    "startDateLabel": "开始日期",
+    "endDateLabel": "结束日期",
+    "dateOrderError": "结束日期必须晚于或等于开始日期",
+    "createButton": "创建阶段组"
+  },
+  "deleteDialog": {
+    "title": "删除阶段组",
+    "confirm": "确定要删除“{{name}}”吗？"
+  },
+  "toast": {
+    "created": "阶段组已创建",
+    "updated": "阶段组已更新",
+    "deleted": "阶段组已删除",
+    "saveFailed": "保存阶段组失败",
+    "deleteFailed": "删除阶段组失败"
+  },
+  "companies": {
+    "title": "公司",
+    "createButton": "创建公司",
+    "empty": "暂无公司 — 邀请您的第一位创始人开始吧。",
+    "company": "公司",
+    "founder": "创始人",
+    "email": "邮箱",
+    "progress": "进度",
+    "progressCompleted": "已完成",
+    "progressIncomplete": "未完成",
+    "pendingCompanyName": "待完善",
+    "viewAnswersButton": "查看已提交的答案",
+    "viewAsFounderButton": "以创始人身份查看",
+    "answersDialog": {
+      "title": "已提交的答案 — {{name}}",
+      "description": "该公司已提交的每一份表单，按项目、支柱和板块分组显示。",
+      "empty": "尚未提交任何表单。"
+    },
+    "status": {
+      "active": "已激活",
+      "invited": "已邀请",
+      "expired": "已过期"
+    },
+    "dialog": {
+      "title": "创建公司",
+      "description": "发送邀请，让创始人设置密码并填写公司详情。",
+      "nameLabel": "创始人姓名",
+      "namePlaceholder": "简·史密斯",
+      "emailLabel": "邮箱",
+      "emailPlaceholder": "jane@startup.com",
+      "sendInviteButton": "发送邀请",
+      "inviteSent": "邀请已发送",
+      "inviteFailed": "发送邀请失败"
+    }
+  },
+  "agenda": {
+    "viewButton": "查看日程",
+    "dialogTitle": "{{name}} — 项目日程",
+    "dialogDescription": "该阶段组的所有已安排任务，按顺序排列。",
+    "startLabel": "开始：{{date}}",
+    "empty": "暂无已安排的任务 — 请前往阶段组日历添加。",
+    "noDate": "未设置日期"
+  },
+  "assignProgram": {
+    "button": "分配项目",
+    "releaseButtonHint": "点击以从该阶段组释放此项目",
+    "releaseDialogTitle": "从阶段组释放项目",
+    "releaseDialogConfirm": "确定要将“{{name}}”从“{{cohort}}”中释放吗？该阶段组的创始人将失去访问权限，并且一旦从所有阶段组释放，该项目将重新变为可编辑状态。",
+    "releaseButton": "释放",
+    "releaseSuccess": "项目已从阶段组释放",
+    "releaseFailed": "从阶段组释放项目失败"
+  },
+  "assignMentors": {
+    "button": "分配导师",
+    "dialogTitle": "分配导师 — {{name}}",
+    "dialogDescription": "为该阶段组已排期的每个支柱选择一位导师。",
+    "noPillars": "该阶段组暂未排期任何支柱。",
+    "mentorPlaceholder": "选择导师",
+    "generalMentorLabel": "总导师（不限定支柱）",
+    "generalMentorHint": "为整个阶段组指定一位导师——适用于尚未排期任何项目的情况。",
+    "toast": {
+      "saved": "导师分配已保存",
+      "saveFailed": "保存导师分配失败"
+    }
+  },
+  "attachForm": {
+    "button": "附加表单",
+    "dialogTitle": "附加到“{{name}}”的表单",
+    "dialogDescription": "已附加的表单对该阶段组内的所有公司可见——每家公司只能由一位创始人填写每个表单。",
+    "attachedLabel": "已附加的表单",
+    "removeButton": "移除",
+    "noneAttached": "该阶段组尚未附加任何表单。",
+    "addNewLabel": "附加表单",
+    "noFormsAvailable": "没有更多可用表单——请先在“设置 > 表单”（模板库）中创建一个。",
+    "formPlaceholder": "选择一个表单…",
+    "policyPrimaryFounder": "仅主创始人可填写",
+    "policyFirstClaim": "任意团队成员——谁先开始填写谁获得填写权",
+    "attachButton": "附加",
+    "attached": "表单已附加到阶段组",
+    "attachFailed": "附加表单到阶段组失败",
+    "detached": "表单已从阶段组移除",
+    "detachFailed": "从阶段组移除表单失败"
+  },
+  "submittedAnswers": {
+    "title": "已提交的回答",
+    "subtitle": "浏览并审查您的阶段组中创始人提交的所有表单回答。",
+    "activeCompanies": "活跃公司",
+    "filterByCohort": "按阶段组筛选",
+    "allCohorts": "所有阶段组",
+    "searchPlaceholder": "搜索公司或创始人...",
+    "noCompanies": "未找到活跃的公司。",
+    "selectCompany": "选择一家公司",
+    "selectCompanyHint": "从侧边栏列表中选择一家公司，以查看其提交的表单回答。",
+    "noSubmissions": "该公司尚未提交任何表单回答。",
+    "formName": "表单名称",
+    "programName": "项目名称",
+    "noQuestions": "没有回答任何问题。",
+    "question": "问题",
+    "answer": "回答",
+    "founderLabel": "创始人: {{name}}",
+    "cohortLabel": "阶段组: {{name}}",
+    "pendingSetup": "待完善",
+    "accepted": "已接受",
+    "declined": "已拒绝"
+  }
+}

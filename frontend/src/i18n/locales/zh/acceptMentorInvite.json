@@ -1,0 +1,32 @@
+{
+  "invalid": {
+    "title": "此邀请链接无效",
+    "subtitle": "该链接可能已过期或已被使用。请联系您的加速器管理员重新发送邀请。"
+  },
+  "password": {
+    "title": "设置您的密码",
+    "subtitlePrefix": "为以下邮箱创建密码：",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 8 个字符",
+    "confirmLabel": "确认密码",
+    "confirmPlaceholder": "请再次输入密码",
+    "continueButton": "继续",
+    "tooShort": "密码至少需要 8 个字符",
+    "mismatch": "两次输入的密码不一致",
+    "failed": "设置密码失败"
+  },
+  "specialization": {
+    "title": "您的专业领域是什么？",
+    "subtitle": "这有助于创始人和管理员了解您可以在哪些方面提供指导。",
+    "label": "专业领域",
+    "placeholder": "例如：市场推广策略、融资、产品",
+    "finishButton": "完成设置",
+    "failed": "保存专业领域失败",
+    "draftNotNeeded": "已经准备就绪——无需保存草稿，直接提交即可继续。"
+  },
+  "done": {
+    "title": "一切就绪！",
+    "subtitle": "您的导师资料已创建。",
+    "goToDashboard": "前往仪表盘 →"
+  }
+}

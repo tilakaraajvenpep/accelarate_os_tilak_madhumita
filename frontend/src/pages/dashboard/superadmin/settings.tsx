@@ -1,22 +1,26 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Plus, KeyRound, Mail, ChevronDown, Sparkles, Bot, Pencil, Trash2, Loader2, Search } from 'lucide-react'
+import { KeyRound, Mail, Plus, Pencil, Trash2, ChevronUp, ChevronDown, Bot, Sparkles, Zap, Search } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
-import { useTranslation } from '@/i18n/I18nProvider'
+import { useConfirm } from '@/components/confirm-dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import {
   Dialog,
   DialogContent,
@@ -25,374 +29,372 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { PROVIDER_LABELS } from '@/lib/ai-provider'
+import type { AiProvider, AiProviderConfig } from '@/types/ai-provider'
+import type { Tenant } from '@/types/billing'
+import type { PlatformSettings } from '@/types/platform-settings'
 
-type AiProvider = 'openai' | 'anthropic'
+const PROVIDERS: { value: AiProvider; label: string; icon: typeof Bot; iconBg: string; iconColor: string }[] = [
+  { value: 'openai', label: PROVIDER_LABELS.openai, icon: Bot, iconBg: 'bg-primary/10', iconColor: 'text-primary' },
+  { value: 'anthropic', label: PROVIDER_LABELS.anthropic, icon: Sparkles, iconBg: 'bg-foreground/10', iconColor: 'text-foreground' },
+  { value: 'manus', label: PROVIDER_LABELS.manus, icon: Zap, iconBg: 'bg-muted', iconColor: 'text-muted-foreground' },
+]
 
-interface AiProviderConfig {
-  id: number
-  provider: AiProvider
-  model: string
-  apiKeyLastFour: string
-  enabled: boolean
-  createdAt: string
-}
-
-interface TenantEmailRow {
-  id: number
-  name: string
-  emailServiceEnabled: boolean
-}
-
-const PROVIDER_LABELS: Record<AiProvider, string> = {
-  openai: 'OpenAI',
-  anthropic: 'Claude (Anthropic)',
-}
-
-const PROVIDER_STYLES: Record<AiProvider, { icon: typeof Bot; className: string }> = {
-  openai: { icon: Bot, className: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
-  anthropic: { icon: Sparkles, className: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
+function providerMeta(provider: AiProvider) {
+  return PROVIDERS.find((p) => p.value === provider)!
 }
 
 export default function SettingsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('superadminSettings')
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">{t('superAdminSettings.title')}</h1>
-        <p className="text-muted-foreground text-sm mt-1">{t('superAdminSettings.subtitle')}</p>
+        <h1 className="text-2xl font-bold tracking-tight">{t('page.title')}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t('page.subtitle')}</p>
       </div>
 
-      <AiKeysSection />
+      <AiProviderKeysSection />
+      <AiCreditRateSection />
       <TenantEmailServiceSection />
     </div>
   )
 }
 
-function SectionCard({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border bg-card shadow-sm divide-y overflow-hidden">{children}</div>
-}
-
-function EmptyRow({ icon: Icon, text }: { icon: typeof KeyRound; text: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-        <Icon className="h-5 w-5 text-muted-foreground" />
-      </div>
-      <p className="text-sm text-muted-foreground">{text}</p>
-    </div>
-  )
-}
-
-function SearchInput({
-  value,
-  onChange,
-  placeholder,
-}: {
-  value: string
-  onChange: (value: string) => void
-  placeholder: string
-}) {
-  return (
-    <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="pl-8 border-border"
-      />
-    </div>
-  )
-}
-
-function AiKeysSection() {
-  const { t } = useTranslation()
+function AiCreditRateSection() {
+  const { t } = useTranslation('superadminSettings')
   const queryClient = useQueryClient()
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingConfig, setEditingConfig] = useState<AiProviderConfig | null>(null)
-  const [pendingDelete, setPendingDelete] = useState<AiProviderConfig | null>(null)
+  const [rateDollars, setRateDollars] = useState('')
+  const [tokenRate, setTokenRate] = useState('')
+  const [initialized, setInitialized] = useState(false)
+
+  const { data: settings } = useQuery({
+    queryKey: ['platform-settings'],
+    queryFn: async () => (await api.get<PlatformSettings>('/api/platform/settings')).data,
+  })
+
+  if (settings && !initialized) {
+    setRateDollars((settings.aiCreditRateCents / 100).toString())
+    setTokenRate(String(settings.aiCreditsPerThousandTokens))
+    setInitialized(true)
+  }
+
+  const mutation = useMutation({
+    mutationFn: async () =>
+      (
+        await api.patch('/api/platform/settings', {
+          aiCreditRateCents: Math.round(parseFloat(rateDollars || '0') * 100),
+          aiCreditsPerThousandTokens: Math.round(parseFloat(tokenRate || '0')),
+        })
+      ).data,
+    onSuccess: () => {
+      toast.success(t('aiCreditRate.toast.updated'))
+      queryClient.invalidateQueries({ queryKey: ['platform-settings'] })
+    },
+    onError: (err) => toast.error(apiError(err, t('aiCreditRate.toast.updateFailed'))),
+  })
+
+  return (
+    <div className="surface-card">
+      <div className="px-6 py-4 border-b flex items-center gap-2">
+        <Zap className="h-4 w-4 text-muted-foreground" />
+        <div>
+          <h2 className="font-semibold">{t('aiCreditRate.title')}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('aiCreditRate.subtitle')}</p>
+        </div>
+      </div>
+      <div className="p-4">
+        <div className="space-y-1.5 max-w-xs">
+          <Label>{t('aiCreditRate.rateLabel')}</Label>
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>$</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput
+              type="text"
+              inputMode="decimal"
+              value={rateDollars}
+              onChange={(e) => {
+                const v = e.target.value
+                if (/^\d*\.?\d*$/.test(v)) setRateDollars(v)
+              }}
+            />
+          </InputGroup>
+          <p className="text-xs text-muted-foreground">{t('aiCreditRate.rateHint')}</p>
+        </div>
+        <div className="space-y-1.5 max-w-xs mt-4">
+          <Label>{t('aiCreditRate.tokenRateLabel')}</Label>
+          <Input
+            type="text"
+            inputMode="decimal"
+            value={tokenRate}
+            onChange={(e) => {
+              const v = e.target.value
+              if (/^\d*\.?\d*$/.test(v)) setTokenRate(v)
+            }}
+          />
+          <p className="text-xs text-muted-foreground">{t('aiCreditRate.tokenRateHint')}</p>
+        </div>
+        <Button className="mt-3" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+          {t('common:saveChanges')}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function AiProviderKeysSection() {
+  const { t } = useTranslation('superadminSettings')
+  const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editing, setEditing] = useState<AiProviderConfig | null>(null)
+  const confirm = useConfirm()
 
   const { data: configs = [], isLoading } = useQuery({
     queryKey: ['ai-provider-configs'],
-    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-configs')).data,
-  })
-
-  const filteredConfigs = configs.filter((config) => {
-    const query = search.trim().toLowerCase()
-    if (!query) return true
-    return (
-      PROVIDER_LABELS[config.provider].toLowerCase().includes(query) ||
-      config.model.toLowerCase().includes(query)
-    )
+    queryFn: async () => (await api.get<AiProviderConfig[]>('/api/ai-provider-configs')).data,
   })
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: ['ai-provider-configs'] })
   }
 
-  const toggleMutation = useMutation({
-    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) =>
-      (await api.patch(`/api/ai-configs/${id}/enabled`, { enabled })).data,
+  const toggleEnabledMutation = useMutation({
+    mutationFn: async (params: { id: number; enabled: boolean }) =>
+      (await api.patch(`/api/ai-provider-configs/${params.id}/enabled`, { enabled: params.enabled })).data,
     onSuccess: (_data, variables) => {
-      toast.success(variables.enabled ? t('superAdminSettings.aiKeys.toast.enabled') : t('superAdminSettings.aiKeys.toast.disabled'))
+      toast.success(variables.enabled ? t('aiKeys.section.toast.enabled') : t('aiKeys.section.toast.disabled'))
       invalidate()
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminSettings.aiKeys.toast.updateFailed'))),
+    onError: (err) => toast.error(apiError(err, t('aiKeys.section.toast.updateFailed'))),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => (await api.delete(`/api/ai-configs/${id}`)).data,
+    mutationFn: async (id: number) => (await api.delete(`/api/ai-provider-configs/${id}`)).data,
     onSuccess: () => {
-      toast.success(t('superAdminSettings.aiKeys.toast.deleted'))
-      setPendingDelete(null)
+      toast.success(t('aiKeys.section.toast.deleted'))
       invalidate()
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminSettings.aiKeys.toast.deleteFailed'))),
+    onError: (err) => toast.error(apiError(err, t('aiKeys.section.toast.deleteFailed'))),
+  })
+
+  async function handleDelete(config: AiProviderConfig) {
+    const ok = await confirm({
+      title: t('aiKeys.deleteDialog.title'),
+      description: t('aiKeys.deleteDialog.confirmDelete', {
+        provider: providerMeta(config.provider).label,
+      }),
+      confirmLabel: t('common:delete'),
+      variant: 'destructive',
+    })
+    if (ok) {
+      deleteMutation.mutate(config.id)
+    }
+  }
+
+  const filtered = configs.filter((c) => {
+    const q = search.trim().toLowerCase()
+    if (!q) return true
+    return providerMeta(c.provider).label.toLowerCase().includes(q)
   })
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="font-semibold flex items-center gap-2">
-            <KeyRound className="h-4 w-4 text-muted-foreground" /> {t('superAdminSettings.aiKeys.title')}
-          </h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            {t('superAdminSettings.aiKeys.subtitle')}
-          </p>
+    <div className="surface-card">
+      <div className="px-6 py-4 border-b flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <KeyRound className="h-4 w-4 text-muted-foreground" />
+          <div>
+            <h2 className="font-semibold">{t('aiKeys.section.title')}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('aiKeys.section.subtitle')}</p>
+          </div>
         </div>
-        <Button onClick={() => setDialogOpen(true)} className="shrink-0">
-          <Plus className="h-4 w-4" /> {t('superAdminSettings.aiKeys.addKey')}
+        <Button onClick={() => setCreateOpen(true)}>
+          <Plus className="h-4 w-4" /> {t('aiKeys.section.addButton')}
         </Button>
       </div>
 
-      <SearchInput
-        value={search}
-        onChange={setSearch}
-        placeholder={t('superAdminSettings.aiKeys.searchPlaceholder')}
-      />
+      <div className="p-4 space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-4 w-4 text-muted-foreground" />
+          <Input
+            className="pl-9 border-neutral-400 dark:border-neutral-600 backdrop-blur-none"
+            placeholder={t('aiKeys.section.searchPlaceholder')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-      <SectionCard>
-        {filteredConfigs.map((config) => {
-          const { icon: ProviderIcon, className } = PROVIDER_STYLES[config.provider]
-          return (
-            <div key={config.id} className="flex items-center justify-between gap-4 px-5 py-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className={cn('h-10 w-10 rounded-xl flex items-center justify-center shrink-0', className)}>
-                  <ProviderIcon className="h-5 w-5" />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium truncate">{PROVIDER_LABELS[config.provider]}</p>
-                  <p className="text-xs text-muted-foreground truncate">{config.model}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <Badge variant={config.enabled ? 'default' : 'secondary'} className="w-[70px] justify-center">
-                    {config.enabled ? t('superAdminSettings.aiKeys.active') : t('superAdminSettings.aiKeys.disabled')}
-                  </Badge>
-                  <Switch
-                    checked={config.enabled}
-                    disabled={toggleMutation.isPending}
-                    onCheckedChange={(checked: boolean) =>
-                      toggleMutation.mutate({ id: config.id, enabled: checked })
-                    }
-                  />
-                </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t('aiKeys.section.tableAiKeys')}</TableHead>
+              <TableHead className="text-center">{t('common:status')}</TableHead>
+              <TableHead className="text-center">{t('common:actions')}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.map((config) => {
+              const meta = providerMeta(config.provider)
+              return (
+                <TableRow key={config.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className={cn('h-9 w-9 rounded-lg flex items-center justify-center', meta.iconBg)}>
+                        <meta.icon className={cn('h-4 w-4', meta.iconColor)} />
+                      </div>
+                      <p className="text-sm font-medium">{meta.label}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-3">
+                      <Badge variant={config.enabled ? 'success' : 'secondary'}>
+                        {config.enabled ? t('common:active') : t('common:inactive')}
+                      </Badge>
+                      <Switch
+                        checked={config.enabled}
+                        disabled={toggleEnabledMutation.isPending}
+                        onCheckedChange={(checked: boolean) => toggleEnabledMutation.mutate({ id: config.id, enabled: checked })}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-center gap-1">
+                      <Button variant="ghost" size="icon-sm" title={t('common:edit')} onClick={() => setEditing(config)}>
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon-sm" title={t('common:delete')} onClick={() => handleDelete(config)}>
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+            {!isLoading && filtered.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center py-10">
+                  <KeyRound className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">
+                    {configs.length === 0 ? t('aiKeys.section.emptyNone') : t('aiKeys.section.emptyNoMatch')}
+                  </p>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-                <div className="h-6 w-px bg-border" />
+      <AiKeyFormDialog open={createOpen} onOpenChange={setCreateOpen} config={null} onSaved={invalidate} />
+      <AiKeyFormDialog open={!!editing} onOpenChange={(open) => !open && setEditing(null)} config={editing} onSaved={invalidate} />
 
-                <div className="flex items-center gap-1 rounded-lg bg-muted/40 p-1">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title={t('superAdminSettings.aiKeys.edit')}
-                    className="hover:bg-background hover:shadow-sm"
-                    onClick={() => setEditingConfig(config)}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title={t('superAdminSettings.aiKeys.delete')}
-                    className="text-destructive hover:text-destructive hover:bg-background hover:shadow-sm"
-                    onClick={() => setPendingDelete(config)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-        {!isLoading && configs.length === 0 && (
-          <EmptyRow icon={KeyRound} text={t('superAdminSettings.aiKeys.noneYet')} />
-        )}
-        {!isLoading && configs.length > 0 && filteredConfigs.length === 0 && (
-          <EmptyRow icon={Search} text={t('superAdminSettings.aiKeys.noResults')} />
-        )}
-      </SectionCard>
-
-      <AddAiKeyDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onCreated={invalidate}
-      />
-
-      <EditAiKeyDialog
-        config={editingConfig}
-        onOpenChange={(open) => !open && setEditingConfig(null)}
-        onSaved={invalidate}
-      />
-
-      <Dialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{t('superAdminSettings.aiKeys.deleteConfirmTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('superAdminSettings.aiKeys.deleteConfirmDesc', {
-                provider: pendingDelete ? PROVIDER_LABELS[pendingDelete.provider] : '',
-                model: pendingDelete?.model ?? '',
-              })}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setPendingDelete(null)}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-              onClick={() => pendingDelete && deleteMutation.mutate(pendingDelete.id)}
-            >
-              {deleteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              {t('common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
 
-function AddAiKeyDialog({
+function AiKeyFormDialog({
   open,
   onOpenChange,
-  onCreated,
+  config,
+  onSaved,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreated: () => void
+  config: AiProviderConfig | null
+  onSaved: () => void
 }) {
-  const { t } = useTranslation()
-  const [provider, setProvider] = useState<AiProvider | ''>('')
-  const [model, setModel] = useState('')
+  const { t } = useTranslation('superadminSettings')
+  const isEdit = !!config
+  const [provider, setProvider] = useState<AiProvider | null>(config?.provider ?? null)
   const [apiKey, setApiKey] = useState('')
+  const [lastConfigId, setLastConfigId] = useState<number | null | undefined>(undefined)
 
-  const { data: modelsByProvider } = useQuery({
-    queryKey: ['ai-provider-models'],
-    queryFn: async () => (await api.get<Record<AiProvider, string[]>>('/api/ai-configs/models')).data,
-    enabled: open,
-  })
-
-  function reset() {
-    setProvider('')
-    setModel('')
+  if (open && config?.id !== lastConfigId) {
+    setLastConfigId(config?.id ?? null)
+    setProvider(config?.provider ?? null)
     setApiKey('')
   }
 
   function handleOpenChange(next: boolean) {
-    if (!next) reset()
+    if (next && !config) {
+      setProvider(null)
+      setApiKey('')
+    }
     onOpenChange(next)
   }
 
+  function handleProviderSelect(p: AiProvider) {
+    if (isEdit) return
+    setProvider(p)
+  }
+
   const mutation = useMutation({
-    mutationFn: async () => (await api.post('/api/ai-configs', { provider, model, apiKey })).data,
+    mutationFn: async () => {
+      if (isEdit) {
+        return (await api.patch(`/api/ai-provider-configs/${config!.id}`, { apiKey })).data
+      }
+      return (await api.post('/api/ai-provider-configs', { provider, apiKey })).data
+    },
     onSuccess: () => {
-      toast.success(t('superAdminSettings.aiKeys.toast.created'))
-      onCreated()
+      toast.success(isEdit ? t('aiKeys.formDialog.toast.updated') : t('aiKeys.formDialog.toast.created'))
+      onSaved()
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminSettings.aiKeys.toast.createFailed'))),
+    onError: (err) =>
+      toast.error(
+        apiError(err, isEdit ? t('aiKeys.formDialog.toast.updateFailed') : t('aiKeys.formDialog.toast.createFailed')),
+      ),
   })
 
-  const models = provider ? modelsByProvider?.[provider] ?? [] : []
+  const canSubmit = isEdit ? true : !!provider && !!apiKey
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('superAdminSettings.aiKeys.addDialogTitle')}</DialogTitle>
-          <DialogDescription>{t('superAdminSettings.aiKeys.addDialogDesc')}</DialogDescription>
+          <DialogTitle>{isEdit ? t('aiKeys.formDialog.editTitle') : t('aiKeys.formDialog.addTitle')}</DialogTitle>
+          <DialogDescription>
+            {isEdit ? t('aiKeys.formDialog.editDescription') : t('aiKeys.formDialog.addDescription')}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
-            {(Object.keys(PROVIDER_LABELS) as AiProvider[]).map((p) => {
-              const { icon: ProviderIcon, className } = PROVIDER_STYLES[p]
-              const selected = provider === p
-              return (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => {
-                    setProvider(p)
-                    setModel('')
-                  }}
-                  className={cn(
-                    'flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors',
-                    selected ? 'border-primary bg-primary/5' : 'hover:bg-muted/50',
-                  )}
-                >
-                  <div className={cn('h-8 w-8 rounded-lg flex items-center justify-center shrink-0', className)}>
-                    <ProviderIcon className="h-4 w-4" />
-                  </div>
-                  <span className="text-sm font-medium">{PROVIDER_LABELS[p]}</span>
-                </button>
-              )
-            })}
+          <div className="grid grid-cols-3 gap-2">
+            {PROVIDERS.map((p) => (
+              <button
+                key={p.value}
+                type="button"
+                disabled={isEdit}
+                onClick={() => handleProviderSelect(p.value)}
+                className={cn(
+                  'flex items-center gap-2 rounded-lg border p-3 text-sm font-medium transition-colors',
+                  provider === p.value ? 'border-primary bg-primary/5' : 'hover:bg-muted',
+                  isEdit && 'opacity-60 cursor-not-allowed',
+                )}
+              >
+                <div className={cn('h-7 w-7 rounded-md flex items-center justify-center', p.iconBg)}>
+                  <p.icon className={cn('h-3.5 w-3.5', p.iconColor)} />
+                </div>
+                {p.label}
+              </button>
+            ))}
           </div>
 
           <div className="space-y-1.5">
-            <Label>{t('superAdminSettings.aiKeys.model')}</Label>
-            <Select value={model} onValueChange={(v) => setModel(v ?? '')}>
-              <SelectTrigger className="w-full" disabled={!provider}>
-                <SelectValue placeholder={provider ? t('superAdminSettings.aiKeys.selectModel') : t('superAdminSettings.aiKeys.selectProviderFirst')} />
-              </SelectTrigger>
-              <SelectContent>
-                {models.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>{t('superAdminSettings.aiKeys.apiKey')}</Label>
-            <Input
-              type="password"
+            <Label>{t('aiKeys.formDialog.apiKeyLabel')}</Label>
+            <PasswordInput
+              placeholder={isEdit ? t('aiKeys.formDialog.apiKeyPlaceholderEdit') : provider === 'anthropic' ? 'sk-ant-...' : 'sk-...'}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder={provider === 'openai' ? 'sk-...' : 'sk-ant-...'}
-              disabled={!model}
             />
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            {t('common.cancel')}
+            {t('common:cancel')}
           </Button>
-          <Button
-            onClick={() => mutation.mutate()}
-            disabled={!provider || !model || !apiKey || mutation.isPending}
-          >
-            {mutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {t('common.create')}
+          <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !canSubmit}>
+            {isEdit ? t('common:saveChanges') : t('common:create')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -400,188 +402,91 @@ function AddAiKeyDialog({
   )
 }
 
-function EditAiKeyDialog({
-  config,
-  onOpenChange,
-  onSaved,
-}: {
-  config: AiProviderConfig | null
-  onOpenChange: (open: boolean) => void
-  onSaved: () => void
-}) {
-  const { t } = useTranslation()
-  const [model, setModel] = useState('')
-  const [apiKey, setApiKey] = useState('')
-  const [lastConfigId, setLastConfigId] = useState<number | null>(null)
 
-  const { data: modelsByProvider } = useQuery({
-    queryKey: ['ai-provider-models'],
-    queryFn: async () => (await api.get<Record<AiProvider, string[]>>('/api/ai-configs/models')).data,
-    enabled: !!config,
-  })
-
-  // Re-seed the form whenever a different config is opened for editing.
-  if (config && config.id !== lastConfigId) {
-    setLastConfigId(config.id)
-    setModel(config.model)
-    setApiKey('')
-  }
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      if (!config) throw new Error('No AI key selected')
-      const body: { model?: string; apiKey?: string } = {}
-      if (model !== config.model) body.model = model
-      if (apiKey) body.apiKey = apiKey
-      return (await api.patch(`/api/ai-configs/${config.id}`, body)).data
-    },
-    onSuccess: () => {
-      toast.success(t('superAdminSettings.aiKeys.toast.updated'))
-      onSaved()
-      onOpenChange(false)
-    },
-    onError: (err) => toast.error(apiError(err, t('superAdminSettings.aiKeys.toast.updateFailed'))),
-  })
-
-  const models = config ? modelsByProvider?.[config.provider] ?? [] : []
-  const hasChanges = !!config && (model !== config.model || !!apiKey)
-
-  return (
-    <Dialog open={!!config} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('superAdminSettings.aiKeys.editDialogTitle')}</DialogTitle>
-          <DialogDescription>
-            {t('superAdminSettings.aiKeys.editDialogDesc', { provider: config ? PROVIDER_LABELS[config.provider] : '' })}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label>{t('superAdminSettings.aiKeys.model')}</Label>
-            <Select value={model} onValueChange={(v) => setModel(v ?? '')}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={t('superAdminSettings.aiKeys.selectModel')} />
-              </SelectTrigger>
-              <SelectContent>
-                {models.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>{t('superAdminSettings.aiKeys.apiKey')}</Label>
-            <Input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder={t('superAdminSettings.aiKeys.leaveBlank', { last4: config?.apiKeyLastFour ?? '' })}
-            />
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t('common.cancel')}
-          </Button>
-          <Button onClick={() => mutation.mutate()} disabled={!hasChanges || mutation.isPending}>
-            {mutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {t('superAdminSettings.aiKeys.saveChanges')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 function TenantEmailServiceSection() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('superadminSettings')
   const queryClient = useQueryClient()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const [search, setSearch] = useState('')
 
   const { data: tenants = [], isLoading } = useQuery({
     queryKey: ['tenants'],
-    queryFn: async () => (await api.get<TenantEmailRow[]>('/api/tenants')).data,
-    enabled: expanded,
-  })
-
-  const filteredTenants = tenants.filter((tenant) => {
-    const query = search.trim().toLowerCase()
-    if (!query) return true
-    return tenant.name.toLowerCase().includes(query)
+    queryFn: async () => (await api.get<Tenant[]>('/api/tenants')).data,
   })
 
   const toggleMutation = useMutation({
-    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) =>
-      (await api.patch(`/api/tenants/${id}/email-service`, { enabled })).data,
+    mutationFn: async (params: { id: number; enabled: boolean }) =>
+      (await api.patch(`/api/tenants/${params.id}/email-service`, { enabled: params.enabled })).data,
     onSuccess: (_data, variables) => {
-      toast.success(variables.enabled ? t('superAdminSettings.emailService.toast.enabled') : t('superAdminSettings.emailService.toast.disabled'))
+      toast.success(variables.enabled ? t('tenantEmailService.toast.enabled') : t('tenantEmailService.toast.disabled'))
       queryClient.invalidateQueries({ queryKey: ['tenants'] })
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminSettings.emailService.toast.updateFailed'))),
+    onError: (err) => toast.error(apiError(err, t('tenantEmailService.toast.updateFailed'))),
   })
 
+  const filtered = tenants.filter((tenant) => tenant.name.toLowerCase().includes(search.trim().toLowerCase()))
+
   return (
-    <div className="space-y-4">
+    <div className="surface-card">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center justify-between gap-4 text-left group"
+        className="w-full px-6 py-4 border-b flex items-center justify-between text-left"
       >
-        <div>
-          <h2 className="font-semibold flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" /> {t('superAdminSettings.emailService.title')}
-          </h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            {t('superAdminSettings.emailService.subtitle')}
-          </p>
+        <div className="flex items-center gap-2">
+          <Mail className="h-4 w-4 text-muted-foreground" />
+          <div>
+            <h2 className="font-semibold">{t('tenantEmailService.title')}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('tenantEmailService.subtitle')}</p>
+          </div>
         </div>
-        <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 border group-hover:bg-muted/50 transition-colors">
-          <ChevronDown className={cn('h-4 w-4 text-muted-foreground transition-transform', expanded && 'rotate-180')} />
-        </div>
+        {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
 
       {expanded && (
-        <>
-          <SearchInput
-            value={search}
-            onChange={setSearch}
-            placeholder={t('superAdminSettings.emailService.searchPlaceholder')}
-          />
-          <SectionCard>
-            {filteredTenants.map((tenant) => (
-              <div key={tenant.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0 text-sm font-semibold text-muted-foreground">
-                    {tenant.name.slice(0, 1).toUpperCase()}
+        <div className="p-4 space-y-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="pl-9 border-neutral-400 dark:border-neutral-600 backdrop-blur-none"
+              placeholder={t('tenantEmailService.searchPlaceholder')}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            {filtered.map((tenant) => (
+              <div key={tenant.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground overflow-hidden">
+                    {tenant.logoUrl ? <img src={tenant.logoUrl} alt={tenant.name} className="h-full w-full object-contain" /> : tenant.name[0]?.toUpperCase()}
                   </div>
-                  <p className="font-medium truncate">{tenant.name}</p>
+                  <p className="text-sm font-medium">{tenant.name}</p>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <Badge variant={tenant.emailServiceEnabled ? 'default' : 'secondary'}>
-                    {tenant.emailServiceEnabled ? t('superAdminSettings.emailService.enabled') : t('superAdminSettings.emailService.disabled')}
+                <div className="flex items-center gap-3">
+                  <Badge variant={tenant.emailServiceEnabled ? 'success' : 'secondary'}>
+                    {tenant.emailServiceEnabled ? t('common:enabled') : t('common:disabled')}
                   </Badge>
                   <Switch
                     checked={tenant.emailServiceEnabled}
                     disabled={toggleMutation.isPending}
-                    onCheckedChange={(checked: boolean) =>
-                      toggleMutation.mutate({ id: tenant.id, enabled: checked })
-                    }
+                    onCheckedChange={(checked: boolean) => toggleMutation.mutate({ id: tenant.id, enabled: checked })}
                   />
                 </div>
               </div>
             ))}
-            {!isLoading && tenants.length === 0 && <EmptyRow icon={Mail} text={t('superAdminSettings.emailService.noneYet')} />}
-            {!isLoading && tenants.length > 0 && filteredTenants.length === 0 && (
-              <EmptyRow icon={Search} text={t('superAdminSettings.emailService.noResults')} />
+            {!isLoading && filtered.length === 0 && (
+              <div className="text-center py-10">
+                <Mail className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">
+                  {tenants.length === 0 ? t('tenantEmailService.emptyNone') : t('tenantEmailService.emptyNoMatch')}
+                </p>
+              </div>
             )}
-          </SectionCard>
-        </>
+          </div>
+        </div>
       )}
     </div>
   )

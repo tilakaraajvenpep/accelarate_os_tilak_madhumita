@@ -1,0 +1,1 @@
+ALTER TABLE "platform_settings" ADD COLUMN "ai_credits_per_thousand_tokens" integer DEFAULT 10 NOT NULL;

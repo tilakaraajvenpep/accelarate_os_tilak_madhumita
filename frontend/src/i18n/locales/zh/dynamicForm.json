@@ -1,0 +1,81 @@
+{
+  "actions": {
+    "saveDraft": "保存草稿",
+    "submitResponse": "提交回答",
+    "applySuggestion": "采用建议",
+    "addRow": "添加行",
+    "cancel": "取消",
+    "agreeAndSubmit": "同意并提交"
+  },
+  "consent": {
+    "dialogTitle": "条款与条件",
+    "dialogDescription": "请阅读并同意以下条款后再提交您的回答。",
+    "noTermsProvided": "该表单尚未提供任何条款。",
+    "checkboxLabel": "我已阅读并同意条款与条件"
+  },
+  "validation": {
+    "answerRequired": "请至少回答一个问题后再保存。",
+    "questionRequired": "“{{title}}”为必填项。",
+    "waitForAnalysis": "请等待 AI 分析完成后再提交。"
+  },
+  "aiFeedback": {
+    "label": "AI 反馈",
+    "suggestedRewrite": "建议改写"
+  },
+  "fields": {
+    "selectPlaceholder": "请选择…",
+    "analyzing": "分析中…",
+    "businessBrandName": "企业 / 品牌名称",
+    "uen": "UEN（统一实体编号）",
+    "industry": "行业",
+    "companySize": "企业规模",
+    "fullName": "姓名",
+    "roleInBusiness": "在企业中的职位",
+    "emailAddress": "邮箱地址",
+    "mobileNumber": "手机号码",
+    "whatsappConsent": "WhatsApp 通讯同意",
+    "emailConsent": "邮件通讯同意",
+    "platformScopeAck": "平台范围确认",
+    "participationAuthorityAck": "参与授权声明"
+  },
+  "options": {
+    "solo": "仅限个人",
+    "2-10": "2-10人",
+    "11-50": "11-50人",
+    "50+": "50人以上",
+    "technology": "科技",
+    "healthcare": "医疗保健",
+    "finance": "金融",
+    "retailEcommerce": "零售 / 电子商务",
+    "manufacturing": "制造",
+    "education": "教育",
+    "foodBeverage": "餐饮",
+    "realEstate": "房地产",
+    "professionalServices": "专业服务",
+    "other": "其他",
+    "founderCeo": "创始人 / CEO",
+    "coFounder": "联合创始人",
+    "cto": "技术总监 (CTO)",
+    "coo": "运营总监 (COO)",
+    "cfo": "财务总监 (CFO)"
+  },
+  "consents": {
+    "whatsappDesc": "我同意通过 WhatsApp 接收项目更新信息",
+    "emailDesc": "我同意通过邮件接收项目更新信息",
+    "platformScopeDesc": "我确认该平台用于跟踪和支持目的...",
+    "participationAuthorityDesc": "我声明本人有权参与该登记流程..."
+  },
+  "table": {
+    "sectionTotal": "本部分合计",
+    "total": "合计"
+  },
+  "onboarding": {
+    "businessIdentityTitle": "企业身份",
+    "businessIdentitySubtitle": "关于您企业的基本信息。",
+    "primaryContactTitle": "主要联系人（账户所有者）",
+    "primaryContactSubtitle": "企业所有者的联系信息。",
+    "consentsTitle": "同意授权",
+    "legalTitle": "法律声明",
+    "additionalTitle": "其他信息"
+  }
+}

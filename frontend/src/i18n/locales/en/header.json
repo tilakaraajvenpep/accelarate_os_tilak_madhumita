@@ -1,0 +1,11 @@
+{
+  "expandSidebar": "Expand sidebar",
+  "collapseSidebar": "Collapse sidebar",
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "markAllReadToast": "All notifications marked read",
+    "empty": "No notifications yet"
+  },
+  "noPagesFound": "No pages found for \"{{query}}\""
+}

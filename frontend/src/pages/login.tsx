@@ -1,266 +1,278 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Loader2, ScanLine, Map, Rocket, TrendingUp, CheckCircle2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { api } from '@/lib/api'
-import { cn } from '@/lib/utils'
+import { cleanErrorMessage } from '@/lib/api-error'
+import { classifyHost, adminUrl, tenantUrl } from '@/lib/host'
+import { encodeHandoff } from '@/lib/session-handoff'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { LanguageToggle } from '@/i18n/LanguageToggle'
-import { useTranslation } from '@/i18n/I18nProvider'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 type View = 'signin' | 'verify-email' | 'forgot-password' | 'reset-password'
 
 export default function LoginPage() {
+  const { t } = useTranslation('login')
   const navigate = useNavigate()
   const { login, verifyEmail } = useAuth()
-  const { t } = useTranslation()
   const [view, setView] = useState<View>('signin')
   const [loading, setLoading] = useState(false)
-  const [pendingEmail, setPendingEmail] = useState('')
+  const [pendingEmail] = useState('')
 
   const [siEmail, setSiEmail] = useState('')
   const [siPassword, setSiPassword] = useState('')
   const [verifyCode, setVerifyCode] = useState('')
 
   async function handleSignIn(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true)
-    try { await login(siEmail, siPassword); navigate('/app') }
-    catch (err) { toast.error(apiError(err, t('login.toast.signInFailed'))) }
+    e.preventDefault()
+    if (!siEmail.trim()) { toast.error('Email is required'); return }
+    if (!siPassword) { toast.error('Password is required'); return }
+    setLoading(true)
+    try {
+      const { user, tokens } = await login(siEmail, siPassword)
+      const baseDomain = import.meta.env.VITE_BASE_DOMAIN
+      const host = classifyHost(window.location.hostname, baseDomain)
+      if (user.role === 'super_admin') {
+        if (host.kind === 'admin') navigate('/')
+        else window.location.href = adminUrl(baseDomain) + encodeHandoff(tokens, user)
+      } else if (user.tenantSlug) {
+        if (host.kind === 'tenant' && host.slug === user.tenantSlug) navigate('/')
+        else window.location.href = tenantUrl(user.tenantSlug, baseDomain) + encodeHandoff(tokens, user)
+      } else {
+        toast.error(t('signin.errorFallback'))
+      }
+    }
+    catch (err) { toast.error(apiError(err, t('signin.errorFallback'))) }
     finally { setLoading(false) }
   }
 
   async function handleVerify(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true)
+    e.preventDefault()
+    if (!verifyCode.trim()) { toast.error('Verification code is required'); return }
+    setLoading(true)
     try {
       await verifyEmail(pendingEmail, verifyCode)
-      toast.success(t('login.toast.emailVerified'))
+      toast.success(t('verifyEmail.successToast'))
       setSiEmail(pendingEmail); setView('signin')
     }
-    catch (err) { toast.error(apiError(err, t('login.toast.verificationFailed'))) }
+    catch (err) { toast.error(apiError(err, t('verifyEmail.errorFallback'))) }
     finally { setLoading(false) }
   }
 
-  const JOURNEY = [
-    {
-      icon: ScanLine,
-      step: '01',
-      color: 'oklch(0.65 0.22 265)',
-      titleKey: 'login.journey.assess.title',
-      descKey: 'login.journey.assess.desc',
-    },
-    {
-      icon: Map,
-      step: '02',
-      color: 'oklch(0.65 0.20 200)',
-      titleKey: 'login.journey.roadmap.title',
-      descKey: 'login.journey.roadmap.desc',
-    },
-    {
-      icon: Rocket,
-      step: '03',
-      color: 'oklch(0.65 0.22 310)',
-      titleKey: 'login.journey.execute.title',
-      descKey: 'login.journey.execute.desc',
-    },
-    {
-      icon: TrendingUp,
-      step: '04',
-      color: 'oklch(0.70 0.18 145)',
-      titleKey: 'login.journey.raise.title',
-      descKey: 'login.journey.raise.desc',
-    },
-  ]
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-page">
-
-      {/* ── Aurora background ──────────────────────────────── */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-[oklch(0.55_0.22_265)] opacity-[0.18] blur-[140px]" />
-        <div className="absolute bottom-0 left-0 h-[400px] w-[500px] rounded-full bg-[oklch(0.50_0.25_310)] opacity-[0.14] blur-[120px]" />
-        <div className="absolute top-1/4 right-0 h-[500px] w-[450px] rounded-full bg-[oklch(0.58_0.22_30)] opacity-[0.14] blur-[130px]" />
-        <div className="absolute bottom-0 right-1/4 h-[350px] w-[350px] rounded-full bg-[oklch(0.68_0.18_80)] opacity-[0.10] blur-[110px]" />
+    <div className="min-h-screen bg-page flex flex-col">
+      {/* Top bar */}
+      <div className="border-b border-border bg-card/80 backdrop-blur-sm flex items-center justify-between px-6 h-[60px]">
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-7 rounded-lg bg-gradient-accent flex items-center justify-center text-white text-xs font-bold">
+            A
+          </div>
+          <span className="text-sm font-semibold text-foreground">{t('common:brand')}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </div>
 
-      {/* Theme + language toggles */}
-      <div className="absolute top-5 right-5 z-20 flex items-center gap-2">
-        <LanguageToggle />
-        <ThemeToggle />
-      </div>
+      {/* Main */}
+      <div className="flex-1 lg:grid lg:grid-cols-2">
+        {/* Form panel */}
+        <div className="flex flex-col justify-start pt-16 sm:pt-24 lg:pt-28 pb-12 px-6 lg:px-12 bg-muted/20 border-r border-border">
+          <div className="max-w-md w-full mx-auto">
+            <div className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-xs">
+              {view === 'signin' && (
+                <>
+                  <div className="mb-6">
+                    <h1 className="text-xl font-bold text-foreground mb-1.5">{t('signin.title')}</h1>
+                    <p className="text-sm text-muted-foreground">{t('signin.subtitle')}</p>
+                  </div>
+                  <form noValidate onSubmit={handleSignIn} className="space-y-4">
+                    <InputField
+                      id="login-email"
+                      label={t('common:email')}
+                      type="email"
+                      placeholder="you@company.com"
+                      value={siEmail}
+                      onChange={e => setSiEmail(e.target.value)}
+                      required
+                      autoFocus
+                    />
+                    <InputField
+                      id="login-password"
+                      label={t('signin.passwordLabel')}
+                      isPassword
+                      placeholder="••••••••"
+                      value={siPassword}
+                      onChange={e => setSiPassword(e.target.value)}
+                      required
+                      aside={
+                        <button
+                          type="button"
+                          onClick={() => setView('forgot-password')}
+                          className="text-xs font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                        >
+                          {t('signin.forgotPasswordLink')}
+                        </button>
+                      }
+                    />
+                    <SubmitButton loading={loading}>{t('signin.submitButton')}</SubmitButton>
+                    <p className="text-center text-xs text-muted-foreground pt-1">
+                      {t('signin.newToPlatform')}{' '}
+                      <a
+                        href="/get-started"
+                        className="text-primary font-medium hover:text-primary/80 transition-colors"
+                      >
+                        {t('signin.startProgramLink')}
+                      </a>
+                    </p>
+                  </form>
+                </>
+              )}
 
-      {/* ── Two-column grid ───────────────────────────────── */}
-      <div className="relative z-10 min-h-screen lg:grid lg:grid-cols-2">
-
-        {/* ── Left: Form panel ─────────────────────────────── */}
-        <div className="flex flex-col justify-center items-center min-h-screen lg:min-h-0 px-6 py-12 lg:px-16 lg:border-r lg:border-glass-border">
-
-          {/* Mobile logo */}
-          <a href="/" className="lg:hidden mb-8 flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-glass-2 border border-glass-border flex items-center justify-center text-ink font-bold text-sm">A</div>
-            <span className="font-semibold text-ink">{t('common.brand')}</span>
-          </a>
-
-          <div className="w-full max-w-sm">
-
-            {view === 'signin' && (
-              <>
-                <h1 className="text-2xl font-semibold text-ink mb-1">{t('login.title')}</h1>
-                <p className="text-sm text-ink/40 mb-7">{t('login.subtitle')}</p>
-              </>
-            )}
-
-            {/* ── Sign In ── */}
-            {view === 'signin' && (
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <Field label={t('common.email')}>
-                  <GlassInput type="email" placeholder="m@example.com" value={siEmail} onChange={e => setSiEmail(e.target.value)} required autoFocus />
-                </Field>
-                <Field label={t('common.password')} aside={
-                  <button type="button" onClick={() => setView('forgot-password')} className="text-xs text-ink/40 hover:text-ink/70 transition-colors">
-                    {t('login.forgotPassword')}
+              {view === 'verify-email' && (
+                <>
+                  <button
+                    onClick={() => setView('signin')}
+                    className="mb-6 flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    {t('verifyEmail.backButton')}
                   </button>
-                }>
-                  <GlassInput type="password" placeholder="••••••••" value={siPassword} onChange={e => setSiPassword(e.target.value)} required />
-                </Field>
-                <PrimaryButton loading={loading} className="mt-2">{t('login.loginButton')}</PrimaryButton>
-                <p className="text-center text-sm text-ink/40 pt-2">
-                  {t('login.newToApp')}{' '}
-                  <a href="/get-started" className="text-ink/70 underline underline-offset-2 hover:text-ink transition-colors">
-                    {t('login.startProgram')}
-                  </a>
-                </p>
-              </form>
-            )}
+                  <div className="mb-6">
+                    <h1 className="text-xl font-bold text-foreground mb-1.5">{t('verifyEmail.title')}</h1>
+                    <p className="text-sm text-muted-foreground">
+                      {t('verifyEmail.subtitlePrefix')}{' '}
+                      <span className="text-foreground font-medium">{pendingEmail}</span>
+                    </p>
+                  </div>
+                  <form noValidate onSubmit={handleVerify} className="space-y-4">
+                    <input
+                      id="verify-code"
+                      placeholder="000000"
+                      value={verifyCode}
+                      onChange={e => setVerifyCode(e.target.value)}
+                      required
+                      autoFocus
+                      inputMode="numeric"
+                      maxLength={6}
+                      className="h-12 w-full text-center text-2xl tracking-[0.4em] font-mono border border-input bg-background rounded-lg text-foreground placeholder:text-muted-foreground/40 focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-all"
+                      aria-label="Verification code"
+                    />
+                    <SubmitButton loading={loading}>{t('verifyEmail.submitButton')}</SubmitButton>
+                  </form>
+                </>
+              )}
 
-            {/* ── Verify email ── */}
-            {view === 'verify-email' && (
-              <>
-                <button onClick={() => setView('signin')} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">← {t('common.back')}</button>
-                <h1 className="text-2xl font-semibold text-ink mb-1">{t('login.verify.title')}</h1>
-                <p className="text-sm text-ink/40 mb-7">
-                  {t('login.verify.subtitle', { email: pendingEmail })}
-                </p>
-                <form onSubmit={handleVerify} className="space-y-4">
-                  <GlassInput
-                    placeholder="000000"
-                    value={verifyCode}
-                    onChange={e => setVerifyCode(e.target.value)}
-                    required autoFocus inputMode="numeric" maxLength={6}
-                    className="text-center text-2xl tracking-[0.4em] font-mono"
-                  />
-                  <PrimaryButton loading={loading}>{t('login.verify.button')}</PrimaryButton>
-                </form>
-              </>
-            )}
-
-            {/* ── Forgot / Reset password ── */}
-            {(view === 'forgot-password' || view === 'reset-password') && (
-              <ForgotPasswordFlow
-                initialStep={view === 'reset-password' ? 'reset' : 'request'}
-                onDone={() => setView('signin')}
-                onBack={() => setView('signin')}
-              />
-            )}
-
+              {(view === 'forgot-password' || view === 'reset-password') && (
+                <ForgotPasswordFlow
+                  initialStep={view === 'reset-password' ? 'reset' : 'request'}
+                  onDone={() => setView('signin')}
+                  onBack={() => setView('signin')}
+                />
+              )}
+            </div>
           </div>
         </div>
 
-        {/* ── Right: Brand panel ───────────────────────────── */}
-        <div className="hidden lg:flex flex-col justify-between p-12 bg-glass border-l border-glass-border">
-
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-glass-2 border border-glass-border backdrop-blur-sm flex items-center justify-center text-ink font-bold">
-              A
-            </div>
-            <span className="text-ink font-semibold tracking-tight">{t('common.brand')}</span>
-          </div>
-
-          {/* Center content */}
-          <div className="space-y-8">
-
-            {/* Headline */}
-            <div className="space-y-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-ink/30 font-medium">{t('login.brand.eyebrow')}</p>
-              <h2 className="text-[2.4rem] font-bold text-ink leading-[1.15]">
-                {t('login.brand.titleLine1')}<br />{t('login.brand.titleLine2')}
-              </h2>
-              <p className="text-sm text-ink/40 leading-relaxed max-w-xs">
-                {t('login.brand.subtitle')}
-              </p>
+        {/* Brand panel */}
+        <div className="hidden lg:flex flex-col justify-center p-16 bg-gradient-accent text-white relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 80%, white 0%, transparent 50%), radial-gradient(circle at 80% 20%, white 0%, transparent 50%)`,
+            }}
+          />
+          <div className="relative max-w-md">
+            {/* Brand Logo and Name */}
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="h-8 w-8 rounded-lg bg-white text-black flex items-center justify-center font-bold text-base shadow-xs">
+                A
+              </div>
+              <span className="text-xl font-bold text-white tracking-tight">Accelerate OS</span>
             </div>
 
-            {/* Journey steps */}
-            <div className="space-y-2.5">
-              {JOURNEY.map(({ icon: Icon, step, color, titleKey, descKey }) => (
-                <div key={step} className="group flex gap-4 rounded-xl border border-glass-border bg-glass backdrop-blur-sm p-4 hover:bg-glass-2 hover:border-glass-border transition-all duration-200">
-                  <div className="flex-shrink-0 flex flex-col items-center gap-1.5 pt-0.5">
-                    <div
-                      className="h-8 w-8 rounded-lg flex items-center justify-center"
-                      style={{ background: `${color}22`, border: `1px solid ${color}40` }}
-                    >
-                      <Icon className="h-3.5 w-3.5" style={{ color }} />
-                    </div>
-                    <span className="text-[10px] font-mono text-ink/20">{step}</span>
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-semibold text-ink/90">{t(titleKey)}</p>
-                      <CheckCircle2 className="h-3 w-3 text-ink/15 group-hover:text-ink/30 transition-colors flex-shrink-0" />
-                    </div>
-                    <p className="text-xs text-ink/35 leading-relaxed">{t(descKey)}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-5">
+              {t('brandPanel.eyebrow')}
+            </p>
+            <h2 className="text-4xl font-bold leading-[1.15] tracking-tight mb-5">
+              {t('brandPanel.headline.line1')}<br />{t('brandPanel.headline.line2')}
+            </h2>
+            <p className="text-base text-white/70 leading-relaxed mb-10">
+              {t('brandPanel.description')}
+            </p>
+
+            <div className="space-y-0 bg-white/10 rounded-xl overflow-hidden border border-white/20">
+              {[
+                { step: '01', title: t('brandPanel.steps.assess.title'), desc: t('brandPanel.steps.assess.desc') },
+                { step: '02', title: t('brandPanel.steps.roadmap.title'), desc: t('brandPanel.steps.roadmap.desc') },
+                { step: '03', title: t('brandPanel.steps.execute.title'), desc: t('brandPanel.steps.execute.desc') },
+                { step: '04', title: t('brandPanel.steps.raise.title'), desc: t('brandPanel.steps.raise.desc') },
+              ].map(({ step, title, desc }) => (
+                <div key={step} className="flex gap-4 px-5 py-4 border-b border-white/15 last:border-b-0">
+                  <span className="text-xs font-mono font-bold text-white/40 pt-0.5 w-6 flex-shrink-0">{step}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-0.5">{title}</p>
+                    <p className="text-xs text-white/60 leading-relaxed">{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>
   )
 }
 
-/* ─── Sub-components ──────────────────────────────────────── */
+/* ── Sub-components ─────────────────────────────────────────── */
 
-function Field({ label, aside, children }: { label: string; aside?: React.ReactNode; children: React.ReactNode }) {
+interface InputFieldProps extends React.ComponentProps<'input'> {
+  id: string
+  label: string
+  isPassword?: boolean
+  aside?: React.ReactNode
+}
+
+function InputField({ id, label, isPassword, aside, ...props }: InputFieldProps) {
+  const [visible, setVisible] = useState(false)
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-ink/70">{label}</label>
+        <label htmlFor={id} className="text-sm font-medium text-foreground">{label}</label>
         {aside}
       </div>
-      {children}
+      <div className="relative">
+        <input
+          id={id}
+          type={isPassword ? (visible ? 'text' : 'password') : (props.type ?? 'text')}
+          className="h-10 w-full px-3.5 border border-input bg-background rounded-lg text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-ring"
+          {...props}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setVisible(v => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+          >
+            {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        )}
+      </div>
     </div>
   )
 }
 
-function GlassInput({ className, ...props }: React.ComponentProps<'input'>) {
-  return (
-    <input
-      className={cn(
-        'h-10 w-full rounded-lg border border-glass-border bg-glass px-3 py-2 text-sm text-ink',
-        'placeholder:text-ink/25 outline-none transition-all',
-        'focus:border-glass-border focus:bg-glass-2 focus:ring-2 focus:ring-ink/5',
-        className,
-      )}
-      {...props}
-    />
-  )
-}
-
-function PrimaryButton({ loading, children, className }: { loading?: boolean; children: React.ReactNode; className?: string }) {
+function SubmitButton({ loading, children }: { loading?: boolean; children: React.ReactNode }) {
   return (
     <button
       type="submit"
+      id="login-submit-btn"
       disabled={loading}
-      className={cn(
-        'w-full h-10 rounded-lg bg-ink text-page text-sm font-semibold',
-        'hover:bg-ink/90 active:bg-ink/80 transition-colors',
-        'disabled:opacity-60 flex items-center justify-center gap-2',
-        className,
-      )}
+      className="w-full h-10 bg-gradient-accent text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm mt-1"
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
@@ -271,7 +283,7 @@ function PrimaryButton({ loading, children, className }: { loading?: boolean; ch
 function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
   initialStep?: 'request' | 'reset'; onDone: () => void; onBack: () => void
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('login')
   const [step, setStep] = useState<'request' | 'reset'>(initialStep)
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
@@ -279,51 +291,57 @@ function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
   const [loading, setLoading] = useState(false)
 
   async function handleRequest(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true)
+    e.preventDefault()
+    setLoading(true)
     try {
       await api.post('/auth/forgot-password', { email })
-      toast.success(t('login.toast.resetCodeSent')); setStep('reset')
+      toast.success(t('forgotPassword.successToast')); setStep('reset')
     }
-    catch (err) { toast.error(apiError(err, t('login.toast.sendResetFailed'))) }
+    catch (err) { toast.error(apiError(err, t('forgotPassword.errorFallback'))) }
     finally { setLoading(false) }
   }
 
   async function handleReset(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true)
+    e.preventDefault()
+    setLoading(true)
     try {
       await api.post('/auth/reset-password', { email, code, newPassword })
-      toast.success(t('login.toast.passwordReset')); onDone()
+      toast.success(t('resetPassword.successToast')); onDone()
     }
-    catch (err) { toast.error(apiError(err, t('login.toast.resetFailed'))) }
+    catch (err) { toast.error(apiError(err, t('resetPassword.errorFallback'))) }
     finally { setLoading(false) }
   }
 
   return (
     <>
-      <button onClick={onBack} className="mb-5 text-xs text-ink/40 hover:text-ink/70 transition-colors">{t('login.forgot.backToSignIn')}</button>
+      <button onClick={onBack} className="mb-6 flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <ArrowLeft className="h-4 w-4" /> {t('forgotPassword.backButton')}
+      </button>
       {step === 'request' ? (
         <>
-          <h1 className="text-2xl font-semibold text-ink mb-1">{t('login.forgot.title')}</h1>
-          <p className="text-sm text-ink/40 mb-7">{t('login.forgot.subtitle')}</p>
-          <form onSubmit={handleRequest} className="space-y-4">
-            <Field label={t('common.email')}>
-              <GlassInput type="email" placeholder="m@example.com" value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
-            </Field>
-            <PrimaryButton loading={loading}>{t('login.forgot.sendButton')}</PrimaryButton>
+          <div className="mb-8">
+            <h1 className="text-xl font-bold text-foreground mb-1.5">{t('forgotPassword.title')}</h1>
+            <p className="text-sm text-muted-foreground">{t('forgotPassword.subtitle')}</p>
+          </div>
+          <form noValidate onSubmit={handleRequest} className="space-y-4">
+            <InputField id="forgot-email" label={t('common:email')} type="email" placeholder="you@company.com"
+              value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
+            <SubmitButton loading={loading}>{t('forgotPassword.submitButton')}</SubmitButton>
           </form>
         </>
       ) : (
         <>
-          <h1 className="text-2xl font-semibold text-ink mb-1">{t('login.reset.title')}</h1>
-          <p className="text-sm text-ink/40 mb-7">{t('login.reset.subtitle')}</p>
-          <form onSubmit={handleReset} className="space-y-4">
-            <Field label={t('login.reset.codeLabel')}>
-              <GlassInput placeholder="000000" value={code} onChange={e => setCode(e.target.value)} required autoFocus inputMode="numeric" className="text-center tracking-widest" />
-            </Field>
-            <Field label={t('login.reset.newPasswordLabel')}>
-              <GlassInput type="password" placeholder={t('login.reset.newPasswordPlaceholder')} value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={8} />
-            </Field>
-            <PrimaryButton loading={loading}>{t('login.reset.button')}</PrimaryButton>
+          <div className="mb-8">
+            <h1 className="text-xl font-bold text-foreground mb-1.5">{t('resetPassword.title')}</h1>
+            <p className="text-sm text-muted-foreground">{t('resetPassword.subtitle')}</p>
+          </div>
+          <form noValidate onSubmit={handleReset} className="space-y-4">
+            <InputField id="reset-code" label={t('resetPassword.resetCodeLabel')} placeholder="000000"
+              value={code} onChange={e => setCode(e.target.value)} required autoFocus inputMode="numeric" />
+            <InputField id="reset-password" label={t('resetPassword.newPasswordLabel')} isPassword
+              placeholder={t('resetPassword.newPasswordPlaceholder')} value={newPassword}
+              onChange={e => setNewPassword(e.target.value)} required minLength={8} />
+            <SubmitButton loading={loading}>{t('resetPassword.submitButton')}</SubmitButton>
           </form>
         </>
       )}
@@ -332,6 +350,8 @@ function ForgotPasswordFlow({ initialStep = 'request', onDone, onBack }: {
 }
 
 function apiError(err: unknown, fallback: string) {
-  return (err as { response?: { data?: { error?: string } } })?.response?.data?.error
-    ?? (err instanceof Error ? err.message : fallback)
+  const msg =
+    (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
+    (err instanceof Error ? err.message : fallback)
+  return cleanErrorMessage(msg, fallback)
 }

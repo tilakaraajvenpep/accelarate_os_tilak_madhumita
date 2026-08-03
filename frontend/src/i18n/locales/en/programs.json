@@ -1,0 +1,83 @@
+{
+  "notAvailable": "This page is only available to tenant admins.",
+  "page": {
+    "title": "Forms",
+    "subtitle": "Create and manage form templates for your program.",
+    "createButton": "Create Form Template"
+  },
+  "table": {
+    "cardTitle": "Form Templates",
+    "title": "Title",
+    "category": "Category",
+    "dateCreated": "Date created",
+    "editButtonTitle": "Edit",
+    "activateButtonTitle": "Activate",
+    "archiveButtonTitle": "Archive",
+    "deleteButtonTitle": "Delete",
+    "empty": "No form templates yet — create one to get started."
+  },
+  "confirmDelete": "Permanently delete \"{{title}}\"? This cannot be undone.",
+  "toast": {
+    "created": "Form template created",
+    "updated": "Form template updated",
+    "saveFailed": "Failed to save form template",
+    "deleted": "Form template deleted",
+    "deleteFailed": "Failed to delete form template",
+    "statusFailed": "Failed to update status"
+  },
+  "category": {
+    "pillar_diagram": "Pillar Diagram",
+    "weekly": "Weekly",
+    "milestone": "Milestone"
+  },
+  "structure": {
+    "basic": "Basic form (simple queue)",
+    "conditional": "Conditional form",
+    "grid_matrix": "Grid matrix (tabular)",
+    "financial_spreadsheet": "Financial spreadsheet"
+  },
+  "status": {
+    "draft": "Draft",
+    "active": "Active",
+    "archived": "Archived"
+  },
+  "questionType": {
+    "short_text": "Short Text",
+    "long_text": "Long Text",
+    "number": "Number",
+    "dropdown": "Dropdown",
+    "single_choice": "Multiple Choice (Single)",
+    "multiple_choice": "Checkboxes (Multiple)",
+    "date": "Date",
+    "editable_table": "Editable Table"
+  },
+  "builder": {
+    "newTitle": "New form template",
+    "editTitle": "Edit form template",
+    "subtitle": "Define the form's details, category, structure, and questions.",
+    "formTitle": "Title",
+    "formTitlePlaceholder": "e.g. Weekly Progress Check-in",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this form for?",
+    "category": "Category",
+    "structure": "Structure",
+    "allowMultipleEntries": "Allow multiple entries",
+    "allowMultipleEntriesHint": "Let respondents submit this form more than once.",
+    "questions": "Questions",
+    "addQuestion": "Add question",
+    "questionTitle": "Question",
+    "questionTitlePlaceholder": "e.g. What did you accomplish this week?",
+    "questionType": "Answer type",
+    "required": "Required",
+    "helpText": "Helper Text / Description",
+    "helpTextPlaceholder": "Optional description shown below the question",
+    "points": "Points",
+    "options": "Options",
+    "optionLabelPlaceholder": "Option label",
+    "optionScorePlaceholder": "Score",
+    "addOption": "Add option",
+    "optionsHint": "Each option can carry its own score, contributing to the form's total.",
+    "createButton": "Create template",
+    "saveButton": "Save changes"
+  }
+}

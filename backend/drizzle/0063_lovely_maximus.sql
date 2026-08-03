@@ -1,0 +1,1 @@
+ALTER TABLE "pillars" ADD COLUMN "has_key_takeaways_and_discussions" boolean DEFAULT true NOT NULL;

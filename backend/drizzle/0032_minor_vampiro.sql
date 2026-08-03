@@ -1,0 +1,1 @@
+ALTER TABLE "cohort_tasks" DROP COLUMN IF EXISTS "date";

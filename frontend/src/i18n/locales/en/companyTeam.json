@@ -1,0 +1,41 @@
+{
+  "page": {
+    "title": "Team",
+    "subtitle": "Everyone here can view and edit {{companyName}}'s forms and assessments.",
+    "defaultCompanyName": "your company",
+    "inviteButton": "Invite teammate"
+  },
+  "notSetUp": {
+    "message": "Finish setting up your company profile before inviting co-founders.",
+    "completeButton": "Complete company profile"
+  },
+  "members": {
+    "title": "Members"
+  },
+  "table": {
+    "joined": "Joined",
+    "role": "Role",
+    "empty": "No members yet."
+  },
+  "roles": {
+    "founder": "Founder",
+    "coFounder": "Co-founder"
+  },
+  "inviteDialog": {
+    "title": "Invite a teammate",
+    "description": "They'll get an email with a code to join {{companyName}}.",
+    "emailPlaceholder": "teammate@example.com",
+    "sendButton": "Send invite"
+  },
+  "removeDialog": {
+    "title": "Remove teammate?",
+    "description": "Remove {{name}} from this company?",
+    "confirmButton": "Remove"
+  },
+  "toast": {
+    "inviteSent": "Invite sent",
+    "inviteFailed": "Failed to send invite",
+    "memberRemoved": "Member removed",
+    "removeFailed": "Failed to remove member"
+  }
+}

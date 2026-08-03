@@ -4,6 +4,9 @@ import { loadSecrets } from './config/load-secrets'
 async function main() {
   await loadSecrets()
   const { default: app } = await import('./app')
+  const { scheduleCohortReminderJob } = await import('./jobs/cohort-reminders.job')
+
+  scheduleCohortReminderJob()
 
   const PORT = Number(process.env.PORT) || 3000
   app.listen(PORT, () => {

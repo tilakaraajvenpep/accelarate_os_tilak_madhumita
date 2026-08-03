@@ -1,0 +1,71 @@
+{
+  "cancel": "取消",
+  "save": "保存",
+  "saveChanges": "保存更改",
+  "create": "创建",
+  "delete": "删除",
+  "edit": "编辑",
+  "view": "查看",
+  "back": "返回",
+  "previous": "上一页",
+  "next": "下一页",
+  "confirm": "确认",
+  "close": "关闭",
+  "loading": "加载中…",
+  "search": "搜索…",
+  "name": "姓名",
+  "email": "电子邮箱",
+  "status": "状态",
+  "active": "已启用",
+  "inactive": "已停用",
+  "enabled": "已启用",
+  "disabled": "已禁用",
+  "actions": "操作",
+  "createdAt": "创建时间",
+  "yes": "是",
+  "no": "否",
+  "unlimited": "无限制",
+  "none": "无",
+  "optional": "可选",
+  "signOut": "退出登录",
+  "settings": "设置",
+  "brand": "AccelerateOS",
+  "duplicate": "复制",
+  "lock": "锁定",
+  "unlock": "解锁",
+  "locked": "已锁定",
+  "unlocked": "已解锁",
+  "lockToggleFailed": "更新锁定状态失败",
+  "orderUpdated": "顺序已更新",
+  "imageCrop": {
+    "title": "裁剪图片",
+    "description": "拖动以调整位置，滚动或使用滑块缩放，然后使图片适配方框。",
+    "zoom": "缩放",
+    "applyCrop": "应用裁剪"
+  },
+  "theme": {
+    "switchToLight": "切换到浅色模式",
+    "switchToDark": "切换到深色模式",
+    "toggleTheme": "切换主题"
+  },
+  "listToolbar": {
+    "allStatuses": "所有状态",
+    "rowsPerPage": "每页行数",
+    "showAll": "显示全部",
+    "pageSize": "{{size}} / 页",
+    "pageOfTotal": "第 {{page}} / {{total}} 页",
+    "rangeOfTotal": "第 {{start}}–{{end}} 条，共 {{total}} 条"
+  },
+  "documentPreview": {
+    "loading": "正在加载预览…",
+    "loadError": "无法加载此文档。",
+    "noPreview": "此文件类型不支持内嵌预览。",
+    "download": "下载"
+  },
+  "preview": {
+    "mode": "预览模式",
+    "viewingAs": "— 以 {{founder}}（{{company}}）身份查看",
+    "exitPreview": "退出预览",
+    "companyNotFound": "未找到该企业。"
+  }
+}

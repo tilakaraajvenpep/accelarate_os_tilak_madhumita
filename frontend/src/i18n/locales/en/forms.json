@@ -1,0 +1,54 @@
+{
+  "page": {
+    "title": "Forms",
+    "subtitle": "Create the forms that can be assigned to sections.",
+    "createButton": "Create Form"
+  },
+  "table": {
+    "cardTitle": "All Forms",
+    "name": "Name",
+    "empty": "No forms yet — create your first one to get started."
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "dialog": {
+    "createTitle": "Create Form",
+    "editTitle": "Edit Form",
+    "description": "Forms can be assigned to any section under Programs.",
+    "nameLabel": "Form name",
+    "namePlaceholder": "e.g. Weekly Check-in",
+    "createButton": "Create Form",
+    "questionsLabel": "Questions",
+    "addQuestionButton": "Add question",
+    "noQuestions": "No questions yet — add one so founders have something to fill in.",
+    "questionTitlePlaceholder": "Question",
+    "optionsPlaceholder": "One option per line",
+    "requiredLabel": "Required"
+  },
+  "viewDialog": {
+    "title": "\"{{name}}\" — fields",
+    "noQuestions": "This form has no fields yet.",
+    "requiredBadge": "Required"
+  },
+  "questionTypes": {
+    "short_text": "Short text",
+    "long_text": "Long text",
+    "number": "Number",
+    "single_choice": "Single choice",
+    "multiple_choice": "Multiple choice",
+    "date": "Date"
+  },
+  "deleteDialog": {
+    "title": "Delete form",
+    "confirm": "Are you sure you want to delete \"{{name}}\"?"
+  },
+  "toast": {
+    "created": "Form created",
+    "updated": "Form updated",
+    "deleted": "Form deleted",
+    "saveFailed": "Failed to save form",
+    "deleteFailed": "Failed to delete form"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Platform Overview",
+  "subtitle": "Cross-tenant health and usage at a glance.",
+  "stats": {
+    "tenants": "Tenants",
+    "totalCompanies": "Total Companies",
+    "notTrackedYet": "Not tracked yet",
+    "avgPlatformScore": "Avg Platform Score",
+    "mrr": "MRR",
+    "activeSubs": "{{count}} active subs"
+  },
+  "tenantsSection": {
+    "title": "Tenants",
+    "tenantColumn": "Tenant",
+    "planColumn": "Plan",
+    "statusColumn": "Status",
+    "noPlan": "No plan",
+    "empty": "No tenants yet.",
+    "founders_one": "{{count}} founder",
+    "founders_other": "{{count}} founders"
+  },
+  "tenantStatus": {
+    "suspended": "Suspended",
+    "trial": "Trial",
+    "active": "Active",
+    "pastDue": "Past due",
+    "canceled": "Canceled",
+    "expired": "Expired"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "invalid": {
+    "title": "该邀请链接无效",
+    "subtitle": "链接可能已过期或已被使用。请联系您的孵化器管理员重新发送邀请。"
+  },
+  "password": {
+    "title": "设置您的密码",
+    "subtitlePrefix": "为以下邮箱创建密码",
+    "fullNameLabel": "姓名",
+    "fullNamePlaceholder": "王小明",
+    "fullNameRequired": "姓名为必填项",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 8 个字符",
+    "confirmLabel": "确认密码",
+    "confirmPlaceholder": "请再次输入密码",
+    "continueButton": "下一步",
+    "tooShort": "密码至少需要 8 个字符",
+    "mismatch": "两次输入的密码不一致",
+    "failed": "设置密码失败"
+  },
+  "company": {
+    "title": "企业信息登记",
+    "subtitle": "介绍一下您的企业 — 您可以先保存草稿，之后再完成。",
+    "businessIdentity": {
+      "title": "企业身份",
+      "subtitle": "关于您企业的基本信息。",
+      "nameLabel": "企业 / 品牌名称",
+      "uenLabel": "UEN（统一实体编号）",
+      "industryLabel": "行业",
+      "industryPlaceholder": "选择行业",
+      "companySizeLabel": "企业规模"
+    },
+    "primaryContact": {
+      "title": "主要联系人（账户所有者）",
+      "fullNameLabel": "姓名",
+      "roleLabel": "在企业中的职位",
+      "rolePlaceholder": "选择职位",
+      "emailLabel": "邮箱地址",
+      "mobileLabel": "手机号码",
+      "consentWhatsapp": "我同意通过 WhatsApp 接收项目相关通讯",
+      "consentEmail": "我同意通过邮箱接收项目相关通讯"
+    },
+    "legal": {
+      "title": "法律声明与确认",
+      "platformScopeTitle": "平台范围确认",
+      "platformScopeDescription": "我理解 AccelerateOS 不提供顾问服务或基金管理服务。",
+      "participationAuthorityTitle": "参与授权声明",
+      "participationAuthorityDescription": "我确认本人有权代表该企业。"
+    },
+    "saveDraftButton": "保存草稿",
+    "lockButton": "最终提交（锁定）",
+    "toast": {
+      "draftSaved": "草稿已保存",
+      "saveFailed": "保存草稿失败",
+      "locked": "企业资料已提交",
+      "lockFailed": "提交企业资料失败",
+      "missingFields": "请填写所有必填项并勾选确认项"
+    },
+    "industries": {
+      "Technology": "科技",
+      "Healthcare": "医疗保健",
+      "Finance": "金融",
+      "Retail / E-commerce": "零售 / 电子商务",
+      "Manufacturing": "制造业",
+      "Education": "教育",
+      "Food & Beverage": "餐饮",
+      "Real Estate": "房地产",
+      "Professional Services": "专业服务",
+      "Other": "其他"
+    },
+    "roles": {
+      "Founder / CEO": "创始人 / 首席执行官",
+      "Co-Founder": "联合创始人",
+      "CTO": "首席技术官",
+      "COO": "首席运营官",
+      "CFO": "首席财务官",
+      "Other": "其他"
+    },
+    "sizes": {
+      "solo": "单人",
+      "2-10": "2-10 人",
+      "11-50": "11-50 人",
+      "50+": "50 人以上"
+    }
+  }
+}

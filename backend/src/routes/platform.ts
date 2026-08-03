@@ -1,39 +1,19 @@
-import { Router, Response } from 'express'
+import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { eq, count } from 'drizzle-orm'
 import { db } from '../db/client'
 import { tenants, subscriptions, plans } from '../models'
 import { requireAuth, loadUser, requireRole, type AuthRequest } from '../middleware/auth.middleware'
 import {
-  listSuperAdmins,
-  requestSuperAdminOtp,
-  verifySuperAdminOtp,
-  setSuperAdminDisabled,
-  updateSuperAdmin,
-  deleteSuperAdmin,
-} from '../services/platform-admins.service'
+  getPlatformSettings,
+  setAiCreditRateCents,
+  setAiCreditsPerThousandTokens,
+  getTenantOnboardingSourceTenantId,
+  setTenantOnboardingSourceTenantId,
+  resolvePublicTenantOnboardingForm,
+} from '../services/platform-settings.service'
 
 const router = Router()
-
-const requestOtpSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(1).nullable().optional(),
-})
-
-const verifyOtpSchema = z.object({
-  email: z.string().email(),
-  code: z.string().length(6),
-  password: z.string().min(8),
-})
-
-const disableSchema = z.object({
-  disabled: z.boolean(),
-})
-
-const updateSuperAdminSchema = z.object({
-  name: z.string().min(1).nullable().optional(),
-  email: z.string().email().optional(),
-})
 
 router.get('/stats', requireAuth, loadUser, requireRole('super_admin'), async (_req: AuthRequest, res: Response) => {
   const [tenantCountRow] = await db.select({ value: count() }).from(tenants)
@@ -55,73 +35,61 @@ router.get('/stats', requireAuth, loadUser, requireRole('super_admin'), async (_
   })
 })
 
-router.get('/super-admins', requireAuth, loadUser, requireRole('super_admin'), async (_req: AuthRequest, res: Response) => {
-  const admins = await listSuperAdmins()
-  res.json(admins)
+router.get('/settings', requireAuth, loadUser, requireRole('admin', 'super_admin'), async (_req: AuthRequest, res: Response) => {
+  const settings = await getPlatformSettings()
+  res.json(settings)
 })
 
-router.post('/super-admins/request-otp', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
-  const parsed = requestOtpSchema.safeParse(req.body)
+const updateSettingsSchema = z.object({
+  aiCreditRateCents: z.number().int().min(0).optional(),
+  aiCreditsPerThousandTokens: z.number().int().min(0).optional(),
+})
+
+router.patch('/settings', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+  const parsed = updateSettingsSchema.safeParse(req.body)
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() })
     return
   }
   try {
-    await requestSuperAdminOtp(parsed.data.email, parsed.data.name ?? null)
-    res.json({ ok: true })
+    let settings = await getPlatformSettings()
+    if (parsed.data.aiCreditRateCents !== undefined) {
+      settings = await setAiCreditRateCents(parsed.data.aiCreditRateCents)
+    }
+    if (parsed.data.aiCreditsPerThousandTokens !== undefined) {
+      settings = await setAiCreditsPerThousandTokens(parsed.data.aiCreditsPerThousandTokens)
+    }
+    res.json(settings)
   } catch (err: unknown) {
-    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to send verification code' })
+    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to update settings' })
   }
 })
 
-router.post('/super-admins/verify-otp', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
-  const parsed = verifyOtpSchema.safeParse(req.body)
+// Public — read by the unauthenticated /get-started "organization details" step.
+// Resolves the source tenant's own 'tenant_admin_onboarding' Forms > Mappings
+// entry; null means that step falls back to the hardcoded name/type/website fields.
+router.get('/tenant-onboarding-form', async (_req: Request, res: Response) => {
+  res.json(await resolvePublicTenantOnboardingForm())
+})
+
+router.get('/tenant-onboarding-source', requireAuth, loadUser, requireRole('super_admin'), async (_req: AuthRequest, res: Response) => {
+  res.json({ sourceTenantId: await getTenantOnboardingSourceTenantId() })
+})
+
+const tenantOnboardingSourceSchema = z.object({
+  sourceTenantId: z.number().int().nullable(),
+})
+
+router.patch('/tenant-onboarding-source', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
+  const parsed = tenantOnboardingSourceSchema.safeParse(req.body)
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() })
     return
   }
   try {
-    const admin = await verifySuperAdminOtp(parsed.data.email, parsed.data.code, parsed.data.password)
-    res.json(admin)
+    res.json({ sourceTenantId: await setTenantOnboardingSourceTenantId(parsed.data.sourceTenantId) })
   } catch (err: unknown) {
-    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to verify code' })
-  }
-})
-
-router.patch('/super-admins/:id', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
-  const parsed = updateSuperAdminSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.flatten() })
-    return
-  }
-  try {
-    const admin = await updateSuperAdmin(Number(req.params.id), parsed.data)
-    res.json(admin)
-  } catch (err: unknown) {
-    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to update super admin' })
-  }
-})
-
-router.patch('/super-admins/:id/disabled', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
-  const parsed = disableSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.flatten() })
-    return
-  }
-  try {
-    const admin = await setSuperAdminDisabled(req.dbUser!.id, Number(req.params.id), parsed.data.disabled)
-    res.json(admin)
-  } catch (err: unknown) {
-    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to update super admin' })
-  }
-})
-
-router.delete('/super-admins/:id', requireAuth, loadUser, requireRole('super_admin'), async (req: AuthRequest, res: Response) => {
-  try {
-    await deleteSuperAdmin(req.dbUser!.id, Number(req.params.id))
-    res.json({ ok: true })
-  } catch (err: unknown) {
-    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to delete super admin' })
+    res.status(400).json({ error: err instanceof Error ? err.message : 'Failed to save onboarding source tenant' })
   }
 })
 

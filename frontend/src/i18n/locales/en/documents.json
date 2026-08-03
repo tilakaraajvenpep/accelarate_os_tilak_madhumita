@@ -1,0 +1,42 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Documents",
+    "subtitleAdmin": "Upload reference documents for a cohort — founders in that cohort can view and download them.",
+    "subtitleFounder": "Reference documents your tenant admin or mentor has shared with your cohort.",
+    "uploadButton": "Upload Document"
+  },
+  "filters": {
+    "cohortLabel": "Cohort",
+    "cohortPlaceholder": "Select a cohort"
+  },
+  "list": {
+    "cardTitle": "Documents",
+    "selectCohortPrompt": "Select a cohort to see its documents.",
+    "empty": "No documents yet.",
+    "uploadedBy": "Uploaded by {{name}}",
+    "previewTooltip": "Preview",
+    "downloadTooltip": "Download",
+    "deleteTooltip": "Delete"
+  },
+  "deleteDialog": {
+    "title": "Delete document",
+    "confirm": "Permanently delete \"{{title}}\"? This cannot be undone."
+  },
+  "uploadDialog": {
+    "title": "Upload Document",
+    "description": "Founders in this cohort will be able to view and download it.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Program Handbook",
+    "fileLabel": "File",
+    "fileSizeHint": "Up to 8MB.",
+    "submitButton": "Upload"
+  },
+  "toast": {
+    "deleted": "Document deleted",
+    "deleteFailed": "Failed to delete document",
+    "uploaded": "Document uploaded",
+    "uploadFailed": "Failed to upload document",
+    "fileTooLarge": "File is too large — the limit is 8MB"
+  }
+}

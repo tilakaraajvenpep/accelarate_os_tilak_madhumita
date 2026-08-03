@@ -1,0 +1,102 @@
+{
+  "page": {
+    "title": "套餐与账单",
+    "subtitle": "定义套餐并管理租户订阅。",
+    "newPlanButton": "新建套餐"
+  },
+  "plansTable": {
+    "cardTitle": "套餐",
+    "cohorts": "批次",
+    "founders": "创始人",
+    "storage": "存储空间",
+    "priceMonth": "月费",
+    "aiCredits": "AI 额度",
+    "custom": "定制",
+    "editButtonTitle": "编辑",
+    "deleteButtonTitle": "删除",
+    "empty": "暂无套餐——创建一个以开始使用。"
+  },
+  "subscriptionsTable": {
+    "cardTitle": "租户订阅",
+    "tenant": "租户",
+    "plan": "套餐",
+    "foundersUsed": "已用创始人数",
+    "nextPayment": "下次付款",
+    "noSubscription": "无订阅",
+    "assignPlanButton": "分配套餐",
+    "cancelSubscriptionTitle": "取消订阅",
+    "empty": "暂无租户。",
+    "confirmCancelSubscription": "确定要取消 {{name}} 的订阅吗？此操作在此处无法撤销——您需要重新为其分配一个新套餐。"
+  },
+  "toast": {
+    "subscriptionCanceled": "订阅已取消",
+    "cancelSubscriptionFailed": "取消订阅失败",
+    "planDeleted": "套餐已删除",
+    "deletePlanFailed": "删除套餐失败",
+    "planUpdated": "套餐已更新",
+    "planCreated": "套餐已创建",
+    "savePlanFailed": "保存套餐失败",
+    "planActivated": "套餐已启用",
+    "planDeactivated": "套餐已停用",
+    "updatePlanFailed": "更新套餐失败",
+    "offlinePaymentRecorded": "线下付款已记录",
+    "recordPaymentFailed": "记录付款失败",
+    "checkoutSessionCreated": "结账会话已创建",
+    "startCheckoutFailed": "启动结账失败",
+    "checkoutCancelled": "结账已取消",
+    "checkoutConfirmationFailed": "支付已完成，但无法加载确认详情"
+  },
+  "planDialog": {
+    "editTitle": "编辑套餐",
+    "newTitle": "新建套餐",
+    "description": "定义此套餐的限额和价格。",
+    "descriptionLabel": "描述",
+    "cohorts": "批次",
+    "foundersLearners": "创始人 / 学员",
+    "storageGb": "存储空间（GB）",
+    "aiCredits": "AI 额度",
+    "aiCreditsHint": "该套餐下租户可使用的总 AI 额度。",
+    "priceMonthUsd": "月费（美元）",
+    "customPlan": "定制套餐",
+    "customPlanHint": "与租户协商确定的定制套餐",
+    "enableOnlineBilling": "启用在线账单",
+    "enableOnlineBillingHint": "为结账同步 Stripe 产品/价格",
+    "createButton": "创建套餐"
+  },
+  "limitField": {
+    "unlimited": "无限制",
+    "unlimitedPlaceholder": "无限制"
+  },
+  "assignDialog": {
+    "title": "分配套餐 — {{name}}",
+    "description": "选择一个套餐以及此租户的付款方式。",
+    "planLabel": "套餐",
+    "planPlaceholder": "选择一个套餐",
+    "couponLabel": "优惠券代码（可选）",
+    "couponPlaceholder": "例如 LAUNCH20",
+    "couponApply": "应用",
+    "couponAppliedButton": "已应用",
+    "couponApplied": "优惠券已应用 — 减免 {{amount}}",
+    "couponRemoved": "优惠券已移除",
+    "couponInvalid": "无效的优惠券",
+    "recordOfflinePayment": "记录线下付款",
+    "payOnline": "在线支付",
+    "onlineBillingNotConfigured": "此套餐尚未配置在线账单——请在编辑套餐时启用该功能。",
+    "amountReceivedUsd": "已收金额（美元）",
+    "activeUntil": "有效期至",
+    "note": "备注（采购单号 / 支票号等）",
+    "recordPaymentButton": "记录付款",
+    "continueToStripeButton": "前往 Stripe 继续"
+  },
+  "deleteDialog": {
+    "title": "删除套餐",
+    "confirmDelete": "确定要永久删除“{{name}}”吗？当前订阅此套餐的租户需要先重新分配套餐。此操作无法撤销。"
+  },
+  "checkoutConfirmation": {
+    "title": "支付成功",
+    "description": "订阅已创建。",
+    "plan": "套餐",
+    "amount": "金额",
+    "coupon": "使用的优惠券"
+  }
+}

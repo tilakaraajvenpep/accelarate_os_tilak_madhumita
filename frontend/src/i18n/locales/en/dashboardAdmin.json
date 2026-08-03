@@ -1,0 +1,23 @@
+{
+  "title": "Admin Dashboard",
+  "greeting": "Welcome back, {{name}}",
+  "subtitle": "Cohort health and program overview.",
+  "stats": {
+    "activeCompanies": "Active Companies",
+    "cohorts": "Cohorts",
+    "avgReadiness": "Avg Readiness",
+    "completionRate": "Completion Rate"
+  },
+  "topCompanies": {
+    "title": "Top Companies by Score",
+    "empty": "Company tracking coming soon."
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "empty": "Activity feed coming soon."
+  },
+  "upcomingEvents": {
+    "title": "Upcoming Events",
+    "empty": "Calendar integration coming soon."
+  }
+}

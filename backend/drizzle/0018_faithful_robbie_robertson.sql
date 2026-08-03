@@ -1,0 +1,2 @@
+CREATE TYPE "public"."program_execution_mode" AS ENUM('sequential', 'flexible');--> statement-breakpoint
+ALTER TABLE "tenants" ADD COLUMN "program_execution_mode" "program_execution_mode" DEFAULT 'sequential' NOT NULL;

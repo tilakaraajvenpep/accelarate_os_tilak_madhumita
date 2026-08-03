@@ -1,0 +1,54 @@
+{
+  "page": {
+    "title": "表单",
+    "subtitle": "创建可分配给板块的表单。",
+    "createButton": "创建表单"
+  },
+  "table": {
+    "cardTitle": "所有表单",
+    "name": "名称",
+    "empty": "暂无表单 — 创建您的第一个表单开始吧。"
+  },
+  "status": {
+    "active": "已激活",
+    "inactive": "未激活"
+  },
+  "dialog": {
+    "createTitle": "创建表单",
+    "editTitle": "编辑表单",
+    "description": "表单可以分配给项目下的任意板块。",
+    "nameLabel": "表单名称",
+    "namePlaceholder": "例如：每周签到",
+    "createButton": "创建表单",
+    "questionsLabel": "问题",
+    "addQuestionButton": "添加问题",
+    "noQuestions": "暂无问题 — 添加一个，让创始人有内容可填写。",
+    "questionTitlePlaceholder": "问题",
+    "optionsPlaceholder": "每行一个选项",
+    "requiredLabel": "必填"
+  },
+  "viewDialog": {
+    "title": "“{{name}}” — 字段",
+    "noQuestions": "该表单暂无字段。",
+    "requiredBadge": "必填"
+  },
+  "questionTypes": {
+    "short_text": "单行文本",
+    "long_text": "多行文本",
+    "number": "数字",
+    "single_choice": "单选",
+    "multiple_choice": "多选",
+    "date": "日期"
+  },
+  "deleteDialog": {
+    "title": "删除表单",
+    "confirm": "确定要删除“{{name}}”吗？"
+  },
+  "toast": {
+    "created": "表单已创建",
+    "updated": "表单已更新",
+    "deleted": "表单已删除",
+    "saveFailed": "保存表单失败",
+    "deleteFailed": "删除表单失败"
+  }
+}

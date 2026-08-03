@@ -1,0 +1,1 @@
+ALTER TABLE "pillars" ADD COLUMN "mandatory" boolean DEFAULT true NOT NULL;

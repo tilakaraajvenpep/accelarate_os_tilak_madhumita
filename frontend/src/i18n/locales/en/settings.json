@@ -1,0 +1,51 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Settings",
+    "subtitle": "Manage tenant-wide preferences."
+  },
+  "logo": {
+    "title": "Company Logo",
+    "description": "Shown in the sidebar and as this workspace's browser tab icon, in place of the default initial.",
+    "sizeHint": "Best fit: a square image, at least 256×256px (PNG, JPG, or SVG, up to 1MB). We'll fit it in the box automatically — if it isn't already square, use \"Crop image\" to frame it.",
+    "cropButton": "Crop image",
+    "savedToast": "Logo updated",
+    "removedToast": "Logo removed",
+    "saveFailed": "Failed to save logo",
+    "invalidFileType": "Please choose an image file",
+    "tooLarge": "Image is too large — please choose one under 1MB",
+    "remove": "Remove"
+  },
+  "theme": {
+    "title": "Theme Colors",
+    "description": "Pick a gradient theme — applied to the sidebar, top bar, buttons, and accents in both light and dark mode, always kept readable. Main content stays neutral.",
+    "presetLabel": "Gradient Presets",
+    "fromLabel": "From Color",
+    "toLabel": "To Color",
+    "savedToast": "Theme updated",
+    "resetToast": "Theme reset to default",
+    "saveFailed": "Failed to save theme",
+    "reset": "Reset to default"
+  },
+  "notifications": {
+    "title": "Event Reminder Notifications",
+    "description": "When on, founders get a reminder 3 days before a scheduled cohort event — via in-app notification and email (and WhatsApp once configured).",
+    "enabledToast": "Notifications turned on",
+    "disabledToast": "Notifications turned off",
+    "toggleFailed": "Failed to update notification settings"
+  },
+  "mentorInterest": {
+    "title": "I am interested in being a mentor",
+    "description": "When on, you'll show up as an option when assigning a mentor to a pillar, alongside dedicated mentor accounts.",
+    "enabledToast": "You're now listed as an available mentor",
+    "disabledToast": "You're no longer listed as an available mentor",
+    "toggleFailed": "Failed to update mentor availability"
+  },
+  "mentorProfile": {
+    "title": "Mentor Profile",
+    "description": "Shown to admins when picking who to assign to a pillar.",
+    "specializationLabel": "Area of specialization",
+    "savedToast": "Profile updated",
+    "saveFailed": "Failed to save profile"
+  }
+}

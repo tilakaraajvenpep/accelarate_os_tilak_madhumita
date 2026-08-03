@@ -1,0 +1,26 @@
+{
+  "notAvailable": "您的角色无法访问此页面。",
+  "page": {
+    "title": "企业",
+    "subtitle": "查看所有阶段组中的企业。"
+  },
+  "table": {
+    "cardTitle": "所有企业",
+    "company": "企业",
+    "founder": "创始人",
+    "email": "邮箱",
+    "cohort": "阶段组",
+    "pendingCompanyName": "待设置",
+    "empty": "暂无企业 — 创建一个阶段组并邀请您的第一位创始人开始吧。",
+    "viewAsFounderButton": "以创始人身份查看",
+    "statusColumn": "状态",
+    "actionsColumn": "操作",
+    "cardViewButton": "卡片视图",
+    "tableViewButton": "表格视图"
+  },
+  "status": {
+    "active": "已激活",
+    "invited": "已邀请",
+    "expired": "已过期"
+  }
+}

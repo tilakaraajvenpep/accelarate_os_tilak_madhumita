@@ -1,0 +1,144 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Cohorts",
+    "subtitle": "Create cohorts, then invite founders and their companies into them.",
+    "createButton": "Create Cohort"
+  },
+  "table": {
+    "cardTitle": "All Cohorts",
+    "name": "Name",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "programs": "Programs",
+    "companies": "Companies Count",
+    "empty": "No cohorts yet — create your first one to get started."
+  },
+  "dialog": {
+    "createTitle": "Create Cohort",
+    "editTitle": "Edit Cohort",
+    "description": "Cohorts group founders and companies that go through the program together.",
+    "nameLabel": "Cohort name",
+    "namePlaceholder": "e.g. Spring 2026 Batch",
+    "startDateLabel": "Start date",
+    "endDateLabel": "End date",
+    "dateOrderError": "End date must be on or after the start date",
+    "createButton": "Create Cohort"
+  },
+  "deleteDialog": {
+    "title": "Delete cohort",
+    "confirm": "Are you sure you want to delete \"{{name}}\"?"
+  },
+  "toast": {
+    "created": "Cohort created",
+    "updated": "Cohort updated",
+    "deleted": "Cohort deleted",
+    "saveFailed": "Failed to save cohort",
+    "deleteFailed": "Failed to delete cohort"
+  },
+  "companies": {
+    "title": "Companies",
+    "createButton": "Create Company",
+    "empty": "No companies yet — invite your first founder to get started.",
+    "company": "Company",
+    "founder": "Founder",
+    "email": "Email",
+    "progress": "Progress",
+    "progressCompleted": "Completed",
+    "progressIncomplete": "Incomplete",
+    "pendingCompanyName": "Pending setup",
+    "viewAnswersButton": "View submitted answers",
+    "viewAsFounderButton": "View as founder",
+    "answersDialog": {
+      "title": "Submitted answers — {{name}}",
+      "description": "Every form this company has submitted, grouped by program, pillar, and section.",
+      "empty": "No forms submitted yet."
+    },
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "expired": "Expired"
+    },
+    "dialog": {
+      "title": "Create Company",
+      "description": "Send an invite so the founder can set their password and fill in their company details.",
+      "nameLabel": "Founder name",
+      "namePlaceholder": "Jane Smith",
+      "emailLabel": "Email",
+      "emailPlaceholder": "jane@startup.com",
+      "sendInviteButton": "Send Invite",
+      "inviteSent": "Invite sent",
+      "inviteFailed": "Failed to send invite"
+    }
+  },
+  "agenda": {
+    "viewButton": "View agenda",
+    "dialogTitle": "{{name}} — Program Agenda",
+    "dialogDescription": "All scheduled tasks for this cohort, in order.",
+    "startLabel": "Start: {{date}}",
+    "empty": "No tasks scheduled yet — add some from the Cohort Calendar.",
+    "noDate": "No date set"
+  },
+  "assignProgram": {
+    "button": "Assign program",
+    "releaseButtonHint": "Click to release this program from this cohort",
+    "releaseDialogTitle": "Release program from cohort",
+    "releaseDialogConfirm": "Are you sure you want to release \"{{name}}\" from \"{{cohort}}\"? Founders in this cohort will lose access to it, and it will become editable again once released from every cohort.",
+    "releaseButton": "Release",
+    "releaseSuccess": "Program released from cohort",
+    "releaseFailed": "Failed to release program from cohort"
+  },
+  "assignMentors": {
+    "button": "Assign mentors",
+    "dialogTitle": "Assign mentors — {{name}}",
+    "dialogDescription": "Pick a mentor for each pillar scheduled on this cohort.",
+    "noPillars": "No pillars have been scheduled on this cohort yet.",
+    "mentorPlaceholder": "Select a mentor",
+    "generalMentorLabel": "General mentor (no specific pillar)",
+    "generalMentorHint": "Assign a mentor for this cohort as a whole — useful before any program has been scheduled yet.",
+    "toast": {
+      "saved": "Mentor assignments saved",
+      "saveFailed": "Failed to save mentor assignments"
+    }
+  },
+  "attachForm": {
+    "button": "Attach form",
+    "dialogTitle": "Forms attached to \"{{name}}\"",
+    "dialogDescription": "Attached forms are visible to every company in this cohort — only one founder per company can fill each one in.",
+    "attachedLabel": "Attached forms",
+    "removeButton": "Remove",
+    "noneAttached": "No forms attached to this cohort yet.",
+    "addNewLabel": "Attach a form",
+    "noFormsAvailable": "No more forms available — create one under Setup > Forms (Template Library) first.",
+    "formPlaceholder": "Select a form…",
+    "policyPrimaryFounder": "Only the primary founder can fill it in",
+    "policyFirstClaim": "Any team member — first to start filling it claims it",
+    "attachButton": "Attach",
+    "attached": "Form attached to cohort",
+    "attachFailed": "Failed to attach form to cohort",
+    "detached": "Form detached from cohort",
+    "detachFailed": "Failed to detach form from cohort"
+  },
+  "submittedAnswers": {
+    "title": "Submitted Answers",
+    "subtitle": "Browse and review all form submissions by founders in your cohorts.",
+    "activeCompanies": "Active Companies",
+    "filterByCohort": "Filter by Cohort",
+    "allCohorts": "All Cohorts",
+    "searchPlaceholder": "Search company or founder...",
+    "noCompanies": "No active companies found.",
+    "selectCompany": "Select a Company",
+    "selectCompanyHint": "Choose a company from the sidebar list to see the forms they have submitted.",
+    "noSubmissions": "No forms submitted yet by this company.",
+    "formName": "Form Name",
+    "programName": "Program Name",
+    "noQuestions": "No questions answered.",
+    "question": "Question",
+    "answer": "Answer",
+    "founderLabel": "Founder: {{name}}",
+    "cohortLabel": "Cohort: {{name}}",
+    "pendingSetup": "Pending setup",
+    "accepted": "Accepted",
+    "declined": "Declined"
+  }
+}

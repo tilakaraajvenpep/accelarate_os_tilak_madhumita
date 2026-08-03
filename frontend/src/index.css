@@ -32,128 +32,207 @@
   --color-sidebar-border:                var(--sidebar-border);
   --color-sidebar-ring:                  var(--sidebar-ring);
 
-  /* Glassmorphism system — theme-aware surfaces & text */
+  /* Surface system */
   --color-page:          var(--page);
   --color-ink:           var(--ink);
   --color-glass:         var(--glass-1);
   --color-glass-2:       var(--glass-2);
   --color-glass-border:  var(--glass-bd);
 
-  --radius-sm:  calc(var(--radius) - 4px);
-  --radius-md:  calc(var(--radius) - 2px);
+  --radius-sm:  4px;
+  --radius-md:  6px;
   --radius-lg:  var(--radius);
   --radius-xl:  calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
 
-  --font-sans:    'Geist Variable', sans-serif;
+  --font-sans:    'Geist Variable', 'Inter', system-ui, sans-serif;
   --font-heading: var(--font-sans);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+
+  --background-image-gradient-accent: var(--gradient-accent);
+}
+
+/* ─── Surface card — polished SaaS panel ───────────────────────────────────
+   White background, 1px slate border, soft ambient shadow, smooth hover. */
+@utility surface-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 200ms var(--ease-out-expo), border-color 200ms var(--ease-out-expo);
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07);
+    border-color: oklch(0.78 0.02 250);
+  }
+}
+
+/* ─── Panel — same polished look without hover ─────────────────────────── */
+@utility panel {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 @layer base {
-  /* ── Light theme (default) ─────────────────────────────── */
+  /* ── Light theme — Slate & Indigo Enterprise SaaS ──────────── */
   :root {
-    --background: oklch(0.99 0 0);
-    --foreground: oklch(0.13 0 0);
+    /* Page background: very soft slate-50 */
+    --background: #F8FAFC;
+    --foreground: #0F172A;      /* slate-900 */
 
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.13 0 0);
+    /* Cards: crisp white */
+    --card: #FFFFFF;
+    --card-foreground: #0F172A;
 
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.13 0 0);
+    --popover: #FFFFFF;
+    --popover-foreground: #0F172A;
 
-    --primary: oklch(0.55 0.22 265);
-    --primary-foreground: oklch(0.99 0 0);
+    /* Primary: Monochromatic Black */
+    --primary: #09090b;
+    --primary-foreground: #FFFFFF;
 
-    --secondary: oklch(0.96 0 0);
-    --secondary-foreground: oklch(0.20 0 0);
+    /* Secondary: slate-100 */
+    --secondary: #F1F5F9;
+    --secondary-foreground: #334155;
 
-    --muted: oklch(0.96 0 0);
-    --muted-foreground: oklch(0.50 0 0);
+    /* Muted: slate-50 / slate-400 */
+    --muted: #F8FAFC;
+    --muted-foreground: #64748B;
 
-    --accent: oklch(0.96 0 0);
-    --accent-foreground: oklch(0.20 0 0);
+    /* Accent: zinc-100 */
+    --accent: #F4F4F5;
+    --accent-foreground: #18181B;
 
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.99 0 0);
+    /* Destructive: red */
+    --destructive: oklch(0.55 0.22 27);
+    --destructive-foreground: #FFFFFF;
 
-    --border: oklch(0.90 0 0);
-    --input: oklch(0.90 0 0);
-    --ring: oklch(0.55 0.22 265 / 40%);
+    /* Border: slate-200 */
+    --border: #E2E8F0;
+    /* Input: slightly darker slate-200 */
+    --input: #CBD5E1;
+    /* Ring: zinc-900 with opacity */
+    --ring: rgba(9, 9, 11, 0.15);
 
-    --radius: 0.625rem;
+    --radius: 12px;   /* 12px rounded corners */
 
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.13 0 0);
-    --sidebar-primary: oklch(0.55 0.22 265);
-    --sidebar-primary-foreground: oklch(0.99 0 0);
-    --sidebar-accent: oklch(0.96 0 0);
-    --sidebar-accent-foreground: oklch(0.20 0 0);
-    --sidebar-border: oklch(0.90 0 0);
-    --sidebar-ring: oklch(0.55 0.22 265 / 40%);
+    /* Sidebar: white with slate border */
+    --sidebar: #FFFFFF;
+    --sidebar-foreground: #334155;
+    --sidebar-primary: #09090b;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #F4F4F5;
+    --sidebar-accent-foreground: #18181B;
+    --sidebar-border: #E2E8F0;
+    --sidebar-ring: rgba(9, 9, 11, 0.15);
 
-    /* Glass system — light: frosted white panels on a soft tinted page */
-    --page:     oklch(0.965 0.008 265);
-    --ink:      oklch(0.21 0.02 265);
-    --glass-1:  oklch(1 0 0 / 0.55);
-    --glass-2:  oklch(1 0 0 / 0.80);
-    --glass-bd: oklch(0.40 0.03 265 / 0.14);
+    /* Glass system */
+    --page:     #F8FAFC;
+    --ink:      #0F172A;
+    --glass-1:  rgba(255, 255, 255, 0.85);
+    --glass-2:  #F1F5F9;
+    --glass-bd: #E2E8F0;
+
+    /* Elevation — soft, layered shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.10), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+
+    --gradient-accent: linear-gradient(135deg, #09090b 0%, #27272a 100%);
   }
 
-  /* ── Dark theme ────────────────────────────────────────── */
+  /* ── Dark theme ──────────── */
   .dark {
-    --background: oklch(0.10 0.01 265);
-    --foreground: oklch(0.96 0.005 250);
+    --background: #0B0F19;
+    --foreground: #F8FAFC;
 
-    --card: oklch(0.16 0.01 265);
-    --card-foreground: oklch(0.96 0.005 250);
+    --card: #111827;
+    --card-foreground: #F8FAFC;
 
-    --popover: oklch(0.14 0.015 265);
-    --popover-foreground: oklch(0.96 0.005 250);
+    --popover: #111827;
+    --popover-foreground: #F8FAFC;
 
-    --primary: oklch(0.65 0.22 265);
-    --primary-foreground: oklch(0.98 0 0);
+    --primary: #FFFFFF;
+    --primary-foreground: #09090b;
 
-    --secondary: oklch(1 0 0 / 8%);
-    --secondary-foreground: oklch(0.96 0.005 250);
+    --secondary: #1F2937;
+    --secondary-foreground: #E5E7EB;
 
-    --muted: oklch(1 0 0 / 7%);
-    --muted-foreground: oklch(0.60 0.01 260);
+    --muted: #1F2937;
+    --muted-foreground: #9CA3AF;
 
-    --accent: oklch(0.65 0.22 265 / 15%);
-    --accent-foreground: oklch(0.75 0.18 265);
+    --accent: #27272a;
+    --accent-foreground: #FAFAFA;
 
-    --destructive: oklch(0.65 0.23 25);
-    --destructive-foreground: oklch(0.98 0 0);
+    --destructive: oklch(0.40 0.18 27);
+    --destructive-foreground: #FFFFFF;
 
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 12%);
-    --ring: oklch(0.65 0.22 265 / 50%);
+    --border: #374151;
+    --input: #4B5563;
+    --ring: rgba(250, 250, 250, 0.2);
 
-    --sidebar: oklch(0.13 0.01 265);
-    --sidebar-foreground: oklch(0.96 0.005 250);
-    --sidebar-primary: oklch(0.65 0.22 265);
-    --sidebar-primary-foreground: oklch(0.98 0 0);
-    --sidebar-accent: oklch(1 0 0 / 6%);
-    --sidebar-accent-foreground: oklch(0.96 0.005 250);
-    --sidebar-border: oklch(1 0 0 / 8%);
-    --sidebar-ring: oklch(0.65 0.22 265 / 50%);
+    --sidebar: #111827;
+    --sidebar-foreground: #E5E7EB;
+    --sidebar-border: #374151;
 
-    /* Glass system — dark: translucent white on near-black aurora page */
-    --page:     oklch(0.075 0.012 265);
-    --ink:      oklch(0.98 0 0);
-    --glass-1:  oklch(1 0 0 / 0.04);
-    --glass-2:  oklch(1 0 0 / 0.08);
-    --glass-bd: oklch(1 0 0 / 0.10);
+    --page:     #0B0F19;
+    --ink:      #F8FAFC;
+    --glass-1:  rgba(17, 24, 39, 0.85);
+    --glass-2:  #1F2937;
+    --glass-bd: #374151;
+
+    --gradient-accent: linear-gradient(135deg, #FFFFFF 0%, #E4E4E7 100%);
   }
 
-  * {
-    @apply border-border;
-  }
-
-  html {
-    @apply font-sans;
-  }
-
+  /* Accessibility Overrides for Senior Users (70+) */
   body {
-    @apply bg-background text-foreground;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+
+  /* Large click/tap targets for accessibility */
+  button, input, select, textarea, a.btn, [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Prevent stretching for small/icon elements and explicit height utilities */
+  button.h-5, button.h-6, button.h-7, button.h-8, button.h-9, button.h-10,
+  button.size-5, button.size-6, button.size-7, button.size-8, button.size-9, button.size-10,
+  a.h-5, a.h-6, a.h-7, a.h-8, a.h-9, a.h-10,
+  a.size-5, a.size-6, a.size-7, a.size-8, a.size-9, a.size-10,
+  .min-h-0 {
+    min-height: 0;
+  }
+
+  /* Hand cursor for all actions */
+  button, a, select, summary, [role="button"], input[type="submit"], input[type="button"], input[type="reset"] {
+    cursor: pointer;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], input[type="search"], select {
+    font-size: 16px !important;
+  }
+
+  /* Focus rings for obvious interactivity */
+  *:focus-visible {
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 2px !important;
+  }
+
+  input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: none !important;
   }
 }

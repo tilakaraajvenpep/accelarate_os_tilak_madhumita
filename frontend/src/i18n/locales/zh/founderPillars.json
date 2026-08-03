@@ -1,0 +1,42 @@
+{
+  "list": {
+    "title": "我的支柱",
+    "subtitle": "完成每个支柱的考核以解锁下一个支柱。",
+    "empty": "您的项目暂未设置任何支柱。",
+    "pillarLabel": "支柱 {{number}}",
+    "percentComplete": "已完成 {{percent}}%"
+  },
+  "detail": {
+    "title": "支柱 {{number}}",
+    "empty": "该支柱暂未分配任何考核。",
+    "sectionLabel": "板块 {{sectionId}}",
+    "assessmentsLabel": "考核",
+    "mentorAdminOnlyBadge": "仅限导师/管理员",
+    "table": {
+      "assessment": "考核",
+      "status": "状态"
+    },
+    "status": {
+      "notStarted": "未开始",
+      "draft": "草稿",
+      "submitted": "已提交"
+    },
+    "branchOutTooltip": "衍生新条目",
+    "exportExcelTooltip": "导出 Excel",
+    "openButton": "打开",
+    "startButton": "开始",
+    "branchDialog": {
+      "title": "衍生自“{{title}}”",
+      "description": "基于此条目创建一个新的独立条目。",
+      "namePlaceholder": "条目名称（例如：第二季度更新）"
+    },
+    "toast": {
+      "responseSubmitted": "回答已提交",
+      "draftSaved": "草稿已保存",
+      "saveFailed": "保存回答失败",
+      "entryCreated": "新条目已创建",
+      "branchFailed": "衍生新条目失败",
+      "exportFailed": "导出失败"
+    }
+  }
+}

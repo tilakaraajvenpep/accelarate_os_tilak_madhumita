@@ -1,78 +1,107 @@
-import { eq, and } from 'drizzle-orm'
+import { eq, and, desc, inArray } from 'drizzle-orm'
 import { db } from '../db/client'
-import { aiProviderConfigs } from '../models'
-import { encryptSecret } from '../config/crypto'
-import { AI_PROVIDER_MODELS, type AiProvider } from '../config/ai-provider-models'
+import { aiProviderConfigs, subscriptions, planAiProviderConfigs } from '../models'
+import { encryptSecret } from '../utils/encryption'
 
-function toPublicConfig(row: typeof aiProviderConfigs.$inferSelect) {
-  return {
-    id: row.id,
-    provider: row.provider,
-    model: row.model,
-    apiKeyLastFour: row.apiKeyLastFour,
-    enabled: row.enabled,
-    createdAt: row.createdAt,
-  }
+/** Full row (incl. ciphertext) for the AI provider key assigned to the tenant's plan, or null if none. */
+export async function getTenantPlanProviderConfig(tenantId: number, provider: 'openai' | 'anthropic' | 'manus') {
+  const [sub] = await db
+    .select({ planId: subscriptions.planId })
+    .from(subscriptions)
+    .where(and(eq(subscriptions.tenantId, tenantId), inArray(subscriptions.status, ['active', 'trialing'])))
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1)
+
+  if (!sub?.planId) return null
+
+  const [config] = await db
+    .select({
+      id: aiProviderConfigs.id,
+      provider: aiProviderConfigs.provider,
+      model: aiProviderConfigs.model,
+      apiKeyCiphertext: aiProviderConfigs.apiKeyCiphertext,
+      apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
+      enabled: aiProviderConfigs.enabled,
+      createdAt: aiProviderConfigs.createdAt,
+      updatedAt: aiProviderConfigs.updatedAt,
+    })
+    .from(planAiProviderConfigs)
+    .innerJoin(aiProviderConfigs, eq(planAiProviderConfigs.aiProviderConfigId, aiProviderConfigs.id))
+    .where(
+      and(
+        eq(planAiProviderConfigs.planId, sub.planId),
+        eq(aiProviderConfigs.provider, provider),
+        eq(aiProviderConfigs.enabled, true),
+      ),
+    )
+    .orderBy(planAiProviderConfigs.sortOrder)
+    .limit(1)
+
+  return config ?? null
+}
+
+/** Full row (incl. ciphertext) for the most recently created enabled config for a provider, or null if none. */
+export async function getActiveProviderConfig(provider: 'openai' | 'anthropic' | 'manus') {
+  const [config] = await db
+    .select()
+    .from(aiProviderConfigs)
+    .where(and(eq(aiProviderConfigs.provider, provider), eq(aiProviderConfigs.enabled, true)))
+    .orderBy(desc(aiProviderConfigs.createdAt))
+    .limit(1)
+  return config ?? null
 }
 
 export async function listAiProviderConfigs() {
-  const rows = await db.select().from(aiProviderConfigs).orderBy(aiProviderConfigs.createdAt)
-  return rows.map(toPublicConfig)
+  return db
+    .select({
+      id: aiProviderConfigs.id,
+      provider: aiProviderConfigs.provider,
+      apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
+      enabled: aiProviderConfigs.enabled,
+      createdAt: aiProviderConfigs.createdAt,
+    })
+    .from(aiProviderConfigs)
+    .orderBy(desc(aiProviderConfigs.createdAt))
 }
 
-export async function createAiProviderConfig(provider: AiProvider, model: string, apiKey: string) {
-  if (!AI_PROVIDER_MODELS[provider]?.includes(model)) {
-    throw new Error(`Unknown model "${model}" for provider "${provider}"`)
-  }
-
-  const apiKeyCiphertext = encryptSecret(apiKey)
-  const apiKeyLastFour = apiKey.slice(-4)
-
-  const [existing] = await db
-    .select()
-    .from(aiProviderConfigs)
-    .where(and(eq(aiProviderConfigs.provider, provider), eq(aiProviderConfigs.model, model)))
-    .limit(1)
-
-  if (existing) {
-    const [updated] = await db
-      .update(aiProviderConfigs)
-      .set({ apiKeyCiphertext, apiKeyLastFour, enabled: true, updatedAt: new Date() })
-      .where(eq(aiProviderConfigs.id, existing.id))
-      .returning()
-    return toPublicConfig(updated)
-  }
-
+export async function createAiProviderConfig(data: { provider: 'openai' | 'anthropic' | 'manus'; apiKey: string }) {
   const [created] = await db
     .insert(aiProviderConfigs)
-    .values({ provider, model, apiKeyCiphertext, apiKeyLastFour })
-    .returning()
-  return toPublicConfig(created)
+    .values({
+      provider: data.provider,
+      apiKeyCiphertext: encryptSecret(data.apiKey),
+      apiKeyLastFour: data.apiKey.slice(-4),
+    })
+    .returning({
+      id: aiProviderConfigs.id,
+      provider: aiProviderConfigs.provider,
+      apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
+      enabled: aiProviderConfigs.enabled,
+      createdAt: aiProviderConfigs.createdAt,
+    })
+  return created
 }
 
-export async function updateAiProviderConfig(id: number, data: { model?: string; apiKey?: string }) {
-  const [existing] = await db.select().from(aiProviderConfigs).where(eq(aiProviderConfigs.id, id)).limit(1)
-  if (!existing) throw new Error('AI provider config not found')
-
-  if (data.model && !AI_PROVIDER_MODELS[existing.provider]?.includes(data.model)) {
-    throw new Error(`Unknown model "${data.model}" for provider "${existing.provider}"`)
-  }
-
-  const updates: Partial<typeof aiProviderConfigs.$inferInsert> = {
-    model: data.model ?? existing.model,
-    updatedAt: new Date(),
-  }
+export async function updateAiProviderConfig(id: number, data: { apiKey?: string }) {
+  const update: Partial<typeof aiProviderConfigs.$inferInsert> = { updatedAt: new Date() }
   if (data.apiKey) {
-    updates.apiKeyCiphertext = encryptSecret(data.apiKey)
-    updates.apiKeyLastFour = data.apiKey.slice(-4)
+    update.apiKeyCiphertext = encryptSecret(data.apiKey)
+    update.apiKeyLastFour = data.apiKey.slice(-4)
   }
 
   const [updated] = await db
     .update(aiProviderConfigs)
-    .set(updates)
+    .set(update)
     .where(eq(aiProviderConfigs.id, id))
-    .returning()
-  return toPublicConfig(updated)
+    .returning({
+      id: aiProviderConfigs.id,
+      provider: aiProviderConfigs.provider,
+      apiKeyLastFour: aiProviderConfigs.apiKeyLastFour,
+      enabled: aiProviderConfigs.enabled,
+      createdAt: aiProviderConfigs.createdAt,
+    })
+  if (!updated) throw new Error('AI provider key not found')
+  return updated
 }
 
 export async function setAiProviderConfigEnabled(id: number, enabled: boolean) {
@@ -80,12 +109,12 @@ export async function setAiProviderConfigEnabled(id: number, enabled: boolean) {
     .update(aiProviderConfigs)
     .set({ enabled, updatedAt: new Date() })
     .where(eq(aiProviderConfigs.id, id))
-    .returning()
-  if (!updated) throw new Error('AI provider config not found')
-  return toPublicConfig(updated)
+    .returning({ id: aiProviderConfigs.id, enabled: aiProviderConfigs.enabled })
+  if (!updated) throw new Error('AI provider key not found')
+  return updated
 }
 
 export async function deleteAiProviderConfig(id: number) {
   const [deleted] = await db.delete(aiProviderConfigs).where(eq(aiProviderConfigs.id, id)).returning()
-  if (!deleted) throw new Error('AI provider config not found')
+  if (!deleted) throw new Error('AI provider key not found')
 }

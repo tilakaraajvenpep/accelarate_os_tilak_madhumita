@@ -1,0 +1,83 @@
+{
+  "notAvailable": "此页面仅适用于租户管理员。",
+  "page": {
+    "title": "表单",
+    "subtitle": "为您的项目创建和管理表单模板。",
+    "createButton": "创建表单模板"
+  },
+  "table": {
+    "cardTitle": "表单模板",
+    "title": "标题",
+    "category": "类别",
+    "dateCreated": "创建日期",
+    "editButtonTitle": "编辑",
+    "activateButtonTitle": "启用",
+    "archiveButtonTitle": "归档",
+    "deleteButtonTitle": "删除",
+    "empty": "暂无表单模板 — 创建一个以开始使用。"
+  },
+  "confirmDelete": "确定要永久删除“{{title}}”吗？此操作无法撤销。",
+  "toast": {
+    "created": "表单模板已创建",
+    "updated": "表单模板已更新",
+    "saveFailed": "保存表单模板失败",
+    "deleted": "表单模板已删除",
+    "deleteFailed": "删除表单模板失败",
+    "statusFailed": "更新状态失败"
+  },
+  "category": {
+    "pillar_diagram": "支柱图",
+    "weekly": "每周",
+    "milestone": "里程碑"
+  },
+  "structure": {
+    "basic": "基础表单（简单队列）",
+    "conditional": "条件表单",
+    "grid_matrix": "网格矩阵（表格）",
+    "financial_spreadsheet": "财务电子表格"
+  },
+  "status": {
+    "draft": "草稿",
+    "active": "已启用",
+    "archived": "已归档"
+  },
+  "questionType": {
+    "short_text": "短文本",
+    "long_text": "长文本",
+    "number": "数字",
+    "dropdown": "下拉选择",
+    "single_choice": "单选",
+    "multiple_choice": "多选（复选框）",
+    "date": "日期",
+    "editable_table": "可编辑表格"
+  },
+  "builder": {
+    "newTitle": "新建表单模板",
+    "editTitle": "编辑表单模板",
+    "subtitle": "定义表单的详情、类别、结构和问题。",
+    "formTitle": "标题",
+    "formTitlePlaceholder": "例如：每周进度签到",
+    "description": "描述",
+    "descriptionPlaceholder": "此表单的用途是什么？",
+    "category": "类别",
+    "structure": "结构",
+    "allowMultipleEntries": "允许多次提交",
+    "allowMultipleEntriesHint": "允许受访者多次提交此表单。",
+    "questions": "问题",
+    "addQuestion": "添加问题",
+    "questionTitle": "问题",
+    "questionTitlePlaceholder": "例如：本周您完成了什么？",
+    "questionType": "答案类型",
+    "required": "必填",
+    "helpText": "帮助文本/描述",
+    "helpTextPlaceholder": "显示在问题下方的可选描述",
+    "points": "分值",
+    "options": "选项",
+    "optionLabelPlaceholder": "选项标签",
+    "optionScorePlaceholder": "分数",
+    "addOption": "添加选项",
+    "optionsHint": "每个选项都可以有自己的分数，计入表单总分。",
+    "createButton": "创建模板",
+    "saveButton": "保存更改"
+  }
+}

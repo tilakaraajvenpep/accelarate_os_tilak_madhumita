@@ -1,0 +1,65 @@
+{
+  "configs": {
+    "page": {
+      "title": "治理评审配置",
+      "subtitle": "定义某个阶段组的治理评审涵盖的内容——配置创建后，创始人即可发起评审。"
+    },
+    "form": {
+      "cardTitle": "新建治理评审配置",
+      "cohortLabel": "阶段组（可选——留空则适用于整个租户）",
+      "allCohortsOption": "所有阶段组",
+      "purposeLabel": "用途",
+      "purposePlaceholder": "例如：A 轮融资就绪评审",
+      "pillarsLabel": "适用支柱",
+      "noPillars": "尚未定义任何支柱。",
+      "pillarLabel": "支柱 {{number}}",
+      "pillarLabelWithTitle": "支柱 {{number}} — {{title}}",
+      "createButton": "创建配置"
+    },
+    "list": {
+      "title": "现有配置",
+      "empty": "暂无治理评审配置。",
+      "defaultPurpose": "治理评审",
+      "summary": "阶段组：{{cohort}} · 支柱：{{pillars}}",
+      "noPillarsValue": "—"
+    },
+    "toast": {
+      "created": "治理评审配置已创建",
+      "createFailed": "创建治理评审配置失败"
+    }
+  },
+  "review": {
+    "page": {
+      "title": "治理评审",
+      "subtitle": "审核创始人提交的治理评审会话，并生成其 AI 撰写的报告。"
+    },
+    "empty": {
+      "title": "尚未提交任何治理评审会话。"
+    },
+    "session": {
+      "defaultPurpose": "治理评审",
+      "companyFallback": "公司 #{{id}}",
+      "founderNotesLabel": "创始人备注：",
+      "outcomePlaceholder": "结果（例如：已通过、需修改）",
+      "feedbackPlaceholder": "反馈意见",
+      "submitReviewButton": "提交评审",
+      "generateReportButton": "生成报告",
+      "downloadReportButton": "下载报告",
+      "reopenButton": "重新开放"
+    },
+    "status": {
+      "draft": "草稿",
+      "submitted": "已提交",
+      "reviewed": "已评审"
+    },
+    "toast": {
+      "reviewSubmitted": "评审已提交",
+      "reviewFailed": "提交评审失败",
+      "reopened": "会话已重新开放",
+      "reopenFailed": "重新开放会话失败",
+      "generated": "报告已生成",
+      "generateFailed": "生成报告失败",
+      "downloadFailed": "报告尚未生成完成"
+    }
+  }
+}

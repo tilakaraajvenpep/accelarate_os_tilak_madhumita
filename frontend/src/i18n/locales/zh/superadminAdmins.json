@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "超级管理员",
+    "description": "授予平台级访问权限。新管理员需在账户创建前验证其电子邮箱。",
+    "newButton": "新建超级管理员"
+  },
+  "table": {
+    "sectionTitle": "当前超级管理员",
+    "unverified": "未验证",
+    "activeSwitchLabel": "启用",
+    "selfStatusTooltip": "您不能更改自己的状态",
+    "selfDeleteTooltip": "您不能删除自己的账户",
+    "empty": "暂无超级管理员。"
+  },
+  "createDialog": {
+    "title": "新建超级管理员",
+    "description": "我们将向其邮箱发送一个6位验证码，在账户创建前验证该邮箱。",
+    "form": {
+      "nameLabel": "姓名（可选）",
+      "emailLabel": "电子邮箱",
+      "passwordLabel": "密码",
+      "passwordPlaceholder": "至少8个字符",
+      "passwordHint": "密码长度至少为8位，需包含1个大写字母、1个特殊字符，以及小写字母和数字的组合。",
+      "submit": "发送验证码"
+    },
+    "otp": {
+      "title": "验证电子邮箱",
+      "description": "请输入我们发送到 {{email}} 的6位验证码。",
+      "label": "验证码",
+      "placeholder": "000000",
+      "submit": "验证并激活",
+      "otpSent": "验证码已发送至 {{email}}",
+      "otpSendFailed": "账户已创建，但验证邮件发送失败——请检查 SES 配置",
+      "verifiedSuccess": "超级管理员已验证并激活",
+      "verifyFailed": "验证失败"
+    },
+    "errors": {
+      "createFailed": "创建超级管理员失败"
+    }
+  },
+  "editDialog": {
+    "title": "编辑超级管理员",
+    "description": "更新此超级管理员的姓名和电子邮箱。",
+    "nameLabel": "姓名（可选）",
+    "emailLabel": "电子邮箱",
+    "emailHint": "更改此项将重新发放其登录凭据——系统会向新邮箱发送一个新的临时密码。",
+    "updatedSuccess": "超级管理员已更新",
+    "saveFailed": "保存更改失败"
+  },
+  "deleteDialog": {
+    "title": "删除超级管理员",
+    "description": "确定要永久删除超级管理员\"{{name}}\"吗？此操作无法撤销。"
+  },
+  "toasts": {
+    "statusUpdateFailed": "更新状态失败",
+    "activated": "超级管理员已启用",
+    "deactivated": "超级管理员已停用",
+    "deleteSuccess": "超级管理员已删除",
+    "deleteFailed": "删除超级管理员失败"
+  }
+}

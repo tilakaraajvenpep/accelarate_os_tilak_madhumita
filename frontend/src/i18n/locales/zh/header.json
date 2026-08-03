@@ -1,0 +1,10 @@
+{
+  "expandSidebar": "展开侧边栏",
+  "collapseSidebar": "收起侧边栏",
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标记为已读",
+    "markAllReadToast": "所有通知已标记为已读",
+    "empty": "暂无通知"
+  }
+}

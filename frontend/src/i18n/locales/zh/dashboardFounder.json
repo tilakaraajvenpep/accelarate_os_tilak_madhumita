@@ -1,0 +1,29 @@
+{
+  "greeting": {
+    "welcomeName": "欢迎回来，{{name}}",
+    "welcome": "欢迎回来",
+    "subtitle": "这是您今天的项目概览。"
+  },
+  "stats": {
+    "pillarsDone": "已完成支柱"
+  },
+  "pillarProgress": {
+    "title": "支柱进度",
+    "tracked": "跟踪 {{count}} 个支柱",
+    "empty": "您的项目尚未设置支柱。",
+    "completed": "已完成",
+    "inProgress": "进行中"
+  },
+  "upcoming": {
+    "title": "即将开始",
+    "empty": "日历集成即将上线"
+  },
+  "recentDocuments": {
+    "title": "近期文档",
+    "empty": "文档库即将上线。"
+  },
+  "activityFeed": {
+    "title": "活动动态",
+    "empty": "活动跟踪即将上线。"
+  }
+}

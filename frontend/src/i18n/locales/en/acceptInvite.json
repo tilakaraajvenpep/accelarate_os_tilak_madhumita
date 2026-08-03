@@ -1,0 +1,86 @@
+{
+  "invalid": {
+    "title": "This invite link isn't valid",
+    "subtitle": "It may have expired or already been used. Ask your accelerator admin to send a new invite."
+  },
+  "password": {
+    "title": "Set your password",
+    "subtitlePrefix": "Create a password for",
+    "fullNameLabel": "Full name",
+    "fullNamePlaceholder": "Jane Smith",
+    "fullNameRequired": "Full name is required",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "confirmLabel": "Confirm password",
+    "confirmPlaceholder": "Re-enter your password",
+    "continueButton": "Next",
+    "tooShort": "Password must be at least 8 characters",
+    "mismatch": "Passwords don't match",
+    "failed": "Failed to set password"
+  },
+  "company": {
+    "title": "Company Onboarding",
+    "subtitle": "Tell us about your company — you can save a draft and finish this later.",
+    "businessIdentity": {
+      "title": "Business Identity",
+      "subtitle": "Basic information about your entity.",
+      "nameLabel": "Business / Brand Name",
+      "uenLabel": "UEN (Unique Entity Number)",
+      "industryLabel": "Industry",
+      "industryPlaceholder": "Select Industry",
+      "companySizeLabel": "Company Size"
+    },
+    "primaryContact": {
+      "title": "Primary Contact (Account Owner)",
+      "fullNameLabel": "Full Name",
+      "roleLabel": "Role in Business",
+      "rolePlaceholder": "Select role",
+      "emailLabel": "Email Address",
+      "mobileLabel": "Mobile Number",
+      "consentWhatsapp": "I consent to receive program communications via WhatsApp",
+      "consentEmail": "I consent to receive program communications via Email"
+    },
+    "legal": {
+      "title": "Legal & Acknowledgements",
+      "platformScopeTitle": "Platform Scope Acknowledgement",
+      "platformScopeDescription": "I understand that AccelerateOS does not provide advisory services or fund management.",
+      "participationAuthorityTitle": "Participation Authority Declaration",
+      "participationAuthorityDescription": "I confirm I am authorized to represent this business."
+    },
+    "saveDraftButton": "Save Draft",
+    "lockButton": "Final Submit (Lock)",
+    "toast": {
+      "draftSaved": "Draft saved",
+      "saveFailed": "Failed to save draft",
+      "locked": "Company profile submitted",
+      "lockFailed": "Failed to submit company profile",
+      "missingFields": "Please fill in all required fields and acknowledgements"
+    },
+    "industries": {
+      "Technology": "Technology",
+      "Healthcare": "Healthcare",
+      "Finance": "Finance",
+      "Retail / E-commerce": "Retail / E-commerce",
+      "Manufacturing": "Manufacturing",
+      "Education": "Education",
+      "Food & Beverage": "Food & Beverage",
+      "Real Estate": "Real Estate",
+      "Professional Services": "Professional Services",
+      "Other": "Other"
+    },
+    "roles": {
+      "Founder / CEO": "Founder / CEO",
+      "Co-Founder": "Co-Founder",
+      "CTO": "CTO",
+      "COO": "COO",
+      "CFO": "CFO",
+      "Other": "Other"
+    },
+    "sizes": {
+      "solo": "Solo",
+      "2-10": "2-10",
+      "11-50": "11-50",
+      "50+": "50+"
+    }
+  }
+}

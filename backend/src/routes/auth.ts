@@ -10,10 +10,14 @@ import {
   cognitoResendCode,
   cognitoChangePassword,
 } from '../services/auth.service'
-import { upsertUser } from '../services/users.service'
-import { db } from '../db/client'
-import { tenants, users } from '../models'
 import { requireAuth, type AuthRequest } from '../middleware/auth.middleware'
+import { upsertUser } from '../services/users.service'
+import { getTenantSlugById } from '../services/tenants.service'
+import { resolvePublicTenantOnboardingForm } from '../services/platform-settings.service'
+import { extractOrgFieldsFromResponse } from '../utils/onboarding-extract'
+import { generateUniqueSlug } from '../utils/slug'
+import { db } from '../db/client'
+import { tenants, users, tenantOnboardingResponses } from '../models'
 
 /** Decode JWT payload without verifying — safe here since Cognito just issued it */
 function decodeJwtPayload(token: string): Record<string, unknown> {
@@ -29,19 +33,33 @@ const registerSchema = z.object({
   name: z.string().min(1),
   organizationName: z.string().min(1).optional(),
   organizationType: z
-    .enum(['university', 'corporate', 'vc_backed', 'government', 'independent', 'other'])
+    .enum([
+      'university',
+      'corporate',
+      'vc_backed',
+      'government',
+      'independent',
+      'other',
+      'technology',
+      'healthcare',
+      'finance',
+      'retail_ecommerce',
+      'manufacturing',
+      'education',
+      'food_beverage',
+      'real_estate',
+      'professional_services',
+    ])
     .optional(),
   organizationWebsite: z.string().url().optional().or(z.literal('')),
+  // Present when the super-admin-configured custom onboarding form (see
+  // platform-settings.service.ts) replaced the hardcoded org fields above.
+  onboardingResponseJson: z.record(z.string(), z.unknown()).optional(),
 })
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
-})
-
-const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1),
-  newPassword: z.string().min(8),
 })
 
 router.post('/register', async (req: Request, res: Response) => {
@@ -54,17 +72,36 @@ router.post('/register', async (req: Request, res: Response) => {
     const result = await cognitoSignUp(parsed.data.email, parsed.data.password, parsed.data.name)
     const cognitoSub = result.UserSub
 
-    // Onboarding wizard sends organization fields — create the tenant + its
-    // admin user row right away instead of waiting for first login, so the
-    // org data collected in "Start your program" step 1 isn't discarded.
-    if (parsed.data.organizationName && cognitoSub) {
+    // Onboarding wizard sends organization fields (or a custom onboarding-form
+    // response replacing them) — create the tenant + its admin user row right
+    // away instead of waiting for first login, so the org data collected in
+    // "Start your program" step 1 isn't discarded.
+    let tenantSlug: string | null = null
+    if ((parsed.data.organizationName || parsed.data.onboardingResponseJson) && cognitoSub) {
+      let orgName = parsed.data.organizationName ?? null
+      let orgWebsite = parsed.data.organizationWebsite || null
+
+      if (parsed.data.onboardingResponseJson) {
+        const resolved = await resolvePublicTenantOnboardingForm()
+        const extracted = extractOrgFieldsFromResponse(
+          resolved?.schema ?? [],
+          parsed.data.onboardingResponseJson,
+          orgName ?? `${parsed.data.name}'s Organization`,
+        )
+        orgName = extracted.orgName
+        orgWebsite = orgWebsite ?? extracted.website
+      }
+
       await db.transaction(async (tx) => {
+        const slug = await generateUniqueSlug(orgName!)
+        tenantSlug = slug
         const [tenant] = await tx
           .insert(tenants)
           .values({
-            name: parsed.data.organizationName!,
+            name: orgName!,
+            slug,
             orgType: parsed.data.organizationType ?? null,
-            website: parsed.data.organizationWebsite || null,
+            website: orgWebsite,
           })
           .returning()
 
@@ -75,10 +112,17 @@ router.post('/register', async (req: Request, res: Response) => {
           role: 'admin',
           tenantId: tenant.id,
         })
+
+        if (parsed.data.onboardingResponseJson) {
+          await tx.insert(tenantOnboardingResponses).values({ tenantId: tenant.id, responseJson: parsed.data.onboardingResponseJson })
+        }
       })
     }
 
-    res.json({ message: 'Registered. Check your email for a verification code.' })
+    res.json({
+      message: 'Registered. Check your email for a verification code.',
+      tenantSlug,
+    })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Registration failed'
     res.status(400).json({ error: msg })
@@ -134,6 +178,18 @@ router.post('/login', async (req: Request, res: Response) => {
       name: (claims.name as string | undefined) ?? null,
     })
 
+    if (!user.emailVerified) {
+      res.status(403).json({ error: 'Please verify your email before signing in — check your inbox for the verification link.' })
+      return
+    }
+
+    if (user.role === 'super_admin' && user.disabled) {
+      res.status(403).json({ error: 'This super admin account has been deactivated.' })
+      return
+    }
+
+    const tenantSlug = user.tenantId ? await getTenantSlugById(user.tenantId) : null
+
     res.json({
       accessToken: t.AccessToken,
       idToken: t.IdToken,
@@ -145,6 +201,10 @@ router.post('/login', async (req: Request, res: Response) => {
         name: user.name,
         role: user.role,
         tenantId: user.tenantId,
+        tenantSlug,
+        interestedInMentoring: user.interestedInMentoring,
+        allowedMenus: user.allowedMenus,
+        canSetPermissions: user.canSetPermissions,
       },
     })
   } catch (err: unknown) {
@@ -203,17 +263,22 @@ router.post('/reset-password', async (req: Request, res: Response) => {
 })
 
 router.post('/change-password', requireAuth, async (req: AuthRequest, res: Response) => {
-  const parsed = changePasswordSchema.safeParse(req.body)
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.flatten() })
+  const { currentPassword, newPassword } = req.body as { currentPassword?: string; newPassword?: string }
+  if (!currentPassword || !newPassword) {
+    res.status(400).json({ error: 'currentPassword and newPassword are required' })
     return
   }
   const accessToken = req.headers.authorization!.slice(7)
   try {
-    await cognitoChangePassword(accessToken, parsed.data.currentPassword, parsed.data.newPassword)
+    await cognitoChangePassword(accessToken, currentPassword, newPassword)
     res.json({ message: 'Password changed.' })
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Failed to change password'
+    const msg =
+      err instanceof Error && err.name === 'NotAuthorizedException'
+        ? 'Incorrect current password.'
+        : err instanceof Error
+          ? err.message
+          : 'Failed to change password'
     res.status(400).json({ error: msg })
   }
 })

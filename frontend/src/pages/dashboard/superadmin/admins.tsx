@@ -1,13 +1,20 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Plus, ShieldCheck, Trash2, Pencil, Loader2 } from 'lucide-react'
+import { Plus, ShieldCheck, Pencil, Trash2 } from 'lucide-react'
 import { api } from '@/lib/api'
+import { cleanErrorMessage } from '@/lib/api-error'
+
 import { useAuth } from '@/context/auth-context'
-import { useTranslation } from '@/i18n/I18nProvider'
+import { useConfirm } from '@/components/confirm-dialog'
+import { ListToolbar, ListPagination } from '@/components/list-toolbar'
+import { useListControls } from '@/hooks/use-list-controls'
+import { Loader } from '@/components/ui/loader'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import {
@@ -26,186 +33,176 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
-import type { AuthUser } from '@/types/auth'
-
-type SuperAdminRow = AuthUser & { disabled: boolean }
+import type { SuperAdmin } from '@/types/admin'
+import { PASSWORD_PATTERN } from '@/lib/validation'
 
 export default function SuperAdminsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('superadminAdmins')
   const queryClient = useQueryClient()
   const { user: currentUser } = useAuth()
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingAdmin, setEditingAdmin] = useState<SuperAdminRow | null>(null)
-  const [pendingDelete, setPendingDelete] = useState<SuperAdminRow | null>(null)
+  const confirm = useConfirm()
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editing, setEditing] = useState<SuperAdmin | null>(null)
 
   const { data: admins = [], isLoading } = useQuery({
     queryKey: ['super-admins'],
-    queryFn: async () => (await api.get<SuperAdminRow[]>('/api/platform/super-admins')).data,
+    queryFn: async () => (await api.get<SuperAdmin[]>('/api/super-admins')).data,
+  })
+
+  const controls = useListControls(admins, {
+    searchFields: (admin) => [admin.name, admin.email],
+    statusValue: (admin) => admin.active,
   })
 
   function invalidate() {
     queryClient.invalidateQueries({ queryKey: ['super-admins'] })
   }
 
-  const disableMutation = useMutation({
-    mutationFn: async ({ id, disabled }: { id: number; disabled: boolean }) =>
-      (await api.patch(`/api/platform/super-admins/${id}/disabled`, { disabled })).data,
-    onSuccess: (_data, variables) => {
-      toast.success(variables.disabled ? t('superAdminAdmins.toast.disabled') : t('superAdminAdmins.toast.enabled'))
+  const toggleActiveMutation = useMutation({
+    mutationFn: async (params: { id: number; active: boolean }) =>
+      (await api.patch(`/api/super-admins/${params.id}/active`, { active: params.active })).data as SuperAdmin,
+    onSuccess: (updated) => {
+      toast.success(updated.active ? t('toasts.activated') : t('toasts.deactivated'))
       invalidate()
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminAdmins.toast.updateFailed'))),
+    onError: (err) => toast.error(apiError(err, t('toasts.statusUpdateFailed'))),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => (await api.delete(`/api/platform/super-admins/${id}`)).data,
+    mutationFn: async (id: number) => (await api.delete(`/api/super-admins/${id}`)).data,
     onSuccess: () => {
-      toast.success(t('superAdminAdmins.toast.deleted'))
-      setPendingDelete(null)
+      toast.success(t('toasts.deleteSuccess'))
       invalidate()
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminAdmins.toast.deleteFailed'))),
+    onError: (err) => toast.error(apiError(err, t('toasts.deleteFailed'))),
   })
 
+  async function handleDelete(admin: SuperAdmin) {
+    const ok = await confirm({
+      title: t('deleteDialog.title'),
+      description: t('deleteDialog.description', { name: admin.name || admin.email }),
+      confirmLabel: t('common:delete'),
+      variant: 'destructive',
+    })
+    if (!ok) return
+    deleteMutation.mutate(admin.id)
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t('superAdminAdmins.title')}</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            {t('superAdminAdmins.subtitle')}
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t('page.title')}</h1>
+          <p className="text-muted-foreground text-sm mt-1">{t('page.description')}</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="h-4 w-4" /> {t('superAdminAdmins.newSuperAdmin')}
+        <Button onClick={() => setCreateOpen(true)}>
+          <Plus className="h-4 w-4" /> {t('page.newButton')}
         </Button>
       </div>
 
-      <div className="rounded-xl border bg-card">
+      <div className="surface-card">
         <div className="px-6 py-4 border-b flex items-center gap-2">
           <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          <h2 className="font-semibold">{t('superAdminAdmins.currentSuperAdmins')}</h2>
+          <h2 className="font-semibold">{t('table.sectionTitle')}</h2>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('superAdminAdmins.tableName')}</TableHead>
-              <TableHead>{t('superAdminAdmins.tableEmail')}</TableHead>
-              <TableHead>{t('superAdminAdmins.tableStatus')}</TableHead>
-              <TableHead />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {admins.map((admin) => {
-              const isSelf = admin.id === currentUser?.id
-              return (
-                <TableRow key={admin.id}>
-                  <TableCell className="font-medium">{admin.name || '—'}</TableCell>
-                  <TableCell>{admin.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={admin.disabled ? 'secondary' : 'default'}>
-                      {admin.disabled ? t('superAdminAdmins.disabled') : t('superAdminAdmins.active')}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-3">
-                      <div
-                        className="flex items-center gap-2"
-                        title={isSelf ? t('superAdminAdmins.cannotDisableSelf') : admin.disabled ? t('superAdminAdmins.enableSignIn') : t('superAdminAdmins.disableSignIn')}
-                      >
-                        <span className="text-xs text-muted-foreground">{admin.disabled ? t('superAdminAdmins.disabled') : t('superAdminAdmins.active')}</span>
-                        <Switch
-                          checked={!admin.disabled}
-                          disabled={isSelf || disableMutation.isPending}
-                          onCheckedChange={(checked: boolean) =>
-                            disableMutation.mutate({ id: admin.id, disabled: !checked })
-                          }
-                        />
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={t('superAdminAdmins.edit')}
-                        onClick={() => setEditingAdmin(admin)}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={isSelf ? t('superAdminAdmins.cannotDeleteSelf') : t('superAdminAdmins.delete')}
-                        disabled={isSelf}
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => setPendingDelete(admin)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+        <div className="px-6 py-3 border-b">
+          <ListToolbar controls={controls} searchPlaceholder={t('common:search')} activeLabel={t('common:active')} inactiveLabel={t('common:inactive')} />
+        </div>
+        <div className="max-h-[70vh] overflow-y-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('common:name')}</TableHead>
+                <TableHead>{t('common:email')}</TableHead>
+                <TableHead className="text-center">{t('common:status')}</TableHead>
+                <TableHead className="text-center">{t('common:actions')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="py-10">
+                    <Loader />
                   </TableCell>
                 </TableRow>
-              )
-            })}
-            {!isLoading && admins.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
-                  {t('superAdminAdmins.noSuperAdminsYet')}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                controls.paged.map((admin) => {
+                  const isSelf = admin.id === currentUser?.id
+                  return (
+                    <TableRow key={admin.id}>
+                      <TableCell className="font-medium">{admin.name || '—'}</TableCell>
+                      <TableCell className="text-muted-foreground">{admin.email}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center gap-3">
+                          <Badge variant={admin.active ? 'success' : 'secondary'}>
+                            {admin.active ? t('common:active') : t('common:inactive')}
+                          </Badge>
+                          <Switch
+                            checked={admin.active}
+                            disabled={isSelf || toggleActiveMutation.isPending}
+                            title={isSelf ? t('table.selfStatusTooltip') : undefined}
+                            onCheckedChange={(checked: boolean) =>
+                              toggleActiveMutation.mutate({ id: admin.id, active: checked })
+                            }
+                          />
+                          {!admin.emailVerified && (
+                            <Badge variant="outline">
+                              {t('table.unverified')}
+                            </Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Button variant="ghost" size="icon-sm" title={t('common:edit')} onClick={() => setEditing(admin)}>
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            title={isSelf ? t('table.selfDeleteTooltip') : t('common:delete')}
+                            disabled={isSelf || deleteMutation.isPending}
+                            onClick={() => handleDelete(admin)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+              {!isLoading && controls.paged.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-10">
+                    <ShieldCheck className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-sm text-muted-foreground">{t('table.empty')}</p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="px-6 py-3 border-t">
+          <ListPagination controls={controls} />
+        </div>
       </div>
 
-      <CreateSuperAdminDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onCreated={invalidate}
-      />
-
-      <EditSuperAdminDialog
-        admin={editingAdmin}
-        onOpenChange={(open) => !open && setEditingAdmin(null)}
-        onUpdated={invalidate}
-      />
-
-      <Dialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{t('superAdminAdmins.deleteConfirmTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('superAdminAdmins.deleteConfirmDesc', { email: pendingDelete?.email ?? '' })}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setPendingDelete(null)}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-              onClick={() => pendingDelete && deleteMutation.mutate(pendingDelete.id)}
-            >
-              {deleteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              {t('common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CreateSuperAdminDialog open={createOpen} onOpenChange={setCreateOpen} onCreated={invalidate} />
+      <EditSuperAdminDialog admin={editing} onOpenChange={(open) => !open && setEditing(null)} onSaved={invalidate} />
     </div>
   )
 }
 
-type Step = 'details' | 'verify'
+type CreateStep = 'form' | 'otp'
 
-function isValidPassword(password: string): boolean {
-  return (
-    password.length >= 8 &&
-    /[A-Z]/.test(password) &&
-    /[a-z]/.test(password) &&
-    /[0-9]/.test(password) &&
-    /[^A-Za-z0-9]/.test(password)
-  )
+interface CreateForm {
+  name: string
+  email: string
+  password: string
 }
+
+const EMPTY_CREATE_FORM: CreateForm = { name: '', email: '', password: '' }
 
 function CreateSuperAdminDialog({
   open,
@@ -216,135 +213,125 @@ function CreateSuperAdminDialog({
   onOpenChange: (open: boolean) => void
   onCreated: () => void
 }) {
-  const { t } = useTranslation()
-  const [step, setStep] = useState<Step>('details')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [code, setCode] = useState('')
-
-  function reset() {
-    setStep('details')
-    setName('')
-    setEmail('')
-    setPassword('')
-    setCode('')
-  }
+  const { t } = useTranslation('superadminAdmins')
+  const [step, setStep] = useState<CreateStep>('form')
+  const [form, setForm] = useState<CreateForm>(EMPTY_CREATE_FORM)
+  const [otp, setOtp] = useState('')
 
   function handleOpenChange(next: boolean) {
-    if (!next) reset()
+    // Reset on every close (not just the next open) so unsaved input never lingers into the next session.
+    setStep('form')
+    setForm(EMPTY_CREATE_FORM)
+    setOtp('')
     onOpenChange(next)
   }
 
-  const requestOtpMutation = useMutation({
-    mutationFn: async () => (await api.post('/api/platform/super-admins/request-otp', { email, name: name || null })).data,
-    onSuccess: () => {
-      toast.success(t('superAdminAdmins.toast.codeSent', { email }))
-      setStep('verify')
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      return (
+        await api.post('/api/super-admins', {
+          name: form.name || undefined,
+          email: form.email,
+          password: form.password,
+        })
+      ).data as { emailSent: boolean }
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminAdmins.toast.sendCodeFailed'))),
+    onSuccess: (data) => {
+      toast.success(
+        data.emailSent
+          ? t('createDialog.otp.otpSent', { email: form.email })
+          : t('createDialog.otp.otpSendFailed'),
+      )
+      setStep('otp')
+    },
+    onError: (err) => toast.error(apiError(err, t('createDialog.errors.createFailed'))),
   })
 
-  const verifyOtpMutation = useMutation({
-    mutationFn: async () => (await api.post('/api/platform/super-admins/verify-otp', { email, code, password })).data,
+  const verifyMutation = useMutation({
+    mutationFn: async () => (await api.post('/api/super-admins/verify-otp', { email: form.email, code: otp })).data,
     onSuccess: () => {
-      toast.success(t('superAdminAdmins.toast.created'))
+      toast.success(t('createDialog.otp.verifiedSuccess'))
       onCreated()
       handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminAdmins.toast.verifyFailed'))),
+    onError: (err) => toast.error(apiError(err, t('createDialog.otp.verifyFailed'))),
   })
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        {step === 'details' && (
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
+        {step === 'form' && (
           <>
             <DialogHeader>
-              <DialogTitle>{t('superAdminAdmins.newSuperAdminTitle')}</DialogTitle>
-              <DialogDescription>
-                {t('superAdminAdmins.newSuperAdminDesc')}
-              </DialogDescription>
+              <DialogTitle>{t('createDialog.title')}</DialogTitle>
+              <DialogDescription>{t('createDialog.description')}</DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label>{t('superAdminAdmins.nameOptional')}</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Smith" />
+                <Label>{t('createDialog.form.nameLabel')}</Label>
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
+
               <div className="space-y-1.5">
-                <Label>{t('common.email')}</Label>
+                <Label required>{t('createDialog.form.emailLabel')}</Label>
                 <Input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jane@accelerateos.com"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
+
               <div className="space-y-1.5">
-                <Label>{t('common.password')}</Label>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min. 8 characters"
-                  minLength={8}
+                <Label required>{t('createDialog.form.passwordLabel')}</Label>
+                <PasswordInput
+                  placeholder={t('createDialog.form.passwordPlaceholder')}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
-                <p className="text-xs text-muted-foreground">
-                  {t('superAdminAdmins.passwordRequirements')}
-                </p>
+                <p className="text-xs text-muted-foreground">{t('createDialog.form.passwordHint')}</p>
               </div>
             </div>
 
             <DialogFooter>
               <Button variant="outline" onClick={() => handleOpenChange(false)}>
-                {t('common.cancel')}
+                {t('common:cancel')}
               </Button>
               <Button
-                onClick={() => requestOtpMutation.mutate()}
-                disabled={!email || !isValidPassword(password) || requestOtpMutation.isPending}
+                onClick={() => createMutation.mutate()}
+                disabled={createMutation.isPending || !form.email || !PASSWORD_PATTERN.test(form.password)}
               >
-                {requestOtpMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                {t('superAdminAdmins.sendVerificationCode')}
+                {t('createDialog.form.submit')}
               </Button>
             </DialogFooter>
           </>
         )}
 
-        {step === 'verify' && (
+        {step === 'otp' && (
           <>
             <DialogHeader>
-              <DialogTitle>{t('superAdminAdmins.verifyEmailTitle')}</DialogTitle>
-              <DialogDescription>
-                {t('superAdminAdmins.verifyEmailDesc', { email })}
-              </DialogDescription>
+              <DialogTitle>{t('createDialog.otp.title')}</DialogTitle>
+              <DialogDescription>{t('createDialog.otp.description', { email: form.email })}</DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label>{t('superAdminAdmins.verificationCode')}</Label>
-                <Input
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="000000"
-                  inputMode="numeric"
-                  maxLength={6}
-                  autoFocus
-                  className="text-center text-2xl tracking-[0.4em] font-mono"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <Label>{t('createDialog.otp.label')}</Label>
+              <Input
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                inputMode="numeric"
+                maxLength={6}
+                placeholder={t('createDialog.otp.placeholder')}
+                className="text-center text-2xl tracking-[0.4em] font-mono"
+              />
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setStep('details')}>
-                {t('common.back')}
+              <Button variant="outline" onClick={() => setStep('form')}>
+                {t('common:back')}
               </Button>
-              <Button
-                onClick={() => verifyOtpMutation.mutate()}
-                disabled={code.length !== 6 || verifyOtpMutation.isPending}
-              >
-                {verifyOtpMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                {t('superAdminAdmins.verifyAndCreate')}
+              <Button onClick={() => verifyMutation.mutate()} disabled={verifyMutation.isPending || otp.length !== 6}>
+                {t('createDialog.otp.submit')}
               </Button>
             </DialogFooter>
           </>
@@ -357,67 +344,70 @@ function CreateSuperAdminDialog({
 function EditSuperAdminDialog({
   admin,
   onOpenChange,
-  onUpdated,
+  onSaved,
 }: {
-  admin: SuperAdminRow | null
+  admin: SuperAdmin | null
   onOpenChange: (open: boolean) => void
-  onUpdated: () => void
+  onSaved: () => void
 }) {
-  const { t } = useTranslation()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const { t } = useTranslation('superadminAdmins')
+  const [form, setForm] = useState({ name: '', email: '' })
+
+  function formFromAdmin() {
+    return { name: admin?.name ?? '', email: admin?.email ?? '' }
+  }
 
   const [lastAdminId, setLastAdminId] = useState<number | null | undefined>(undefined)
   if (admin && admin.id !== lastAdminId) {
     setLastAdminId(admin.id)
-    setName(admin.name || '')
-    setEmail(admin.email)
+    setForm(formFromAdmin())
+  }
+
+  function handleOpenChange(next: boolean) {
+    if (!next) setForm(formFromAdmin())
+    onOpenChange(next)
   }
 
   const mutation = useMutation({
     mutationFn: async () => {
       if (!admin) throw new Error('No super admin selected')
-      return (
-        await api.patch(`/api/platform/super-admins/${admin.id}`, {
-          name: name || null,
-          email,
-        })
-      ).data
+      return (await api.patch(`/api/super-admins/${admin.id}`, { name: form.name, email: form.email })).data
     },
     onSuccess: () => {
-      toast.success(t('superAdminAdmins.toast.updated'))
-      onUpdated()
-      onOpenChange(false)
+      toast.success(t('editDialog.updatedSuccess'))
+      onSaved()
+      handleOpenChange(false)
     },
-    onError: (err) => toast.error(apiError(err, t('superAdminAdmins.toast.updateFailed'))),
+    onError: (err) => toast.error(apiError(err, t('editDialog.saveFailed'))),
   })
 
   return (
-    <Dialog open={!!admin} onOpenChange={onOpenChange}>
+    <Dialog open={!!admin} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('superAdminAdmins.editSuperAdminTitle')}</DialogTitle>
-          <DialogDescription>{t('superAdminAdmins.editSuperAdminDesc')}</DialogDescription>
+          <DialogTitle>{t('editDialog.title')}</DialogTitle>
+          <DialogDescription>{t('editDialog.description')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>{t('superAdminAdmins.nameOptional')}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Smith" />
+            <Label>{t('editDialog.nameLabel')}</Label>
+            <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </div>
+
           <div className="space-y-1.5">
-            <Label>{t('common.email')}</Label>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Label required>{t('editDialog.emailLabel')}</Label>
+            <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <p className="text-xs text-muted-foreground">{t('editDialog.emailHint')}</p>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t('common.cancel')}
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            {t('common:cancel')}
           </Button>
-          <Button onClick={() => mutation.mutate()} disabled={!email || mutation.isPending}>
-            {mutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {t('common.saveChanges')}
+          <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !form.email}>
+            {t('common:saveChanges')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -426,8 +416,8 @@ function EditSuperAdminDialog({
 }
 
 function apiError(err: unknown, fallback: string) {
-  return (
+  const msg =
     (err as { response?: { data?: { error?: string } } })?.response?.data?.error ??
     (err instanceof Error ? err.message : fallback)
-  )
+  return cleanErrorMessage(msg, fallback)
 }

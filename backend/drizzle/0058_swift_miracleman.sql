@@ -1,0 +1,1 @@
+ALTER TABLE "cohort_tasks" ALTER COLUMN "start_date" DROP NOT NULL;

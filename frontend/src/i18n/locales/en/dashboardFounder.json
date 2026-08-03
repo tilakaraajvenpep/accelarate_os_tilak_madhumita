@@ -1,0 +1,29 @@
+{
+  "greeting": {
+    "welcomeName": "Welcome back, {{name}}",
+    "welcome": "Welcome back",
+    "subtitle": "Here's your program overview for today."
+  },
+  "stats": {
+    "pillarsDone": "Pillars Done"
+  },
+  "pillarProgress": {
+    "title": "Pillar Progress",
+    "tracked": "{{count}} pillars tracked",
+    "empty": "No pillars have been set up for your program yet.",
+    "completed": "Completed",
+    "inProgress": "In progress"
+  },
+  "upcoming": {
+    "title": "Upcoming",
+    "empty": "Calendar integration coming soon"
+  },
+  "recentDocuments": {
+    "title": "Recent Documents",
+    "empty": "Document library coming soon."
+  },
+  "activityFeed": {
+    "title": "Activity Feed",
+    "empty": "Activity tracking coming soon."
+  }
+}

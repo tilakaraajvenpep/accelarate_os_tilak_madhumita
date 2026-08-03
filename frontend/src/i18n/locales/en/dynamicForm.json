@@ -1,0 +1,81 @@
+{
+  "actions": {
+    "saveDraft": "Save Draft",
+    "submitResponse": "Submit Response",
+    "applySuggestion": "Apply Suggestion",
+    "addRow": "Add Row",
+    "cancel": "Cancel",
+    "agreeAndSubmit": "Agree & Submit"
+  },
+  "consent": {
+    "dialogTitle": "Terms and Conditions",
+    "dialogDescription": "Please read and agree to the terms below before submitting your response.",
+    "noTermsProvided": "No terms have been provided for this form.",
+    "checkboxLabel": "I have read and agree to the Terms and Conditions"
+  },
+  "validation": {
+    "answerRequired": "Please answer at least one question before saving.",
+    "questionRequired": "\"{{title}}\" is required.",
+    "waitForAnalysis": "Please wait for AI analysis to finish before submitting."
+  },
+  "aiFeedback": {
+    "label": "AI Feedback",
+    "suggestedRewrite": "Suggested rewrite"
+  },
+  "fields": {
+    "selectPlaceholder": "Select...",
+    "analyzing": "Analyzing…",
+    "businessBrandName": "Business / Brand Name",
+    "uen": "UEN (Unique Entity Number)",
+    "industry": "Industry",
+    "companySize": "Company Size",
+    "fullName": "Full Name",
+    "roleInBusiness": "Role in Business",
+    "emailAddress": "Email Address",
+    "mobileNumber": "Mobile Number",
+    "whatsappConsent": "WhatsApp Consent",
+    "emailConsent": "Email Consent",
+    "platformScopeAck": "Platform Scope Acknowledgement",
+    "participationAuthorityAck": "Participation Authority Declaration"
+  },
+  "options": {
+    "solo": "Solo",
+    "2-10": "2-10",
+    "11-50": "11-50",
+    "50+": "50+",
+    "technology": "Technology",
+    "healthcare": "Healthcare",
+    "finance": "Finance",
+    "retailEcommerce": "Retail / E-commerce",
+    "manufacturing": "Manufacturing",
+    "education": "Education",
+    "foodBeverage": "Food & Beverage",
+    "realEstate": "Real Estate",
+    "professionalServices": "Professional Services",
+    "other": "Other",
+    "founderCeo": "Founder / CEO",
+    "coFounder": "Co-Founder",
+    "cto": "CTO",
+    "coo": "COO",
+    "cfo": "CFO"
+  },
+  "consents": {
+    "whatsappDesc": "I consent to receiving program updates via WhatsApp",
+    "emailDesc": "I consent to receiving program updates via Email",
+    "platformScopeDesc": "I acknowledge that this platform is for tracking and support purposes...",
+    "participationAuthorityDesc": "I declare that I have the authority to participate in this onboarding..."
+  },
+  "table": {
+    "sectionTotal": "Section Total",
+    "total": "Total"
+  },
+  "onboarding": {
+    "businessIdentityTitle": "Business Identity",
+    "businessIdentitySubtitle": "Basic information about your entity.",
+    "primaryContactTitle": "Primary Contact (Account Owner)",
+    "primaryContactSubtitle": "Contact details of the business owner.",
+    "consentsTitle": "Consents",
+    "legalTitle": "Legal Declarations",
+    "additionalTitle": "Additional Information"
+  }
+}

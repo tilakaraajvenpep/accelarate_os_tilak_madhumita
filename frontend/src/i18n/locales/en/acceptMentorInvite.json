@@ -1,0 +1,32 @@
+{
+  "invalid": {
+    "title": "This invite link isn't valid",
+    "subtitle": "It may have expired or already been used. Ask your accelerator admin to send a new invite."
+  },
+  "password": {
+    "title": "Set your password",
+    "subtitlePrefix": "Create a password for",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "confirmLabel": "Confirm password",
+    "confirmPlaceholder": "Re-enter your password",
+    "continueButton": "Continue",
+    "tooShort": "Password must be at least 8 characters",
+    "mismatch": "Passwords don't match",
+    "failed": "Failed to set password"
+  },
+  "specialization": {
+    "title": "What's your area of specialization?",
+    "subtitle": "This helps founders and admins know what you can mentor on.",
+    "label": "Area of specialization",
+    "placeholder": "e.g. Go-to-market strategy, Fundraising, Product",
+    "finishButton": "Finish setup",
+    "failed": "Failed to save your specialization",
+    "draftNotNeeded": "You're all set — no need to save a draft, just submit to continue."
+  },
+  "done": {
+    "title": "You're all set!",
+    "subtitle": "Your mentor profile has been created.",
+    "goToDashboard": "Go to your dashboard →"
+  }
+}

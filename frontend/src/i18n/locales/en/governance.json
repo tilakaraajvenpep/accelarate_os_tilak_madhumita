@@ -1,0 +1,65 @@
+{
+  "configs": {
+    "page": {
+      "title": "Governance Configs",
+      "subtitle": "Define what a governance review covers for a cohort — founders will be able to start a review once it's created."
+    },
+    "form": {
+      "cardTitle": "New Governance Config",
+      "cohortLabel": "Cohort (optional — applies tenant-wide if unset)",
+      "allCohortsOption": "All cohorts",
+      "purposeLabel": "Purpose",
+      "purposePlaceholder": "e.g. Series A readiness review",
+      "pillarsLabel": "Applicable Pillars",
+      "noPillars": "No pillars defined yet.",
+      "pillarLabel": "Pillar {{number}}",
+      "pillarLabelWithTitle": "Pillar {{number}} — {{title}}",
+      "createButton": "Create Config"
+    },
+    "list": {
+      "title": "Existing Configs",
+      "empty": "No governance configs yet.",
+      "defaultPurpose": "Governance Review",
+      "summary": "Cohort: {{cohort}} · Pillars: {{pillars}}",
+      "noPillarsValue": "—"
+    },
+    "toast": {
+      "created": "Governance config created",
+      "createFailed": "Failed to create governance config"
+    }
+  },
+  "review": {
+    "page": {
+      "title": "Governance Review",
+      "subtitle": "Review founder-submitted governance sessions and generate their AI-written report."
+    },
+    "empty": {
+      "title": "No governance sessions have been submitted yet."
+    },
+    "session": {
+      "defaultPurpose": "Governance Review",
+      "companyFallback": "Company #{{id}}",
+      "founderNotesLabel": "Founder notes:",
+      "outcomePlaceholder": "Outcome (e.g. Approved, Needs revision)",
+      "feedbackPlaceholder": "Feedback",
+      "submitReviewButton": "Submit Review",
+      "generateReportButton": "Generate Report",
+      "downloadReportButton": "Download Report",
+      "reopenButton": "Reopen"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "reviewed": "Reviewed"
+    },
+    "toast": {
+      "reviewSubmitted": "Review submitted",
+      "reviewFailed": "Failed to submit review",
+      "reopened": "Session reopened",
+      "reopenFailed": "Failed to reopen session",
+      "generated": "Report generated",
+      "generateFailed": "Failed to generate report",
+      "downloadFailed": "Report is not ready yet"
+    }
+  }
+}

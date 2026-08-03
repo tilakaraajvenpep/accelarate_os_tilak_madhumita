@@ -1,0 +1,35 @@
+{
+  "page": {
+    "title": "治理评审",
+    "subtitle": "提交您的治理评审说明，审核完成后即可下载报告。"
+  },
+  "empty": "您所在的阶段组暂未设置治理评审。",
+  "card": {
+    "defaultTitle": "治理评审"
+  },
+  "status": {
+    "draft": "草稿",
+    "submitted": "已提交",
+    "reviewed": "已评审"
+  },
+  "actions": {
+    "start": "开始治理评审",
+    "submit": "提交评审",
+    "downloadReport": "下载报告"
+  },
+  "form": {
+    "notesLabel": "创始人说明",
+    "notesPlaceholder": "为您的导师/管理员评审人添加相关背景说明…"
+  },
+  "review": {
+    "outcomeLabel": "结论：",
+    "feedbackLabel": "反馈："
+  },
+  "toast": {
+    "started": "治理评审已开始",
+    "startFailed": "开始治理评审失败",
+    "submitted": "治理评审已提交",
+    "submitFailed": "提交治理评审失败",
+    "reportNotReady": "报告尚未生成"
+  }
+}

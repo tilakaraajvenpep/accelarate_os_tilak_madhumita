@@ -1,0 +1,71 @@
+{
+  "cancel": "Cancel",
+  "save": "Save",
+  "saveChanges": "Save changes",
+  "create": "Create",
+  "delete": "Delete",
+  "edit": "Edit",
+  "view": "View",
+  "back": "Back",
+  "previous": "Previous",
+  "next": "Next",
+  "confirm": "Confirm",
+  "close": "Close",
+  "loading": "Loading…",
+  "search": "Search…",
+  "name": "Name",
+  "email": "Email",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "actions": "Actions",
+  "createdAt": "Created",
+  "yes": "Yes",
+  "no": "No",
+  "unlimited": "Unlimited",
+  "none": "None",
+  "optional": "optional",
+  "signOut": "Sign out",
+  "settings": "Settings",
+  "brand": "AccelerateOS",
+  "duplicate": "Duplicate",
+  "lock": "Lock",
+  "unlock": "Unlock",
+  "locked": "Locked",
+  "unlocked": "Unlocked",
+  "lockToggleFailed": "Failed to update lock state",
+  "orderUpdated": "Order updated",
+  "imageCrop": {
+    "title": "Crop image",
+    "description": "Drag to reposition, scroll or use the slider to zoom, then fit the image inside the square.",
+    "zoom": "Zoom",
+    "applyCrop": "Apply crop"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "toggleTheme": "Toggle theme"
+  },
+  "listToolbar": {
+    "allStatuses": "All statuses",
+    "rowsPerPage": "Rows per page",
+    "showAll": "Show all",
+    "pageSize": "{{size}} / page",
+    "pageOfTotal": "Page {{page}} / {{total}}",
+    "rangeOfTotal": "{{start}}–{{end}} of {{total}}"
+  },
+  "documentPreview": {
+    "loading": "Loading preview…",
+    "loadError": "Couldn't load this document.",
+    "noPreview": "No inline preview for this file type.",
+    "download": "Download"
+  },
+  "preview": {
+    "mode": "Preview Mode",
+    "viewingAs": "— Viewing as {{founder}} ({{company}})",
+    "exitPreview": "Exit preview",
+    "companyNotFound": "Company not found."
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "signInPrompt": "Already have an account? Sign in"
+  },
+  "stepIndicator": {
+    "organization": "Your organization",
+    "account": "Create account",
+    "verify": "Verify email",
+    "payment": "Payment",
+    "done": "All set"
+  },
+  "orgTypes": {
+    "university": "University accelerator",
+    "corporate": "Corporate accelerator",
+    "vcBacked": "VC-backed accelerator",
+    "government": "Government / nonprofit",
+    "independent": "Independent accelerator",
+    "technology": "Technology",
+    "healthcare": "Healthcare",
+    "finance": "Finance",
+    "retailEcommerce": "Retail / E-commerce",
+    "manufacturing": "Manufacturing",
+    "education": "Education",
+    "foodBeverage": "Food & Beverage",
+    "realEstate": "Real Estate",
+    "professionalServices": "Professional Services",
+    "other": "Other"
+  },
+  "org": {
+    "title": "Tell us about your organization",
+    "subtitle": "This helps us set up your workspace correctly.",
+    "nameLabel": "Organization name *",
+    "namePlaceholder": "e.g. Techstars Boston",
+    "typeLabel": "Program type *",
+    "websiteLabel": "Website (optional)",
+    "websitePlaceholder": "https://your-accelerator.com",
+    "continue": "Continue",
+    "typeRequiredError": "Please select your organization type",
+    "draftNotNeeded": "You're all set — no need to save a draft, just submit to continue."
+  },
+  "account": {
+    "title": "Create your admin account",
+    "subtitle": "You'll be the workspace owner and can invite your team later.",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "Jane",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Smith",
+    "emailLabel": "Work email",
+    "emailPlaceholder": "jane@accelerator.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Min. 8 characters",
+    "createAccount": "Create account",
+    "back": "← Back",
+    "verificationSent": "Check your email for a 6-digit verification code",
+    "registrationFailed": "Registration failed"
+  },
+  "verify": {
+    "title": "Check your email",
+    "subtitlePrefix": "We sent a 6-digit code to",
+    "codeLabel": "Verification code",
+    "codePlaceholder": "000000",
+    "verifyAndContinue": "Verify & continue",
+    "back": "← Back",
+    "verificationFailed": "Verification failed"
+  },
+  "payment": {
+    "title": "Choose your plan",
+    "subtitle": "Pick the plan that fits your program, apply a coupon if you have one, then pay to activate your workspace.",
+    "planLabel": "Plan",
+    "planPlaceholder": "Select a plan…",
+    "perMonth": "/mo",
+    "contactRequired": "contact us",
+    "contactRequiredMessage": "This plan isn't set up for online payment yet — contact us and we'll get your workspace activated.",
+    "couponLabel": "Have a coupon?",
+    "couponPlaceholder": "COUPON CODE",
+    "couponApply": "Apply",
+    "couponAppliedButton": "Applied",
+    "couponApplied": "Coupon applied — {{amount}} off",
+    "couponInvalid": "Invalid or expired coupon",
+    "totalLabel": "Total due today",
+    "payButton": "Pay & activate workspace",
+    "checkoutFailed": "Couldn't start checkout — please try again",
+    "checkoutCancelled": "Payment was cancelled — you can try again anytime",
+    "confirming": "Confirming your payment…",
+    "confirmFailed": "We couldn't confirm your payment — please contact support if you were charged",
+    "noPlansAvailable": "No plans are available to purchase yet — you can add one from your dashboard later"
+  },
+  "done": {
+    "title": "Your workspace is ready!",
+    "subtitlePrefix": "Welcome to AccelerateOS, {{firstName}}. Your",
+    "subtitleSuffix": "workspace has been set up.",
+    "checklistItems": [
+      "Set up your first cohort",
+      "Invite your team members",
+      "Onboard your first founders"
+    ],
+    "goToDashboard": "Go to your dashboard →"
+  }
+}

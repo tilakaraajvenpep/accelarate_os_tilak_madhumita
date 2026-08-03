@@ -1,0 +1,75 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Mentors",
+    "subtitle": "Onboard mentors who can be assigned to guide founders through pillars.",
+    "inviteButton": "Invite Mentor"
+  },
+  "table": {
+    "cardTitle": "All Mentors",
+    "name": "Name",
+    "email": "Email",
+    "specialization": "Specialization",
+    "status": "Status",
+    "empty": "No mentors yet — invite your first one to get started."
+  },
+  "inviteDialog": {
+    "title": "Invite a Mentor",
+    "description": "Send an invite so they can set their password and join as a mentor.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Jane Smith",
+    "emailLabel": "Email",
+    "emailPlaceholder": "jane@example.com",
+    "sendButton": "Send Invite",
+    "toast": {
+      "sent": "Invite sent",
+      "failed": "Failed to send invite"
+    }
+  },
+  "assignments": {
+    "title": "My Assignments",
+    "subtitle": "Cohorts and pillars you've been assigned to mentor.",
+    "empty": "You haven't been assigned to any pillars yet.",
+    "companiesTitle": "Companies",
+    "noCompanies": "No companies in this cohort yet.",
+    "pendingCompanyName": "Pending setup",
+    "viewAnswersButton": "View submitted answers"
+  },
+  "allCohorts": {
+    "title": "All Cohorts",
+    "subtitle": "Every cohort in the tenant, for reference beyond your own assignments.",
+    "empty": "No cohorts yet.",
+    "cohortInfo": "Cohort Info",
+    "assignedPrograms": "Assigned Programs",
+    "companies": "Companies"
+  },
+  "dashboard": {
+    "greeting": "Welcome, {{name}}",
+    "subtitle": "Here's what you're mentoring right now.",
+    "cohortsLabel": "Cohorts",
+    "pillarsLabel": "Pillars",
+    "viewAssignments": "View my assignments",
+    "viewAllCohorts": "View all cohorts",
+    "inviteMentors": "Invite new mentors"
+  },
+  "statusOptions": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "expired": "Expired",
+    "invited": "Invited"
+  },
+  "actions": {
+    "title": "Actions",
+    "cohortsButton": "Cohorts",
+    "assignedCohortsLabel": "Assigned Cohorts",
+    "loadingAssignments": "Loading assignments...",
+    "noAssignments": "Not assigned to any cohorts.",
+    "removeFromCohort": "Remove from Cohort",
+    "toast": {
+      "statusUpdated": "Status updated successfully",
+      "statusUpdateFailed": "Failed to update status",
+      "removedFromCohort": "Removed mentor from cohort",
+      "removeFailed": "Failed to remove mentor from cohort"
+    }
+  }
+}

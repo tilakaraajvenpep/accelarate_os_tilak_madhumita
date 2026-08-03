@@ -1,0 +1,35 @@
+{
+  "page": {
+    "title": "Governance Review",
+    "subtitle": "Submit your governance review notes and download your report once it's been reviewed."
+  },
+  "empty": "No governance review has been set up for your cohort yet.",
+  "card": {
+    "defaultTitle": "Governance Review"
+  },
+  "status": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "reviewed": "Reviewed"
+  },
+  "actions": {
+    "start": "Start Governance Review",
+    "submit": "Submit for Review",
+    "downloadReport": "Download Report"
+  },
+  "form": {
+    "notesLabel": "Founder Notes",
+    "notesPlaceholder": "Add any context for your mentor/admin reviewer…"
+  },
+  "review": {
+    "outcomeLabel": "Outcome:",
+    "feedbackLabel": "Feedback:"
+  },
+  "toast": {
+    "started": "Governance review started",
+    "startFailed": "Failed to start governance review",
+    "submitted": "Governance review submitted",
+    "submitFailed": "Failed to submit governance review",
+    "reportNotReady": "Report is not ready yet"
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "cohort_pillar_mentors" ALTER COLUMN "pillar_id" DROP NOT NULL;

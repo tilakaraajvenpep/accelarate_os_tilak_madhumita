@@ -1,0 +1,4 @@
+-- No-op: plans.ai_provider_config_id (and its FK to ai_provider_configs.id,
+-- ON DELETE SET NULL) already existed in the real database before this
+-- model/migration was added — this file just brings migration history in
+-- sync with that pre-existing schema.

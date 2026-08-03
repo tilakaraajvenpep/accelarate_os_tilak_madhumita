@@ -1,0 +1,77 @@
+{
+  "page": {
+    "title": "Settings",
+    "subtitle": "Platform-level configuration."
+  },
+  "aiKeys": {
+    "section": {
+      "title": "AI Provider Keys",
+      "subtitle": "Configure API keys for AI models used across the platform.",
+      "addButton": "Add AI key",
+      "searchPlaceholder": "Search by provider...",
+      "tableAiKeys": "AI Keys",
+      "emptyNone": "No AI keys configured yet.",
+      "emptyNoMatch": "No keys match your search.",
+      "toast": {
+        "enabled": "AI key enabled",
+        "disabled": "AI key disabled",
+        "updateFailed": "Failed to update key",
+        "deleted": "AI key deleted",
+        "deleteFailed": "Failed to delete AI key"
+      }
+    },
+    "formDialog": {
+      "editTitle": "Edit AI key",
+      "addTitle": "Add AI key",
+      "editDescription": "Replace the API key.",
+      "addDescription": "Select a provider, then provide the API key.",
+      "apiKeyLabel": "API key",
+      "apiKeyPlaceholderEdit": "Leave blank to keep the current key",
+      "toast": {
+        "updated": "AI key updated",
+        "created": "AI key created",
+        "updateFailed": "Failed to update AI key",
+        "createFailed": "Failed to create AI key"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete AI key",
+      "confirmDelete": "Permanently remove the {{provider}} key? This cannot be undone."
+    }
+  },
+  "aiCreditRate": {
+    "title": "AI Credit Rate",
+    "subtitle": "Set the price per AI credit, shown to tenants when they recharge.",
+    "rateLabel": "Price per credit (USD)",
+    "rateHint": "Tenants will see this rate applied to their plan's credit allowance when recharging.",
+    "tokenRateLabel": "Credits per 1,000 AI tokens",
+    "tokenRateHint": "Converts real OpenAI usage (AI chat and answer scoring) into credits spent from a tenant's balance. At least 1 credit is charged per AI call.",
+    "toast": {
+      "updated": "AI credit rate updated",
+      "updateFailed": "Failed to update AI credit rate"
+    }
+  },
+  "tenantOnboardingForm": {
+    "title": "Tenant Onboarding Form",
+    "subtitle": "Pick one tenant as the source for the public /get-started page's \"organization details\" step, before any tenant exists. That tenant's own Forms > Mappings tab (Tenant Admin Onboarding type) supplies the actual form. None uses the default name/type/website fields.",
+    "sourceTenantLabel": "Source tenant",
+    "sourceTenantHint": "The chosen tenant's admin manages the actual form under Forms > Mappings.",
+    "none": "None (use default fields)",
+    "toast": {
+      "saved": "Onboarding source tenant saved",
+      "saveFailed": "Failed to save onboarding source tenant"
+    }
+  },
+  "tenantEmailService": {
+    "title": "Tenant Email Service",
+    "subtitle": "Show tenants and enable or disable their email service individually.",
+    "searchPlaceholder": "Search tenants...",
+    "emptyNone": "No tenants yet.",
+    "emptyNoMatch": "No tenants match your search.",
+    "toast": {
+      "enabled": "Email service enabled",
+      "disabled": "Email service disabled",
+      "updateFailed": "Failed to update tenant"
+    }
+  }
+}

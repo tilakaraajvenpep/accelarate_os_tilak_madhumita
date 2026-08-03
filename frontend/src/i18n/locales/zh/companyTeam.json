@@ -1,0 +1,41 @@
+{
+  "page": {
+    "title": "团队",
+    "subtitle": "此处的所有成员均可查看和编辑{{companyName}}的表单和评估。",
+    "defaultCompanyName": "您的公司",
+    "inviteButton": "邀请团队成员"
+  },
+  "notSetUp": {
+    "message": "请先完成公司资料设置，然后再邀请联合创始人。",
+    "completeButton": "完善公司资料"
+  },
+  "members": {
+    "title": "成员"
+  },
+  "table": {
+    "joined": "加入时间",
+    "role": "角色",
+    "empty": "暂无成员。"
+  },
+  "roles": {
+    "founder": "创始人",
+    "coFounder": "联合创始人"
+  },
+  "inviteDialog": {
+    "title": "邀请团队成员",
+    "description": "对方将收到一封包含加入{{companyName}}验证码的邮件。",
+    "emailPlaceholder": "teammate@example.com",
+    "sendButton": "发送邀请"
+  },
+  "removeDialog": {
+    "title": "移除团队成员？",
+    "description": "确定要将{{name}}从该公司移除吗？",
+    "confirmButton": "移除"
+  },
+  "toast": {
+    "inviteSent": "邀请已发送",
+    "inviteFailed": "发送邀请失败",
+    "memberRemoved": "成员已移除",
+    "removeFailed": "移除成员失败"
+  }
+}

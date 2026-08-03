@@ -1,0 +1,46 @@
+{
+  "page": {
+    "title": "报表",
+    "subtitle": "平台范围内的收入趋势、订阅健康状况、租户增长和优惠券使用情况。"
+  },
+  "kpi": {
+    "subscriptionRevenue": "订阅收入",
+    "creditRevenue": "额度收入",
+    "activeSubscriptions": "有效订阅数",
+    "totalDiscountGiven": "累计折扣金额",
+    "thisMonth": "本月",
+    "allTime": "全部时间"
+  },
+  "charts": {
+    "subscriptionRevenue": "按月订阅收入",
+    "creditRevenue": "按月 AI 额度收入",
+    "subscriptionStatus": "订阅状态分布",
+    "planPopularity": "套餐受欢迎程度",
+    "newTenants": "每月新增租户",
+    "cumulativeTenants": "累计租户数"
+  },
+  "common": {
+    "online": "线上",
+    "offline": "线下"
+  },
+  "couponsTable": {
+    "title": "优惠券表现",
+    "code": "代码",
+    "discount": "折扣",
+    "appliesTo": "适用于",
+    "redemptions": "使用次数",
+    "discountGiven": "折扣金额",
+    "empty": "暂无优惠券。"
+  },
+  "transactionsTable": {
+    "title": "交易记录",
+    "date": "日期",
+    "tenant": "租户",
+    "type": "类型",
+    "typeSubscription": "订阅",
+    "typeRecharge": "充值",
+    "method": "方式",
+    "amount": "金额",
+    "empty": "暂无交易记录。"
+  }
+}

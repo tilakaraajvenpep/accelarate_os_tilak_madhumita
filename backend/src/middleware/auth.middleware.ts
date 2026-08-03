@@ -49,14 +49,22 @@ export async function loadUser(req: AuthRequest, res: Response, next: NextFuncti
     res.status(404).json({ error: 'User not found' })
     return
   }
+  if (user.disabled) {
+    res.status(403).json({ error: 'Your account has been disabled' })
+    return
+  }
   req.dbUser = user
   next()
 }
 
-/** Restricts a route to specific roles. Must run after requireAuth + loadUser. */
+/** Restricts a route to specific roles. Must run after requireAuth + loadUser.
+ * An admin who opted into the "interested in mentoring" toggle is also let through
+ * any route open to 'mentor' — they act as a mentor in addition to being an admin. */
 export function requireRole(...roles: User['role'][]) {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.dbUser || !roles.includes(req.dbUser.role)) {
+    const dbUser = req.dbUser
+    const actingAsMentor = dbUser?.role === 'admin' && dbUser.interestedInMentoring && roles.includes('mentor')
+    if (!dbUser || (!roles.includes(dbUser.role) && !actingAsMentor)) {
       res.status(403).json({ error: 'Forbidden' })
       return
     }

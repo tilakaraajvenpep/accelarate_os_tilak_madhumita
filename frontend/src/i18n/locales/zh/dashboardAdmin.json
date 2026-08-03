@@ -1,0 +1,23 @@
+{
+  "title": "管理员仪表盘",
+  "greeting": "欢迎回来，{{name}}",
+  "subtitle": "批次健康状况与项目概览。",
+  "stats": {
+    "activeCompanies": "活跃企业",
+    "cohorts": "批次",
+    "avgReadiness": "平均准备度",
+    "completionRate": "完成率"
+  },
+  "topCompanies": {
+    "title": "评分最高企业",
+    "empty": "企业追踪功能即将上线。"
+  },
+  "recentActivity": {
+    "title": "近期动态",
+    "empty": "活动动态即将上线。"
+  },
+  "upcomingEvents": {
+    "title": "近期活动",
+    "empty": "日历集成即将上线。"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Cohort Calendar",
+    "subtitle": "Assign and track tasks for a cohort, day by day.",
+    "selectCohort": "Select a cohort",
+    "noCohorts": "No cohorts yet — create one under Cohorts to start scheduling tasks.",
+    "today": "Today",
+    "jumpToDate": "Jump to date",
+    "addTaskButton": "Add Task",
+    "tasksForDate": "Tasks — {{date}}",
+    "noTasksForDate": "No tasks for this date.",
+    "moreCount": "+{{count}} more",
+    "noTasksThisMonth": "No tasks this month.",
+    "noDescription": "No description added for this task.",
+    "dialogDescriptionList": "Tasks scheduled for this date:",
+    "assignedBy": "by {{name}}",
+    "programBadge": "Program: {{name}}"
+  },
+  "dialog": {
+    "createTitle": "Create Task",
+    "editTitle": "Edit Task",
+    "description": "Tasks show up on the calendar for everyone tracking this cohort.",
+    "titleLabel": "Task title",
+    "titlePlaceholder": "e.g. Submit pitch deck",
+    "startDateLabel": "Start date",
+    "endDateLabel": "End date (optional)",
+    "dateOrderError": "End date must be on or after the start date",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Any extra detail for this task",
+    "companyLabel": "Assign to company (optional)",
+    "companyNone": "None — cohort-wide",
+    "createButton": "Create Task"
+  },
+  "deleteDialog": {
+    "title": "Delete task",
+    "confirm": "Are you sure you want to delete \"{{title}}\"?"
+  },
+  "toast": {
+    "created": "Task created",
+    "updated": "Task updated",
+    "deleted": "Task deleted",
+    "saveFailed": "Failed to save task",
+    "deleteFailed": "Failed to delete task"
+  }
+}

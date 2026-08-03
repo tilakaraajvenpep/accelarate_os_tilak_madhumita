@@ -1,0 +1,75 @@
+{
+  "notAvailable": "此页面不适用于您的角色。",
+  "page": {
+    "title": "导师",
+    "subtitle": "邀请可指导创始人完成各支柱的导师。",
+    "inviteButton": "邀请导师"
+  },
+  "table": {
+    "cardTitle": "所有导师",
+    "name": "姓名",
+    "email": "邮箱",
+    "specialization": "专业领域",
+    "status": "状态",
+    "empty": "暂无导师——邀请您的第一位导师开始吧。"
+  },
+  "inviteDialog": {
+    "title": "邀请导师",
+    "description": "发送邀请，让他们设置密码并以导师身份加入。",
+    "nameLabel": "姓名",
+    "namePlaceholder": "张三",
+    "emailLabel": "邮箱",
+    "emailPlaceholder": "jane@example.com",
+    "sendButton": "发送邀请",
+    "toast": {
+      "sent": "邀请已发送",
+      "failed": "发送邀请失败"
+    }
+  },
+  "assignments": {
+    "title": "我的分配",
+    "subtitle": "您被分配指导的阶段组和支柱。",
+    "empty": "您尚未被分配任何支柱。",
+    "companiesTitle": "公司",
+    "noCompanies": "该阶段组暂无公司。",
+    "pendingCompanyName": "待完善",
+    "viewAnswersButton": "查看已提交的答案"
+  },
+  "allCohorts": {
+    "title": "所有阶段组",
+    "subtitle": "租户内的所有阶段组，供您参考，不限于您自己的分配。",
+    "empty": "暂无阶段组。",
+    "cohortInfo": "阶段组信息",
+    "assignedPrograms": "分配的项目",
+    "companies": "公司"
+  },
+  "dashboard": {
+    "greeting": "欢迎，{{name}}",
+    "subtitle": "以下是您当前指导的内容。",
+    "cohortsLabel": "阶段组",
+    "pillarsLabel": "支柱",
+    "viewAssignments": "查看我的分配",
+    "viewAllCohorts": "查看所有阶段组",
+    "inviteMentors": "邀请新导师"
+  },
+  "statusOptions": {
+    "active": "已启用",
+    "inactive": "已禁用",
+    "expired": "已过期",
+    "invited": "已邀请"
+  },
+  "actions": {
+    "title": "操作",
+    "cohortsButton": "阶段组",
+    "assignedCohortsLabel": "分配的阶段组",
+    "loadingAssignments": "正在加载分配...",
+    "noAssignments": "尚未分配任何阶段组。",
+    "removeFromCohort": "从阶段组中移除",
+    "toast": {
+      "statusUpdated": "状态更新成功",
+      "statusUpdateFailed": "更新状态失败",
+      "removedFromCohort": "已成功从阶段组中移除导师",
+      "removeFailed": "从阶段组中移除导师失败"
+    }
+  }
+}

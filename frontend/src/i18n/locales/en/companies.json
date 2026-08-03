@@ -1,0 +1,26 @@
+{
+  "notAvailable": "This page isn't available for your role.",
+  "page": {
+    "title": "Companies",
+    "subtitle": "All companies across your cohorts."
+  },
+  "table": {
+    "cardTitle": "All Companies",
+    "company": "Company",
+    "founder": "Founder",
+    "email": "Email",
+    "cohort": "Cohort",
+    "pendingCompanyName": "Pending setup",
+    "empty": "No companies yet — create a cohort and invite your first founder to get started.",
+    "viewAsFounderButton": "View as founder",
+    "statusColumn": "Status",
+    "actionsColumn": "Actions",
+    "cardViewButton": "Card view",
+    "tableViewButton": "Table view"
+  },
+  "status": {
+    "active": "Active",
+    "invited": "Invited",
+    "expired": "Expired"
+  }
+}

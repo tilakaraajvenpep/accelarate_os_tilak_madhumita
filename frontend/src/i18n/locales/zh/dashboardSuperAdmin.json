@@ -1,0 +1,30 @@
+{
+  "title": "平台概览",
+  "subtitle": "跨租户健康状况与使用情况一览。",
+  "stats": {
+    "tenants": "租户",
+    "totalCompanies": "企业总数",
+    "notTrackedYet": "暂未统计",
+    "avgPlatformScore": "平均平台评分",
+    "mrr": "月度经常性收入",
+    "activeSubs": "{{count}} 个有效订阅"
+  },
+  "tenantsSection": {
+    "title": "租户",
+    "tenantColumn": "租户",
+    "planColumn": "套餐",
+    "statusColumn": "状态",
+    "noPlan": "无套餐",
+    "empty": "暂无租户。",
+    "founders_one": "{{count}} 位创始人",
+    "founders_other": "{{count}} 位创始人"
+  },
+  "tenantStatus": {
+    "suspended": "已暂停",
+    "trial": "试用中",
+    "active": "已激活",
+    "pastDue": "逾期未付",
+    "canceled": "已取消",
+    "expired": "已过期"
+  }
+}

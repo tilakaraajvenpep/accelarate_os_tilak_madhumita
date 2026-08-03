@@ -46,3 +46,12 @@ export async function getUserBySub(sub: string) {
     .limit(1)
   return user ?? null
 }
+
+export async function updateOwnName(sub: string, name: string) {
+  const [updated] = await db
+    .update(users)
+    .set({ name, updatedAt: new Date() })
+    .where(eq(users.cognitoSub, sub))
+    .returning()
+  return updated ?? null
+}

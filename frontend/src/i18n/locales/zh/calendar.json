@@ -1,0 +1,46 @@
+{
+  "notAvailable": "此页面不适用于您的角色。",
+  "page": {
+    "title": "阶段组日历",
+    "subtitle": "按天为阶段组分配和跟踪任务。",
+    "selectCohort": "选择阶段组",
+    "noCohorts": "暂无阶段组 — 请先在“阶段组”中创建一个再安排任务。",
+    "today": "今天",
+    "jumpToDate": "跳转到日期",
+    "addTaskButton": "添加任务",
+    "tasksForDate": "任务 — {{date}}",
+    "noTasksForDate": "该日期暂无任务。",
+    "moreCount": "还有 {{count}} 项",
+    "noTasksThisMonth": "本月暂无任务。",
+    "noDescription": "此任务未添加描述。",
+    "dialogDescriptionList": "该日期安排的任务：",
+    "assignedBy": "由 {{name}} 分配",
+    "programBadge": "项目：{{name}}"
+  },
+  "dialog": {
+    "createTitle": "创建任务",
+    "editTitle": "编辑任务",
+    "description": "任务会显示在跟踪此阶段组的所有人的日历上。",
+    "titleLabel": "任务标题",
+    "titlePlaceholder": "例如：提交路演文稿",
+    "startDateLabel": "开始日期",
+    "endDateLabel": "结束日期（可选）",
+    "dateOrderError": "结束日期必须晚于或等于开始日期",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "该任务的补充说明",
+    "companyLabel": "分配给公司（可选）",
+    "companyNone": "无 — 面向整个阶段组",
+    "createButton": "创建任务"
+  },
+  "deleteDialog": {
+    "title": "删除任务",
+    "confirm": "确定要删除“{{title}}”吗？"
+  },
+  "toast": {
+    "created": "任务已创建",
+    "updated": "任务已更新",
+    "deleted": "任务已删除",
+    "saveFailed": "保存任务失败",
+    "deleteFailed": "删除任务失败"
+  }
+}

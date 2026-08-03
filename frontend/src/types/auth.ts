@@ -6,6 +6,12 @@ export interface AuthUser {
   name: string | null
   role: UserRole
   tenantId: number | null
+  tenantSlug: string | null
+  // Admin-only: opted into the "interested in mentoring" toggle in Settings — grants
+  // mentor-section sidebar access and mentor API routes alongside their admin role.
+  interestedInMentoring?: boolean
+  allowedMenus?: string[] | null
+  canSetPermissions?: boolean
 }
 
 export interface AuthTokens {
@@ -17,4 +23,9 @@ export interface AuthTokens {
 
 export interface LoginResponse extends AuthTokens {
   user: AuthUser
+}
+
+export interface RegisterResponse {
+  message: string
+  tenantSlug: string | null
 }

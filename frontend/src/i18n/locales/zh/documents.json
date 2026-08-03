@@ -1,0 +1,42 @@
+{
+  "notAvailable": "此页面不适用于您的角色。",
+  "page": {
+    "title": "文档",
+    "subtitleAdmin": "为阶段组上传参考文档——该阶段组中的创始人可以查看和下载。",
+    "subtitleFounder": "您的租户管理员或导师与您的阶段组分享的参考文档。",
+    "uploadButton": "上传文档"
+  },
+  "filters": {
+    "cohortLabel": "阶段组",
+    "cohortPlaceholder": "选择一个阶段组"
+  },
+  "list": {
+    "cardTitle": "文档",
+    "selectCohortPrompt": "选择一个阶段组以查看其文档。",
+    "empty": "暂无文档。",
+    "uploadedBy": "由 {{name}} 上传",
+    "previewTooltip": "预览",
+    "downloadTooltip": "下载",
+    "deleteTooltip": "删除"
+  },
+  "deleteDialog": {
+    "title": "删除文档",
+    "confirm": "确定要永久删除“{{title}}”吗？此操作无法撤销。"
+  },
+  "uploadDialog": {
+    "title": "上传文档",
+    "description": "该阶段组中的创始人将能够查看和下载它。",
+    "titleLabel": "标题",
+    "titlePlaceholder": "例如：项目手册",
+    "fileLabel": "文件",
+    "fileSizeHint": "最大 8MB。",
+    "submitButton": "上传"
+  },
+  "toast": {
+    "deleted": "文档已删除",
+    "deleteFailed": "删除文档失败",
+    "uploaded": "文档已上传",
+    "uploadFailed": "上传文档失败",
+    "fileTooLarge": "文件过大——限制为 8MB"
+  }
+}

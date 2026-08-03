@@ -1,0 +1,51 @@
+{
+  "notAvailable": "此页面不适用于您的角色。",
+  "page": {
+    "title": "设置",
+    "subtitle": "管理租户范围内的偏好设置。"
+  },
+  "logo": {
+    "title": "公司徽标",
+    "description": "显示在侧边栏和该工作区的浏览器标签图标中，取代默认的首字母图标。",
+    "sizeHint": "最佳效果：正方形图片，至少 256×256 像素（PNG、JPG 或 SVG，最大 1MB）。我们会自动将其适配到方框内——如果不是正方形，可使用「裁剪图片」来调整取景范围。",
+    "cropButton": "裁剪图片",
+    "savedToast": "徽标已更新",
+    "removedToast": "徽标已移除",
+    "saveFailed": "保存徽标失败",
+    "invalidFileType": "请选择一个图片文件",
+    "tooLarge": "图片过大——请选择小于 1MB 的图片",
+    "remove": "移除"
+  },
+  "theme": {
+    "title": "主题颜色",
+    "description": "选择一个渐变主题——在浅色和深色模式下均应用于侧边栏、顶部导航栏、按钮和强调元素，并始终保持清晰可读。主内容区域保持中性色调。",
+    "presetLabel": "渐变预设",
+    "fromLabel": "起始颜色",
+    "toLabel": "结束颜色",
+    "savedToast": "主题已更新",
+    "resetToast": "主题已重置为默认值",
+    "saveFailed": "保存主题失败",
+    "reset": "重置为默认值"
+  },
+  "notifications": {
+    "title": "活动提醒通知",
+    "description": "开启后，创始人会在阶段组活动开始前 3 天收到提醒——通过应用内通知和邮件（配置完成后还可通过 WhatsApp）。",
+    "enabledToast": "通知已开启",
+    "disabledToast": "通知已关闭",
+    "toggleFailed": "更新通知设置失败"
+  },
+  "mentorInterest": {
+    "title": "我有兴趣担任导师",
+    "description": "开启后，在为某个支柱分配导师时，您将作为可选项出现，与专职导师账号并列显示。",
+    "enabledToast": "您现已被列为可用导师",
+    "disabledToast": "您已不再被列为可用导师",
+    "toggleFailed": "更新导师意向失败"
+  },
+  "mentorProfile": {
+    "title": "导师资料",
+    "description": "在管理员为支柱选择分配导师时会显示此信息。",
+    "specializationLabel": "专业领域",
+    "savedToast": "资料已更新",
+    "saveFailed": "保存资料失败"
+  }
+}

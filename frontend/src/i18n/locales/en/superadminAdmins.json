@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "Super Admins",
+    "description": "Grant platform-level access. New admins verify their email before their account is created.",
+    "newButton": "New super admin"
+  },
+  "table": {
+    "sectionTitle": "Current super admins",
+    "unverified": "Unverified",
+    "activeSwitchLabel": "Active",
+    "selfStatusTooltip": "You can't change your own status",
+    "selfDeleteTooltip": "You can't delete your own account",
+    "empty": "No super admins yet."
+  },
+  "createDialog": {
+    "title": "New super admin",
+    "description": "We'll email a 6-digit code to verify their email before the account is created.",
+    "form": {
+      "nameLabel": "Name (optional)",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Min. 8 characters",
+      "passwordHint": "Must be at least 8 characters, with 1 uppercase letter, 1 special character, and a mix of lowercase letters and numbers.",
+      "submit": "Send verification code"
+    },
+    "otp": {
+      "title": "Verify email",
+      "description": "Enter the 6-digit code we sent to {{email}}.",
+      "label": "Verification code",
+      "placeholder": "000000",
+      "submit": "Verify & activate",
+      "otpSent": "Verification code sent to {{email}}",
+      "otpSendFailed": "Account created, but the verification email failed to send — check SES config",
+      "verifiedSuccess": "Super admin verified and activated",
+      "verifyFailed": "Verification failed"
+    },
+    "errors": {
+      "createFailed": "Failed to create super admin"
+    }
+  },
+  "editDialog": {
+    "title": "Edit super admin",
+    "description": "Update this super admin's name and email.",
+    "nameLabel": "Name (optional)",
+    "emailLabel": "Email",
+    "emailHint": "Changing this re-issues their login — a new temporary password is emailed to the new address.",
+    "updatedSuccess": "Super admin updated",
+    "saveFailed": "Failed to save changes"
+  },
+  "deleteDialog": {
+    "title": "Delete super admin",
+    "description": "Permanently remove \"{{name}}\" as a super admin? This cannot be undone."
+  },
+  "toasts": {
+    "statusUpdateFailed": "Failed to update status",
+    "activated": "Super admin activated",
+    "deactivated": "Super admin deactivated",
+    "deleteSuccess": "Super admin deleted",
+    "deleteFailed": "Failed to delete super admin"
+  }
+}

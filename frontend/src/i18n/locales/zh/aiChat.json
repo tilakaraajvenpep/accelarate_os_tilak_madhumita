@@ -1,0 +1,22 @@
+{
+  "header": {
+    "title": "AI 战略顾问",
+    "subtitle": "情境感知型咨询",
+    "toggleAriaLabel": "打开 AI 战略顾问"
+  },
+  "greeting": "您好！我是您的 AI 战略顾问。今天在创业之路上，我可以为您提供什么帮助？",
+  "input": {
+    "placeholder": "向您的 AI 战略顾问咨询任何问题…",
+    "placeholderListening": "正在聆听… 请说话",
+    "micTitle": "语音输入",
+    "sendAriaLabel": "发送消息"
+  },
+  "toast": {
+    "voiceUnsupported": "您的浏览器不支持语音输入。",
+    "listening": "正在聆听… 请说话。"
+  },
+  "errors": {
+    "requestFailed": "无法连接到 AI 顾问",
+    "chatFallback": "抱歉，处理该请求时遇到问题，请重试。"
+  }
+}

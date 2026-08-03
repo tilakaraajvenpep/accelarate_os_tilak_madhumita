@@ -1,0 +1,22 @@
+{
+  "header": {
+    "title": "AI Strategy Assistant",
+    "subtitle": "Context-Aware Advisory",
+    "toggleAriaLabel": "Open AI Strategy Assistant"
+  },
+  "greeting": "Hi! I'm your AI Strategy Assistant. How can I help you today with your startup journey?",
+  "input": {
+    "placeholder": "Ask your AI Strategy consultant anything…",
+    "placeholderListening": "Listening… speak now",
+    "micTitle": "Voice input",
+    "sendAriaLabel": "Send message"
+  },
+  "toast": {
+    "voiceUnsupported": "Voice input is not supported in this browser.",
+    "listening": "Listening… speak now."
+  },
+  "errors": {
+    "requestFailed": "Failed to reach the AI assistant",
+    "chatFallback": "Sorry, I had trouble processing that request. Please try again."
+  }
+}

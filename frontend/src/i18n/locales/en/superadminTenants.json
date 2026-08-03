@@ -1,0 +1,70 @@
+{
+  "page": {
+    "title": "Tenants",
+    "subtitle": "Onboard a new tenant and invite their admin.",
+    "createButton": "Create Tenant"
+  },
+  "table": {
+    "cardTitle": "All Tenants",
+    "orgType": "Org type",
+    "slug": "Slug",
+    "suspended": "Suspended",
+    "deleteButtonTitle": "Delete tenant",
+    "empty": "No tenants yet — create one to get started."
+  },
+  "toast": {
+    "deleted": "Tenant deleted",
+    "deleteFailed": "Failed to delete tenant",
+    "verificationSent": "Verification code sent to {{email}}",
+    "sendCodeFailed": "Failed to send verification code",
+    "created": "Tenant \"{{name}}\" created",
+    "createFailed": "Failed to create tenant"
+  },
+  "confirmDelete": "Permanently delete \"{{name}}\"? This removes the tenant, its subscription/payment history, and its admin accounts (including their logins) — this cannot be undone.",
+  "confirmDeleteTitle": "Delete tenant?",
+  "detailsDialog": {
+    "subtitle": "Tenant details",
+    "plan": "Plan",
+    "foundersUsed": "Founders used"
+  },
+  "orgTypes": {
+    "university": "University accelerator",
+    "corporate": "Corporate accelerator",
+    "vcBacked": "VC-backed accelerator",
+    "government": "Government / nonprofit",
+    "independent": "Independent accelerator",
+    "technology": "Technology",
+    "healthcare": "Healthcare",
+    "finance": "Finance",
+    "retailEcommerce": "Retail / E-commerce",
+    "manufacturing": "Manufacturing",
+    "education": "Education",
+    "foodBeverage": "Food & Beverage",
+    "realEstate": "Real Estate",
+    "professionalServices": "Professional Services",
+    "other": "Other"
+  },
+  "createDialog": {
+    "title": "Create tenant",
+    "descriptionDetails": "Set the admin's password now — you'll verify their email next, right here.",
+    "descriptionVerify": "Enter the code sent to {{email}} to finish creating the tenant.",
+    "orgName": "Organization name",
+    "slug": "Slug",
+    "slugHint": "This tenant's URL will be {{slug}}.{{baseDomain}}",
+    "orgType": "Org type",
+    "orgTypePlaceholder": "Select a type",
+    "website": "Website",
+    "websitePlaceholder": "https://example.com",
+    "adminName": "Admin name",
+    "adminEmail": "Admin email",
+    "adminPassword": "Admin password",
+    "adminPasswordPlaceholder": "Min. 8 characters",
+    "generatePasswordTitle": "Generate a password",
+    "passwordHint": "Share this with the admin securely — it won't be shown again after you close this dialog.",
+    "verificationCode": "Verification code",
+    "codeExpiry": "Code expires in 10 minutes.",
+    "resendCode": "Resend code",
+    "sendCode": "Send verification code",
+    "verifyAndCreate": "Verify & create tenant"
+  }
+}

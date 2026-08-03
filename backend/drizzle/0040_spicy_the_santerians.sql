@@ -1,0 +1,1 @@
+ALTER TABLE "pillars" ADD COLUMN "parallel_with_previous" boolean DEFAULT false NOT NULL;

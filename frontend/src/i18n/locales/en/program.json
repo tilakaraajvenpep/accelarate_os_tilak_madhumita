@@ -1,0 +1,317 @@
+{
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "programs": {
+    "page": {
+      "title": "Programs",
+      "subtitle": "Create the programs your organization runs.",
+      "createButton": "Create Program"
+    },
+    "table": {
+      "cardTitle": "All Programs",
+      "name": "Name",
+      "description": "Description",
+      "status": "Status",
+      "assignedToCohort": "Assigned to Cohort",
+      "createdAt": "Created",
+      "empty": "No programs yet — create your first one to get started.",
+      "noMatch": "No programs match your search or filters.",
+      "searchPlaceholder": "Search programs…",
+      "reorderDisabledHint": "Clear search and filters, and show all rows, to reorder"
+    },
+    "dialog": {
+      "createTitle": "Create Program",
+      "editTitle": "Edit Program",
+      "description": "Programs are the top-level offerings your organization runs.",
+      "nameLabel": "Program name",
+      "namePlaceholder": "e.g. 12-Week Accelerator Track",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What is this program about?",
+      "createButton": "Create Program"
+    },
+    "deleteDialog": {
+      "title": "Delete program",
+      "confirm": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "cohortWarning": "⚠️ This program is currently assigned to: {{cohorts}}. Deleting it will also remove all calendar dates and mentor assignments for those cohorts."
+    },
+    "toast": {
+      "created": "Program created",
+      "updated": "Program updated",
+      "deleted": "Program deleted",
+      "saveFailed": "Failed to save program",
+      "deleteFailed": "Failed to delete program",
+      "reorderFailed": "Failed to save the new order"
+    },
+    "assignToCohort": {
+      "button": "Assign to cohort",
+      "dialogTitle": "Schedule \"{{name}}\" on a cohort",
+      "dialogTitleForCohort": "Schedule a program on \"{{name}}\"",
+      "dialogDescription": "Pick a program and cohort, then set a single start date — no need to set one for every pillar and section individually.",
+      "programLabel": "Program",
+      "programPlaceholder": "Select a program…",
+      "cohortLabel": "Cohort",
+      "cohortPlaceholder": "Select a cohort…",
+      "noCohorts": "No cohorts yet — create one under Cohorts first.",
+      "startDateLabel": "Start date",
+      "startDateHint": "Applied to every calendar-enabled pillar and section below, unless you override one individually.",
+      "datesLabel": "Per-pillar/section overrides (optional)",
+      "noCalendarItems": "This program has no calendar-enabled pillars or sections, so there are no dates to set — you can still assign it to the cohort.",
+      "mentorPlaceholder": "Assign a mentor (optional)",
+      "submitButton": "Assign",
+      "toast": {
+        "assigned": "Program assigned to cohort calendar",
+        "assignFailed": "Failed to assign program to cohort"
+      }
+    },
+    "duplicateDialog": {
+      "defaultName": "Copy of {{name}}",
+      "title": "Duplicate \"{{name}}\"",
+      "description": "Creates a new program with its own copy of every pillar and section.",
+      "submitButton": "Duplicate",
+      "toast": {
+        "duplicated": "Program duplicated",
+        "duplicateFailed": "Failed to duplicate program"
+      }
+    }
+  },
+  "programDetail": {
+    "back": "Back to Programs",
+    "notFound": "Program not found.",
+    "viewInfoButton": "View Information",
+    "assignedToCohortBadge": "Assigned to Cohort: {{cohorts}}",
+    "assignedToCohortHint": "This program is assigned to a cohort — release it from all cohorts to edit its details, pillars, or sections.",
+    "entityLabels": {
+      "program": "program",
+      "pillar": "pillar",
+      "section": "section"
+    },
+    "assignedBlockDialog": {
+      "title": "Can't delete — assigned to a cohort",
+      "description": "This {{entity}} is assigned to {{cohorts}}. Release it from that cohort first (use the calendar icon on the program, or the Cohorts page), then you'll be able to delete it.",
+      "closeButton": "Got it"
+    },
+    "pillarsTitle": "Pillars",
+    "noPillars": "No pillars yet for this program.",
+    "createPillarButton": "Create Pillar",
+    "createPillarTitle": "Create Pillar",
+    "editPillarTitle": "Edit Pillar",
+    "deletePillarTitle": "Delete pillar",
+    "deletePillarConfirm": "Are you sure you want to delete \"{{title}}\"? This also removes its sections.",
+    "pillarCreated": "Pillar created",
+    "pillarUpdated": "Pillar updated",
+    "pillarDeleted": "Pillar deleted",
+    "pillarSaveFailed": "Failed to save pillar",
+    "pillarDeleteFailed": "Failed to delete pillar",
+    "sectionsTitle": "Sections",
+    "noSections": "No sections yet for this pillar.",
+    "createSectionButton": "Create Section",
+    "createSectionTitle": "Create Section",
+    "editSectionTitle": "Edit Section",
+    "deleteSectionTitle": "Delete section",
+    "deleteSectionConfirm": "Are you sure you want to delete \"{{title}}\"?",
+    "sectionCreated": "Section created",
+    "sectionUpdated": "Section updated",
+    "sectionDeleted": "Section deleted",
+    "sectionSaveFailed": "Failed to save section",
+    "sectionDeleteFailed": "Failed to delete section",
+    "reorderFailed": "Failed to save the new order",
+    "reorderPillarsFailed": "Failed to save the new order",
+    "executionModeLabel": "Execution",
+    "sequentialOption": "Sequential",
+    "parallelOption": "Parallel with previous",
+    "executionModeFirstPillarHint": "The first pillar always runs first — there's nothing before it to be sequential or parallel with.",
+    "parallelBadge": "Parallel",
+    "parallelGroupConnectorLabel": "Runs in parallel with the pillar above",
+    "parallelToggleFailed": "Failed to update parallel execution",
+    "assignFormButton": "Assign forms",
+    "assignFormTitle": "Assign forms to \"{{title}}\"",
+    "assignFormDescription": "Pick which forms founders fill in for this section — you can select more than one.",
+    "formLabel": "Forms",
+    "noFormsAvailable": "No forms yet — create one under Setup > Forms (Template Library) first.",
+    "formAssigned": "Forms updated",
+    "formAssignFailed": "Failed to assign forms",
+    "fillPolicy": {
+      "first_claim": "Any team member (first to fill it locks the rest out)",
+      "primary_founder": "Only the primary founder"
+    }
+  },
+  "pillarDetail": {
+    "dragHint": "Drag to reorder"
+  },
+  "pillars": {
+    "dialog": {
+      "titleLabel": "Pillar title",
+      "titlePlaceholder": "e.g. Product & Tech",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What does this pillar cover?",
+      "programObjectiveLabel": "Program objective",
+      "programObjectivePlaceholder": "What is this program meant to achieve?",
+      "phaseCoverageLabel": "What this phase covers",
+      "phaseCoveragePlaceholder": "Summarize the scope of this phase",
+      "expectedOutcomesLabel": "Expected outcomes",
+      "expectedOutcomesPlaceholder": "What should founders have achieved by the end of this phase?",
+      "founderExpectationLabel": "Founder expectation",
+      "founderExpectationPlaceholder": "What is expected of founders during this phase?",
+      "showInCalendarLabel": "Show this pillar in the Cohort Calendar",
+      "showInCalendarHelp": "Optional — if checked, this pillar can be scheduled onto a cohort's calendar for a specific date.",
+      "purposeLabel": "Purpose",
+      "learningOption": "Learning",
+      "assessmentOption": "Assessment",
+      "passThresholdLabel": "Pass threshold (%, optional)",
+      "passThresholdHint": "The company must reach this rolled-up score across the pillar's submitted forms to count as passed. Leave blank for no score-based gate — the pillar just completes once its forms are submitted.",
+      "attendanceLabel": "Attendance",
+      "mandatoryOption": "Compulsory",
+      "skippableOption": "Can be skipped",
+      "attendanceHint": "A skippable pillar doesn't block the program's overall completion, even if a founder never finishes it.",
+      "insertAfterLabel": "Position",
+      "insertAtEndOption": "At the end",
+      "assessmentBadge": "Assessment · Pass ≥{{threshold}}%",
+      "assessmentBadgeNoThreshold": "Assessment",
+      "skippableBadge": "Skippable",
+      "checklistLabel": "Ask founders for a readiness checklist",
+      "checklistHelp": "Founders will see and fill out these questions alongside this pillar's forms.",
+      "checklistQuestionPlaceholder": "Question for the founder",
+      "checklistTextOption": "Text answer",
+      "checklistCheckboxOption": "Checkbox",
+      "checklistAddQuestionButton": "Add question",
+      "takeawaysAndDiscussionsLabel": "Enable Key Takeaways & Discussions",
+      "takeawaysAndDiscussionsHelp": "If checked, founders can write key takeaways and start comments/discussions under this pillar."
+    }
+  },
+  "sections": {
+    "dialog": {
+      "titleLabel": "Section title",
+      "titlePlaceholder": "e.g. Customer Discovery",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What does this section cover?",
+      "showInCalendarLabel": "Show this section in the Cohort Calendar",
+      "showInCalendarHelp": "Optional — if checked, this section can be scheduled onto a cohort's calendar for a specific date."
+    }
+  },
+  "founderPrograms": {
+    "title": "My Programs",
+    "subtitle": "Programs your cohort has been scheduled for.",
+    "empty": "No programs have been assigned to your cohort yet.",
+    "noPillars": "No pillars are available for this program yet.",
+    "completedBadge": "Completed",
+    "lockedBadge": "Locked",
+    "lockedPillarMessage": "This pillar is currently locked by your admin. Check back later.",
+    "sequenceLockedPillarMessage": "Complete the pillar(s) above first to unlock this one.",
+    "markDoneButton": "Mark as Done",
+    "markDoneSuccess": "Section marked as done",
+    "markDoneFailed": "Failed to mark section as done",
+    "viewSubmissionButton": "View submitted response",
+    "draftSavedBadge": "Draft saved",
+    "pillarBadge": "Pillar {{n}}",
+    "completionStatus": "Completion status",
+    "sectionLabel": "Section {{letter}}",
+    "passedBadge": "Pass · {{score}}%",
+    "scoreBelowThresholdBadge": "Fail · {{score}}% (needs {{threshold}}%)",
+    "cohortForms": {
+      "title": "Cohort Forms",
+      "subtitle": "Forms your tenant admin has attached to your cohort — only one founder on your team can fill each one in.",
+      "fillButton": "Fill Form",
+      "viewButton": "View Answers",
+      "viewOnlyDescription": "This form has already been submitted by a member of your team — you can view the answers below.",
+      "lockedByName": "Being filled in by {{name}}",
+      "lockedGeneric": "Being filled in by another member of your team"
+    },
+    "form": {
+      "description": "Fill in the fields below, then submit.",
+      "viewDescription": "Read-only view of the submitted answers.",
+      "alreadySubmitted": "You've already submitted this form — saving again will update your answers.",
+      "saveDraftButton": "Save Draft",
+      "submitButton": "Submit",
+      "documentLabel": "Attach a document (optional)",
+      "documentHint": "Up to 8MB. Shown alongside your answers once submitted.",
+      "documentTooLarge": "File is too large — the limit is 8MB",
+      "noDocument": "No document was attached.",
+      "toast": {
+        "saved": "Draft saved",
+        "submitted": "Form submitted",
+        "saveFailed": "Failed to save form"
+      }
+    },
+    "materials": {
+      "title": "Materials",
+      "uploadButton": "Upload",
+      "viewButton": "View",
+      "empty": "No materials uploaded yet.",
+      "uploadedBy": "Uploaded by {{name}}",
+      "uploadFailed": "Failed to upload material",
+      "deleteFailed": "Failed to delete material"
+    },
+    "takeaways": {
+      "title": "Key Takeaways",
+      "placeholder": "What did your team take away from this pillar?",
+      "saveButton": "Save",
+      "saved": "Key takeaways saved",
+      "saveFailed": "Failed to save key takeaways"
+    },
+    "discussion": {
+      "title": "Discussion",
+      "empty": "No comments yet. Start a discussion about this pillar.",
+      "founderBadge": "Founder",
+      "coFounderBadge": "Co-founder",
+      "mentorBadge": "Mentor",
+      "placeholder": "Write a comment…",
+      "postButton": "Post",
+      "postFailed": "Failed to post comment"
+    },
+    "checklist": {
+      "title": "Readiness Checklist",
+      "submitButton": "Submit",
+      "saved": "Checklist saved",
+      "saveFailed": "Failed to save checklist"
+    },
+    "table": {
+      "submittedOn": "Submitted On",
+      "aiScore": "AI Score",
+      "aiScoreBadge": "{{score}}%",
+      "attemptLink": "Attempt {{n}}",
+      "notStarted": "Not started yet",
+      "fillTitle": "Fill form",
+      "viewTitle": "View submitted response",
+      "viewButton": "View",
+      "editButton": "Edit",
+      "branchButton": "New Attempt",
+      "branchTitle": "Branch out — start a new attempt",
+      "downloadTitle": "Download attached document",
+      "branchFailed": "Failed to branch out"
+    }
+  },
+  "mentorPrograms": {
+    "title": "Fill Programs",
+    "subtitle": "Pick a company you mentor to view and fill in their assigned program forms.",
+    "cohortLabel": "Cohort",
+    "cohortPlaceholder": "Select a cohort",
+    "companyLabel": "Company",
+    "companyPlaceholder": "Select a company",
+    "pendingSetup": "Pending setup",
+    "selectCohortEmpty": "Select a cohort to get started.",
+    "selectCompanyEmpty": "Select a company to see their assigned programs.",
+    "noPrograms": "No programs assigned to this company's cohort yet.",
+    "lockedPillarMessage": "This pillar is currently locked. Check back later.",
+    "sequenceLockedPillarMessage": "The pillar(s) before this one aren't complete yet.",
+    "passedBadge": "Passed {{score}}%",
+    "scoreBelowThresholdBadge": "Score {{score}}% · needs {{threshold}}%",
+    "takeawaysTitle": "Founder's Key Takeaways"
+  },
+  "feedback": {
+    "titleFallback": "Feedback",
+    "mandatoryDescription": "This feedback is required before you can continue — it can't be skipped.",
+    "optionalDescription": "We'd appreciate your feedback.",
+    "loading": "Loading…",
+    "skipButton": "Skip for now",
+    "alreadySubmittedNote": "This has already been submitted for your company.",
+    "noPermissionNote": "You don't have permission to fill this form — only the assigned founder or a mentor can.",
+    "toast": {
+      "submitted": "Feedback submitted — thank you!",
+      "draftSaved": "Draft saved",
+      "saveFailed": "Failed to save feedback",
+      "skipFailed": "Failed to skip"
+    }
+  }
+}
